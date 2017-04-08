@@ -8,7 +8,7 @@
 ## Turbo Start
 
 ```sh
-$ bash <(curl -fsSL https://raw.githubusercontent.com/lime-company/lime-security-powerauth-docker/master/launch.sh)
+$ bash <(curl -fsSL https://git.io/vSogp)
 ```
 
 ## Getting Started
