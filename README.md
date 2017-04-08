@@ -1,5 +1,10 @@
 # Docker Images for PowerAuth 2.0
 
+## Prerequisites
+
+- **Docker.** Obviously, you need Docker to use our Docker images. :-) Docker is easy to install, follow the [official documentation](https://docs.docker.com/engine/getstarted/step_one/).
+- **Unix-based operating system.** While our software can run in Windows as well, we optimized our scripts for Linux / Unix environment.
+
 ## Turbo Start
 
 ```sh
@@ -9,10 +14,6 @@ $ bash <(curl -fsSL https://raw.githubusercontent.com/lime-company/lime-security
 ## Getting Started
 
 To install PowerAuth 2.0 in your Docker instance, perform following steps:
-
-### 0. Install Docker
-
-Obviously, you need Docker to use our Docker images. Docker is easy to install, just follow the [official documentation](https://docs.docker.com/engine/getstarted/step_one/).
 
 ### 1. Clone the Repository
 
