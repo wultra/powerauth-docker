@@ -50,40 +50,47 @@ $ docker-compose up -d
 
 See `docker-compose.yml` for the default configuration.
 
+## Default Configuration
+
 If you didn't change the default application settings, everything should just work.
 
 Following configuration is used by default:
 
-- MySQL Docker Image
-    - New MySQL image will be created, with a default PowerAuth 2.0 DB schema in place.
-    - Two users are created: "root"/"root" and "powerauth" with no password.
-    - Database files are created in `/tmp/mysql` folder by default.
-    - To connect to database from the host:
-        - URL: `jdbc:mysql://localhost:3306/powerauth`
-        - Username: `powerauth`
-        - Password: _no password_
-    - To connect to database from Docker container:
-        - URL: `jdbc:mysql://powerauth-mysql:3306/powerauth`
-        - Username: `powerauth`
-        - Password: _no password_
-- PowerAuth 2.0 Server
-    - SOAP / REST service are not be secured by any integration credentials.
-    - Database connectivity points to the MySQL instance in the docker image.
-    - Default application name "powerauth" and display name "PowerAuth 2.0 Server" will be used.
-    - Access the SOAP service WSDL from the host here:
-        - http://localhost:8080/powerauth-java-server/soap/service.wsdl
-        - No credentials are required by default.
-    - Access the SOAP service WSDL from Docker container here:
-        - http://powerauth-java-server:8080/powerauth-java-server/soap/service.wsdl
-        - No credentials are required by default.
-- PowerAuth 2.0 Admin
-    - Admin will point to the PowerAuth 2.0 Server Docker instance.
-    - No security credentials will be configured.
-    - Admin will be secured using a static LDAP file, with a single "admin"/"admin" user (see `ldap-local.ldiff`).
-    - Admin will not accept invalid SSL certificates.
-    - Access the Admin application from host here:
-        - http://localhost:18080/powerauth-admin
-        - Use `admin` user with password `admin`
+### MySQL Docker Image
+
+- New MySQL image will be created, with a default PowerAuth 2.0 DB schema in place.
+- Two users are created: "root"/"root" and "powerauth" with no password.
+- Database files are created in `/tmp/mysql` folder by default.
+- To connect to database from the host:
+    - URL: `jdbc:mysql://localhost:3306/powerauth`
+    - Username: `powerauth`
+    - Password: _no password_
+- To connect to database from Docker container:
+    - URL: `jdbc:mysql://powerauth-mysql:3306/powerauth`
+    - Username: `powerauth`
+    - Password: _no password_
+
+### PowerAuth 2.0 Server
+
+- SOAP / REST service are not be secured by any integration credentials.
+- Database connectivity points to the MySQL instance in the docker image.
+- Default application name "powerauth" and display name "PowerAuth 2.0 Server" will be used.
+- Access the SOAP service WSDL from the host here:
+    - http://localhost:8080/powerauth-java-server/soap/service.wsdl
+    - No credentials are required by default.
+- Access the SOAP service WSDL from Docker container here:
+    - http://powerauth-java-server:8080/powerauth-java-server/soap/service.wsdl
+    - No credentials are required by default.
+
+### PowerAuth 2.0 Admin
+
+- Admin will point to the PowerAuth 2.0 Server Docker instance.
+- No security credentials will be configured.
+- Admin will be secured using a static LDAP file, with a single "admin"/"admin" user (see `ldap-local.ldiff`).
+- Admin will not accept invalid SSL certificates.
+- Access the Admin application from host here:
+    - http://localhost:18080/powerauth-admin
+    - Use `admin` user with password `admin`
 
 ## License
 
