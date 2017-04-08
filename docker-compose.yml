@@ -8,7 +8,16 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=root
         volumes:
-            - /tmp/mysql:/var/lib/mysql
+            - /tmp/powerauth-mysql:/var/lib/mysql
+    powerauth-push-mysql:
+        image: powerauth-push-mysql
+        container_name: powerauth-push-mysql
+        ports:
+            - "3307:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        volumes:
+            - /tmp/powerauth-push-mysql:/var/lib/mysql
     powerauth-java-server:
         image: powerauth-java-server
         container_name: powerauth-java-server
@@ -23,4 +32,12 @@ services:
             - "18080:8080"
         depends_on:
             - powerauth-mysql
+            - powerauth-java-server
+    powerauth-push-server:
+        image: powerauth-push-server
+        container_name: powerauth-push-server
+        ports:
+            - "28080:8080"
+        depends_on:
+            - powerauth-push-mysql
             - powerauth-java-server

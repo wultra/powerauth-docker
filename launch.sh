@@ -4,4 +4,5 @@ sh build.sh ; \
 docker-compose up -d ; \
 cd ..; \
 sleep 10 ; \
-open http://localhost:18080/powerauth-admin
+open http://localhost:18080/powerauth-admin ; \
+open http://localhost:28080/powerauth-push-server
