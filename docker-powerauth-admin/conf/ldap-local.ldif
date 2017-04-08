@@ -1,0 +1,25 @@
+dn: ou=groups,dc=powerauth,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=people,dc=powerauth,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: uid=admin,ou=people,dc=powerauth,dc=com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+cn: PowerAuth Admin
+sn: admin
+uid: admin
+userPassword: admin
+
+dn: cn=admins,ou=groups,dc=powerauth,dc=com
+objectclass: top
+objectclass: groupOfNames
+cn: admins
+ou: admin
+uniqueMember: uid=admin,ou=people,dc=powerauth,dc=com

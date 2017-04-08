@@ -1,0 +1,26 @@
+version: '2'
+services:
+    powerauth-mysql:
+        image: powerauth-mysql
+        container_name: powerauth-mysql
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        volumes:
+            - /tmp/mysql:/var/lib/mysql
+    powerauth-java-server:
+        image: powerauth-java-server
+        container_name: powerauth-java-server
+        ports:
+            - "8080:8080"
+        depends_on:
+            - powerauth-mysql
+    powerauth-admin:
+        image: powerauth-admin
+        container_name: powerauth-admin
+        ports:
+            - "18080:8080"
+        depends_on:
+            - powerauth-mysql
+            - powerauth-java-server
