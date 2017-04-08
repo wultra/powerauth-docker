@@ -1,14 +1,16 @@
 # Docker Images for PowerAuth 2.0
 
+## Getting Started
+
 To install PowerAuth 2.0 in your Docker instance, perform following steps:
 
-## Clone the Repository
+### 1. Clone the Repository
 
 ```sh
 $ git clone	https://github.com/lime-company/lime-security-powerauth-docker.git
 ```
 
-## Configure Build Properties
+### 2. Configure Build Properties
 
 _(Optional)_
 
@@ -19,7 +21,7 @@ Each application has a `conf` folder, where you can configure properties for you
 - [PowerAuth 2.0 Server](https://github.com/lime-company/lime-security-powerauth/wiki/Deploying-PowerAuth-2.0-Server)
 - [PowerAuth 2.0 Admin](https://github.com/lime-company/lime-security-powerauth-admin/wiki/Deploying-PowerAuth-2.0-Admin)
 
-## Build Docker Images
+### 3. Build Docker Images
 
 Run `build.sh` command from the root of the repository, wait for the images to be built.
 
@@ -28,7 +30,7 @@ $ cd lime-security-powerauth-docker
 $ sh build.sh
 ```
 
-## Run Images
+### 4. Run Images
 
 Run Docker Compose in the root folder:
 
@@ -55,3 +57,7 @@ Following configuration is used by default:
     - No security credentials will be configured.
     - Admin will be secured using a static LDAP file, with a single "admin"/"admin" user (see `ldap-local.ldiff`).
     - Admin will not accept invalid SSL certificates.
+
+## License
+
+All sources are licensed using Apache 2.0 license, you can use them with no restriction. If you are using PowerAuth 2.0, please let us know. We will be happy to share and promote your project.
