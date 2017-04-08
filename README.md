@@ -8,7 +8,7 @@
 ## Turbo Start
 
 ```sh
-$ bash <(curl -fsSL https://git.io/vSogp)
+$ cd /tmp ; bash <(curl -fsSL https://git.io/vSogp)
 ```
 
 ## Getting Started
@@ -57,17 +57,31 @@ If you didn't change the default application settings, everything should just wo
 
 Following configuration is used by default:
 
-### MySQL Docker Image
+### MySQL DB for PowerAuth Server
 
-- New MySQL image will be created, with a default PowerAuth 2.0 DB schema in place.
+- New MySQL image will be created, with a default PowerAuth 2.0 Server DB schema in place.
 - Two users are created: "root"/"root" and "powerauth" with no password.
-- Database files are created in `/tmp/mysql` folder by default.
+- Database files are created in `/tmp/mysql-powerauth` folder by default.
 - To connect to database from the host:
     - URL: `jdbc:mysql://localhost:3306/powerauth`
     - Username: `powerauth`
     - Password: _no password_
 - To connect to database from Docker container:
     - URL: `jdbc:mysql://powerauth-mysql:3306/powerauth`
+    - Username: `powerauth`
+    - Password: _no password_
+
+### MySQL DB for Push Server
+
+- New MySQL image will be created, with a default PowerAuth 2.0 Push Server DB schema in place.
+- Two users are created: "root"/"root" and "powerauth" with no password.
+- Database files are created in `/tmp/mysql-push` folder by default.
+- To connect to database from the host:
+    - URL: `jdbc:mysql://localhost:3307/powerauth`
+    - Username: `powerauth`
+    - Password: _no password_
+- To connect to database from Docker container:
+    - URL: `jdbc:mysql://powerauth-push-mysql:3306/powerauth`
     - Username: `powerauth`
     - Password: _no password_
 
@@ -92,6 +106,13 @@ Following configuration is used by default:
 - Access the Admin application from host here:
     - http://localhost:18080/powerauth-admin
     - Use `admin` user with password `admin`
+
+### PowerAuth 2.0 Push Server
+
+- Push Server will point to the PowerAuth 2.0 Server Docker instance.
+- No security credentials will be configured.
+- Access the Push Server application from host here:
+    - http://localhost:28080/powerauth-push-server
 
 ## License
 
