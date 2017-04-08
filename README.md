@@ -1,5 +1,11 @@
 # Docker Images for PowerAuth 2.0
 
+## Turbo Start
+
+```sh
+$ bash <(curl -fsSL https://raw.githubusercontent.com/lime-company/lime-security-powerauth-docker/master/launch.sh)
+```
+
 ## Getting Started
 
 To install PowerAuth 2.0 in your Docker instance, perform following steps:
