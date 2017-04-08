@@ -4,6 +4,10 @@
 
 To install PowerAuth 2.0 in your Docker instance, perform following steps:
 
+### 0. Install Docker
+
+Obviously, you need Docker to use our Docker images. Docker is easy to install, just follow the [official documentation](https://docs.docker.com/engine/getstarted/step_one/).
+
 ### 1. Clone the Repository
 
 ```sh
