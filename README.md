@@ -11,7 +11,7 @@
 $ cd /tmp ; bash <(curl -fsSL https://git.io/vSogp)
 ```
 
-## Getting Started
+## Step By Step
 
 To install PowerAuth 2.0 in your Docker instance, perform following steps:
 
