@@ -2,8 +2,9 @@
 
 ## Prerequisites
 
-- **Docker.** Obviously, you need Docker to use our Docker images. :-) Docker is easy to install, follow the [official documentation](https://docs.docker.com/engine/getstarted/step_one/).
-- **Unix-based operating system.** While our software can run in Windows as well, we optimized our scripts for Linux / Unix environment.
+- **Docker.** (version 17.3.1+) Obviously, you need Docker to use our Docker images. :-) Docker is easy to install, follow the [official documentation](https://docs.docker.com/engine/getstarted/step_one/).
+- **Docker Copose.** (version 1.11.2+) Compose is an extension to Docker that simplifies container image deployment and configuration management.
+- **Unix-based operating system.** While our software can run in Windows as well, we optimized our scripts for Linux / Unix environment. We proudly build all our packages on Mac OS X.
 
 ## Turbo Start
 
