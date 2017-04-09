@@ -1,3 +1,5 @@
+![](./assets/powerauth-docker-blue.png)
+
 # Docker Images for PowerAuth 2.0
 
 ## Prerequisites
