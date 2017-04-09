@@ -2,22 +2,22 @@
 
 ## Check prerequisites
 
-if ! foobar_loc="$(type -p "curl")" || [ -z "$foobar_loc" ]; then
+if ! type  "curl" > /dev/null; then
     echo "Error: 'curl' command must be installed on the system.";
     exit
 fi
 
-if ! foobar_loc="$(type -p "awk")" || [ -z "$foobar_loc" ]; then
+if ! type "awk" > /dev/null; then
     echo "Error: 'awk' command must be installed on the system.";
     exit
 fi
 
-if ! foobar_loc="$(type -p "docker")" || [ -z "$foobar_loc" ]; then
+if ! type "docker" > /dev/null; then
     echo "Error: 'docker' command must be installed on the system.";
     exit
 fi
 
-if ! foobar_loc="$(type -p "docker-compose")" || [ -z "$foobar_loc" ]; then
+if ! type "docker-compose" > /dev/null; then
     echo "Error: 'docker-compose' command must be installed on the system.";
     exit
 fi
