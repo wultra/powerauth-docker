@@ -36,6 +36,10 @@ if [ -z "$PA_PUSH_VERSION" ]; then
     PA_PUSH_VERSION="0.15.0-alpha"
 fi
 
+if [ -z "$PA_REST_API_VERSION" ]; then
+    PA_REST_API_VERSION="0.15.0"
+fi
+
 if [ -z "$MYSQL_VERSION" ]; then
     MYSQL_VERSION="5.1.41"
 fi
@@ -47,6 +51,7 @@ fi
 export PA_VERSION
 export PA_ADMIN_VERSION
 export PA_PUSH_VERSION
+export PA_REST_API_VERSION
 export MYSQL_VERSION
 export ALPN_BOOT_VERSION
 
@@ -59,5 +64,6 @@ cd $CURRENT_DIR/docker-powerauth-push-mysql ; sh ./build.sh
 cd $CURRENT_DIR/docker-powerauth-java-server ; sh ./build.sh
 cd $CURRENT_DIR/docker-powerauth-admin ; sh ./build.sh
 cd $CURRENT_DIR/docker-powerauth-push-server ; sh ./build.sh
+cd $CURRENT_DIR/docker-powerauth-rest-api ; sh ./build.sh
 
 cd $CURRENT_DIR/

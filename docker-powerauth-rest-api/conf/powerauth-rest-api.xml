@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- PowerAuth 2.0 Server Service URL -->
+    <Parameter name="powerauth.service.url" value="http://powerauth-java-server:8080/powerauth-java-server/soap"/>
+
+    <!-- PowerAuth 2.0 Server Service Security Settings -->
+    <Parameter name="powerauth.service.security.clientToken" value=""/>
+    <Parameter name="powerauth.service.security.clientSecret" value=""/>
+    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="false"/>
+
+</Context>

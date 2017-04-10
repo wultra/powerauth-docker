@@ -58,15 +58,17 @@ See `docker-compose.yml` for the default configuration.
 
 If you didn't change the default application settings, everything should just work.
 
+### Application Configuration
+
 Following configuration is used by default:
 
-### MySQL DB for PowerAuth Server
+#### MySQL DB for PowerAuth Server
 
 - New MySQL image will be created, with a default PowerAuth 2.0 Server DB schema in place.
 - Two users are created: "root"/"root" and "powerauth" with no password.
 - Database files are created in `/tmp/mysql-powerauth` folder by default.
 - To connect to database from the host:
-    - URL: `jdbc:mysql://localhost:3306/powerauth`
+    - URL: `jdbc:mysql://localhost:23316/powerauth`
     - Username: `powerauth`
     - Password: _no password_
 - To connect to database from Docker container:
@@ -74,13 +76,13 @@ Following configuration is used by default:
     - Username: `powerauth`
     - Password: _no password_
 
-### MySQL DB for Push Server
+#### MySQL DB for Push Server
 
 - New MySQL image will be created, with a default PowerAuth 2.0 Push Server DB schema in place.
 - Two users are created: "root"/"root" and "powerauth" with no password.
 - Database files are created in `/tmp/mysql-push` folder by default.
 - To connect to database from the host:
-    - URL: `jdbc:mysql://localhost:3307/powerauth`
+    - URL: `jdbc:mysql://localhost:23336/powerauth`
     - Username: `powerauth`
     - Password: _no password_
 - To connect to database from Docker container:
@@ -88,34 +90,45 @@ Following configuration is used by default:
     - Username: `powerauth`
     - Password: _no password_
 
-### PowerAuth 2.0 Server
+#### PowerAuth 2.0 Server
 
 - SOAP / REST service are not be secured by any integration credentials.
 - Database connectivity points to the MySQL instance in the docker image.
 - Default application name "powerauth" and display name "PowerAuth 2.0 Server" will be used.
 - Access the SOAP service WSDL from the host here:
-    - http://localhost:8080/powerauth-java-server/soap/service.wsdl
+    - http://localhost:20010/powerauth-java-server/soap/service.wsdl
     - No credentials are required by default.
 - Access the SOAP service WSDL from Docker container here:
     - http://powerauth-java-server:8080/powerauth-java-server/soap/service.wsdl
     - No credentials are required by default.
 
-### PowerAuth 2.0 Admin
+#### PowerAuth 2.0 Admin
 
 - Admin will point to the PowerAuth 2.0 Server Docker instance.
 - No security credentials will be configured.
 - Admin will be secured using a static LDAP file, with a single "admin"/"admin" user (see `ldap-local.ldiff`).
 - Admin will not accept invalid SSL certificates.
 - Access the Admin application from host here:
-    - http://localhost:18080/powerauth-admin
+    - http://localhost:20020/powerauth-admin
     - Use `admin` user with password `admin`
 
-### PowerAuth 2.0 Push Server
+#### PowerAuth 2.0 Push Server
 
 - Push Server will point to the PowerAuth 2.0 Server Docker instance.
 - No security credentials will be configured.
 - Access the Push Server application from host here:
-    - http://localhost:28080/powerauth-push-server
+    - http://localhost:20030/powerauth-push-server
+
+### Default Port Mapping
+
+Following mappings are used when mapping container ports to host ports:
+
+| Application Name          | Application Image Name | Application Port | Database Image Name  | Database Port |
+|---------------------------|------------------------|------------------|----------------------|---------------|
+| PowerAuth 2.0 Server      | powerauth-java-server  | 20010            | powerauth-mysql      | 23316         |
+| PowerAuth 2.0 Admin       | powerauth-admin        | 20020            | -                    | -             |
+| PowerAuth 2.0 Push Server | powerauth-push-server  | 20030            | powerauth-push-mysql | 23336         |
+| PowerAuth 2.0 RESTful API | powerauth-rest-api     | 18080            | -                    | -             |
 
 ## License
 

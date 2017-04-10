@@ -1,43 +1,60 @@
 version: '2'
 services:
+    # PowerAuth 2.0 Server Database
     powerauth-mysql:
         image: powerauth-mysql
         container_name: powerauth-mysql
         ports:
-            - "3306:3306"
+            - "23316:3306"
         environment:
             - MYSQL_ROOT_PASSWORD=root
         volumes:
             - /tmp/powerauth-mysql:/var/lib/mysql
-    powerauth-push-mysql:
-        image: powerauth-push-mysql
-        container_name: powerauth-push-mysql
-        ports:
-            - "3307:3306"
-        environment:
-            - MYSQL_ROOT_PASSWORD=root
-        volumes:
-            - /tmp/powerauth-push-mysql:/var/lib/mysql
+
+    # PowerAuth 2.0 Server
     powerauth-java-server:
         image: powerauth-java-server
         container_name: powerauth-java-server
         ports:
-            - "8080:8080"
+            - "20010:8080"
         depends_on:
             - powerauth-mysql
+
+    # PowerAuth 2.0 Admin
     powerauth-admin:
         image: powerauth-admin
         container_name: powerauth-admin
         ports:
-            - "18080:8080"
+            - "20020:8080"
         depends_on:
-            - powerauth-mysql
             - powerauth-java-server
+
+    # PowerAuth 2.0 Push Server Database
+    powerauth-push-mysql:
+        image: powerauth-push-mysql
+        container_name: powerauth-push-mysql
+        ports:
+            - "23336:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        volumes:
+            - /tmp/powerauth-push-mysql:/var/lib/mysql
+
+    # PowerAuth 2.0 Push Server
     powerauth-push-server:
         image: powerauth-push-server
         container_name: powerauth-push-server
         ports:
-            - "28080:8080"
+            - "20030:8080"
         depends_on:
             - powerauth-push-mysql
+            - powerauth-java-server
+
+    # PowerAuth 2.0 Standard RESTful API Server
+    powerauth-rest-api:
+        image: powerauth-rest-api
+        container_name: powerauth-rest-api
+        ports:
+            - "18080:8080"
+        depends_on:
             - powerauth-java-server
