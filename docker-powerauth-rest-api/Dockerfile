@@ -1,5 +1,5 @@
 FROM tomcat:8.5
-MAINTAINER powerauth
+LABEL maintainer "petr@lime-company.eu"
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
