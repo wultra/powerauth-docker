@@ -125,10 +125,10 @@ Following mappings are used when mapping container ports to host ports:
 
 | Application Name          | Application Image Name | Application Port | Database Image Name  | Database Port |
 |---------------------------|------------------------|------------------|----------------------|---------------|
-| PowerAuth 2.0 Server      | powerauth-java-server  | 20010            | powerauth-mysql      | 23316         |
-| PowerAuth 2.0 Admin       | powerauth-admin        | 20020            | -                    | -             |
-| PowerAuth 2.0 Push Server | powerauth-push-server  | 20030            | powerauth-push-mysql | 23336         |
-| PowerAuth 2.0 RESTful API | powerauth-rest-api     | 18080            | -                    | -             |
+| PowerAuth 2.0 Server      | powerauth-java-server  | 20010:8080       | powerauth-mysql      | 23316:3306    |
+| PowerAuth 2.0 Admin       | powerauth-admin        | 20020:8080       | -                    | -             |
+| PowerAuth 2.0 Push Server | powerauth-push-server  | 20030:8080       | powerauth-push-mysql | 23336:3306    |
+| PowerAuth 2.0 RESTful API | powerauth-rest-api     | 18080:8080       | -                    | -             |
 
 ## License
 
