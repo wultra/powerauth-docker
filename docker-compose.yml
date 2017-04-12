@@ -10,7 +10,7 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=root
         volumes:
-            - /tmp/powerauth-mysql:/var/lib/mysql
+            - /var/lib/powerauth/mysql:/var/lib/mysql
         healthcheck:
             test: mysqladmin -uroot -proot ping
             interval: 5s
@@ -56,7 +56,7 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=root
         volumes:
-            - /tmp/powerauth-push-mysql:/var/lib/mysql
+            - /var/lib/powerauth/mysql-push:/var/lib/mysql
         healthcheck:
             test: mysqladmin -uroot -proot ping
             interval: 5s
