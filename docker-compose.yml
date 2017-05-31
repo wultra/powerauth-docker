@@ -8,11 +8,11 @@ services:
         ports:
             - "23316:3306"
         environment:
-            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_ROOT_PASSWORD=${POWERAUTH_MYSQL_PASSWORD}
         volumes:
-            - /var/lib/powerauth/mysql:/var/lib/mysql
+            - ${POWERAUTH_MYSQL_PATH}:/var/lib/mysql
         healthcheck:
-            test: mysqladmin -uroot -proot ping
+            test: mysqladmin -uroot -p${POWERAUTH_MYSQL_PASSWORD} ping
             interval: 5s
             timeout: 5s
             retries: 30
@@ -54,11 +54,11 @@ services:
         ports:
             - "23336:3306"
         environment:
-            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_ROOT_PASSWORD=${POWERAUTH_PUSH_MYSQL_PASSWORD}
         volumes:
-            - /var/lib/powerauth/mysql-push:/var/lib/mysql
+            - ${POWERAUTH_PUSH_MYSQL_PATH}:/var/lib/mysql
         healthcheck:
-            test: mysqladmin -uroot -proot ping
+            test: mysqladmin -uroot -p${POWERAUTH_PUSH_MYSQL_PASSWORD} ping
             interval: 5s
             timeout: 5s
             retries: 30

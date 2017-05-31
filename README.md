@@ -10,8 +10,10 @@
 
 ## Turbo Start
 
+Navigate into a folder where you can have the git repository cloned (or `$ cd /tmp` for testing) and run:
+
 ```sh
-$ cd /tmp ; bash <(curl -fsSL https://git.io/vSogp)
+$ bash <(curl -fsSL https://git.io/vSogp)
 ```
 
 ## Step By Step
@@ -44,7 +46,11 @@ $ cd lime-security-powerauth-docker
 $ sh build.sh
 ```
 
-### 4. Run Images
+### 4. Edit `.env` File
+
+You can change properties of the Docker image execution by editing environment variables. Open `.env` file and edit the values for variables.
+
+### 5. Run Images
 
 Run Docker Compose in the root folder:
 
