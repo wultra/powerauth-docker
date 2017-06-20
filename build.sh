@@ -59,11 +59,19 @@ export ALPN_BOOT_VERSION
 
 CURRENT_DIR=`pwd`
 
+## Build Database Images
 cd $CURRENT_DIR/docker-powerauth-mysql ; sh ./build.sh
 cd $CURRENT_DIR/docker-powerauth-push-mysql ; sh ./build.sh
+cd $CURRENT_DIR/docker-powerauth-webauth-mysql ; sh ./build.sh
+
+## Build Application Images
 cd $CURRENT_DIR/docker-powerauth-java-server ; sh ./build.sh
 cd $CURRENT_DIR/docker-powerauth-admin ; sh ./build.sh
 cd $CURRENT_DIR/docker-powerauth-push-server ; sh ./build.sh
 cd $CURRENT_DIR/docker-powerauth-rest-api ; sh ./build.sh
+cd $CURRENT_DIR/docker-powerauth-nextstep ; sh ./build.sh
+cd $CURRENT_DIR/docker-powerauth-credential-server-sample ; sh ./build.sh
+cd $CURRENT_DIR/docker-powerauth-webauth ; sh ./build.sh
+cd $CURRENT_DIR/docker-powerauth-webauth-client ; sh ./build.sh
 
 cd $CURRENT_DIR/

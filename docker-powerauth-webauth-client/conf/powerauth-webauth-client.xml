@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- PowerAuth 2.0 Web Auth Service Configuration -->
+    <Parameter name="powerauth.webauth.service.url" value="http://powerauth-webauth:8080/powerauth-webauth"/>
+    <Parameter name="powerauth.webauth.service.oauth.authorizeUrl" value="http://localhost:13030/powerauth-webauth/oauth/authorize"/>
+    <Parameter name="powerauth.webauth.service.oauth.tokenUrl" value="http://powerauth-webauth:8080/powerauth-webauth/oauth/token"/>
+    <Parameter name="powerauth.webauth.service.oauth.clientId" value="democlient"/>
+    <Parameter name="powerauth.webauth.service.oauth.clientSecret" value="changeme"/>
+
+    <!-- Database Configuration - JDBC -->
+    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webauth-mysql:3306/powerauth"/>
+    <Parameter name="spring.datasource.username" value="powerauth"/>
+    <Parameter name="spring.datasource.password" value=""/>
+    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
+
+    <!-- Database Configuration - JNDI -->
+    <!--Parameter name="spring.datasource.jndi-name" value=""/-->
+
+</Context>

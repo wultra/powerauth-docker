@@ -4,5 +4,6 @@ git pull ; \
 sh build.sh ; \
 POWERAUTH_MYSQL_PATH=/tmp/powerauth/mysql \
 POWERAUTH_PUSH_MYSQL_PATH=/tmp/powerauth/mysql-push \
+POWERAUTH_WEBAUTH_MYSQL_PATH=/tmp/powerauth/mysql-webauth \
 docker-compose up -d ; \
 cd .. ;

@@ -27,7 +27,7 @@ services:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
             interval: 10s
             timeout: 10s
-            retries: 5
+            retries: 30
         depends_on:
             powerauth-mysql:
                 condition: service_healthy
@@ -42,7 +42,7 @@ services:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-admin"]
             interval: 10s
             timeout: 10s
-            retries: 5
+            retries: 30
         depends_on:
             powerauth-java-server:
                 condition: service_healthy
@@ -73,7 +73,7 @@ services:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
             timeout: 10s
-            retries: 5
+            retries: 30
         depends_on:
             powerauth-push-mysql:
                 condition: service_healthy
@@ -90,7 +90,84 @@ services:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-rest-api"]
             interval: 10s
             timeout: 10s
-            retries: 5
+            retries: 30
         depends_on:
             powerauth-java-server:
+                condition: service_healthy
+
+    # PowerAuth 2.0 NextStep Server
+    powerauth-nextstep:
+        image: powerauth-nextstep
+        container_name: powerauth-nextstep
+        ports:
+            - "13010:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-nextstep"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        depends_on:
+            powerauth-webauth-mysql:
+                condition: service_healthy
+
+    # PowerAuth 2.0 Credential Store Sample Server
+    powerauth-credential-server-sample:
+        image: powerauth-credential-server-sample
+        container_name: powerauth-credential-server-sample
+        ports:
+            - "13020:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-credential-server-sample"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+
+    # PowerAuth 2.0 WebAuth MySQL Database
+    powerauth-webauth-mysql:
+        image: powerauth-webauth-mysql
+        container_name: powerauth-webauth-mysql
+        ports:
+            - "23376:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=${POWERAUTH_WEBAUTH_MYSQL_PASSWORD}
+        volumes:
+            - ${POWERAUTH_WEBAUTH_MYSQL_PATH}:/var/lib/mysql
+        healthcheck:
+            test: mysqladmin -uroot -p${POWERAUTH_WEBAUTH_MYSQL_PASSWORD} ping
+            interval: 5s
+            timeout: 5s
+            retries: 30
+
+    # PowerAuth 2.0 WebAuth Server
+    powerauth-webauth:
+        image: powerauth-webauth
+        container_name: powerauth-webauth
+        ports:
+            - "13030:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webauth"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        depends_on:
+            powerauth-nextstep:
+                condition: service_healthy
+            powerauth-credential-server-sample:
+                condition: service_healthy
+            powerauth-java-server:
+                condition: service_healthy
+
+    # PowerAuth 2.0 Web Auth Demo Client Server
+    powerauth-webauth-client:
+        image: powerauth-webauth-client
+        container_name: powerauth-webauth-client
+        ports:
+            - "13040:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webauth-client"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        depends_on:
+            powerauth-webauth:
                 condition: service_healthy
