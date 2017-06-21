@@ -16,6 +16,8 @@
     <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
     <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
 
+    <Parameter name="powerauth.push.service.apns.useDevelopment" value="true"/>
+
     <!-- Database Configuration - JNDI -->
     <!--Parameter name="spring.datasource.jndi-name" value=""/-->
 

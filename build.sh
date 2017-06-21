@@ -33,7 +33,7 @@ if [ -z "$PA_ADMIN_VERSION" ]; then
 fi
 
 if [ -z "$PA_PUSH_VERSION" ]; then
-    PA_PUSH_VERSION="0.15.0-alpha"
+    PA_PUSH_VERSION="0.15.1-alpha"
 fi
 
 if [ -z "$PA_REST_API_VERSION" ]; then
@@ -42,10 +42,6 @@ fi
 
 if [ -z "$MYSQL_VERSION" ]; then
     MYSQL_VERSION="5.1.41"
-fi
-
-if [ -z "$ALPN_BOOT_VERSION" ]; then
-    ALPN_BOOT_VERSION="8.1.11.v20170118"
 fi
 
 export PA_VERSION
