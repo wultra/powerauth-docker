@@ -81,19 +81,20 @@ services:
                 condition: service_healthy
 
     # PowerAuth 2.0 Standard RESTful API Server
-    powerauth-rest-api:
-        image: powerauth-rest-api
-        container_name: powerauth-rest-api
-        ports:
-            - "18080:8080"
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-rest-api"]
-            interval: 10s
-            timeout: 10s
-            retries: 30
-        depends_on:
-            powerauth-java-server:
-                condition: service_healthy
+    # - Optional, since the same services are provided by "powerauth-webauth"
+    # powerauth-rest-api:
+    #     image: powerauth-rest-api
+    #     container_name: powerauth-rest-api
+    #     ports:
+    #         - "18080:8080"
+    #     healthcheck:
+    #         test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-rest-api"]
+    #         interval: 10s
+    #         timeout: 10s
+    #         retries: 30
+    #     depends_on:
+    #         powerauth-java-server:
+    #             condition: service_healthy
 
     # PowerAuth 2.0 NextStep Server
     powerauth-nextstep:
