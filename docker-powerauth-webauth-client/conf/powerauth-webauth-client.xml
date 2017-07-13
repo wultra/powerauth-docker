@@ -9,7 +9,7 @@
     <Parameter name="powerauth.webauth.service.oauth.clientSecret" value="changeme"/>
 
     <!-- PowerAuth 2.0 Next Step Config -->
-    <Parameter name="powerauth.nextstep.service.url" value="http://10.60.5.19:8080/powerauth-nextstep"/>
+    <Parameter name="powerauth.nextstep.service.url" value="http://powerauth-nextstep:8080/powerauth-nextstep"/>
 
     <!-- Database Configuration - JDBC -->
     <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webauth-mysql:3306/powerauth"/>
