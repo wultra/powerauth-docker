@@ -106,6 +106,9 @@ services:
             interval: 10s
             timeout: 10s
             retries: 30
+        depends_on:
+            powerauth-webauth-mysql:
+                condition: service_healthy
 
     # PowerAuth 2.0 WebAuth MySQL Database
     powerauth-webauth-mysql:
