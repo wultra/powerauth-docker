@@ -112,18 +112,3 @@ services:
                 condition: service_healthy
             powerauth-java-server:
                 condition: service_healthy
-
-    # PowerAuth 2.0 Web Auth Demo Client Server
-    # powerauth-webflow-demo:
-    #     image: powerauth-webflow-demo
-    #     container_name: powerauth-webflow-demo
-    #     ports:
-    #         - "13040:8080"
-    #     healthcheck:
-    #         test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webflow-demo"]
-    #         interval: 10s
-    #         timeout: 10s
-    #         retries: 30
-    #     depends_on:
-    #         powerauth-webflow:
-    #             condition: service_healthy

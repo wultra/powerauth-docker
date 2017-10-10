@@ -1,4 +1,4 @@
 **/.DS_Store
 **/build
-**/assets/images/*.war
-**/assets/lib/*.jar
+**/deploy/images/*.war
+**/deploy/lib/*.jar

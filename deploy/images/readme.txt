@@ -1,7 +1,7 @@
 Place following files here:
 
 - powerauth-admin.war
-- powerauth-bank-adapter.war
+- powerauth-data-adapter.war
 - powerauth-java-server.war
 - powerauth-nextstep.war
 - powerauth-push-server.war
