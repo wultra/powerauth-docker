@@ -2,7 +2,7 @@
 <Context>
 
     <!-- PowerAuth 2.0 Server Service URL -->
-    <Parameter name="powerauth.service.url" value="http://powerauth-java-server:8080/powerauth-java-server/soap"/>
+    <Parameter name="powerauth.service.url" value="http://powerauth-server:8080/powerauth-java-server/soap"/>
 
     <!-- PowerAuth 2.0 Server Service Security Settings -->
     <Parameter name="powerauth.service.security.clientToken" value=""/>

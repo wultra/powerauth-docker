@@ -23,7 +23,7 @@ To install PowerAuth 2.0 in your Docker instance, perform following steps:
 ### 1. Clone the Repository
 
 ```sh
-$ git clone https://github.com/lime-company/lime-security-powerauth-docker.git
+$ git clone https://github.com/lime-company/powerauth-docker.git
 ```
 
 ### 2. Configure Build Properties
@@ -34,15 +34,15 @@ If you don't not do anything with the configuration, everything will just work o
 
 Each application has a `conf` folder, where you can configure properties for your particular instance. See the documentation of the respective applications to learn about the meaning of properties:
 
-- [PowerAuth 2.0 Server](https://github.com/lime-company/lime-security-powerauth/wiki/Deploying-PowerAuth-2.0-Server)
-- [PowerAuth 2.0 Admin](https://github.com/lime-company/lime-security-powerauth-admin/wiki/Deploying-PowerAuth-2.0-Admin)
+- [PowerAuth 2.0 Server](https://github.com/lime-company/powerauth-server/wiki/Deploying-PowerAuth-2.0-Server)
+- [PowerAuth 2.0 Admin](https://github.com/lime-company/powerauth-admin/wiki/Deploying-PowerAuth-2.0-Admin)
 
 ### 3. Build Docker Images
 
 Run `build.sh` command from the root of the repository, wait for the images to be built.
 
 ```sh
-$ cd lime-security-powerauth-docker
+$ cd powerauth-docker
 $ sh build.sh
 ```
 

@@ -2,13 +2,13 @@
 <Context>
 
     <!-- PowerAuth 2.0 Credential Service URL -->
-    <Parameter name="powerauth.credentials.service.url" value="http://powerauth-credential-server-sample:8080/powerauth-credential-server-sample"/>
+    <Parameter name="powerauth.credentials.service.url" value="http://powerauth-nextstep:8080/powerauth-bank-adapter"/>
 
     <!-- PowerAuth 2.0 Next Step Service URL -->
     <Parameter name="powerauth.nextstep.service.url" value="http://powerauth-nextstep:8080/powerauth-nextstep"/>
 
     <!-- PowerAuth 2.0 Server Service URL -->
-    <Parameter name="powerauth.service.url" value="http://powerauth-java-server:8080/powerauth-java-server/soap"/>
+    <Parameter name="powerauth.service.url" value="http://powerauth-server:8080/powerauth-java-server/soap"/>
 
     <!-- PowerAuth 2.0 Server Service Security Settings -->
     <Parameter name="powerauth.service.security.clientToken" value=""/>
@@ -20,12 +20,12 @@
     <Parameter name="powerauth.push.service.appId" value="1"/>
 
     <!-- PowerAuth 2.0 WebFlow Page Customization -->
-    <Parameter name="powerauth.webauth.page.title" value="PowerAuth 2.0 Web Auth"/>
-    <Parameter name="powerauth.webauth.page.ext-resources.location" value="classpath:/static/resources/"/>
-    <Parameter name="powerauth.webauth.page.custom-css.url" value=""/>
+    <Parameter name="powerauth.webflow.page.title" value="PowerAuth 2.0 Web Auth"/>
+    <Parameter name="powerauth.webflow.page.ext-resources.location" value="classpath:/static/resources/"/>
+    <Parameter name="powerauth.webflow.page.custom-css.url" value=""/>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webauth-mysql:3306/powerauth"/>
+    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webflow-mysql:3306/powerauth"/>
     <Parameter name="spring.datasource.username" value="powerauth"/>
     <Parameter name="spring.datasource.password" value=""/>
     <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>

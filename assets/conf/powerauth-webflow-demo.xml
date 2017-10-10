@@ -2,17 +2,17 @@
 <Context>
 
     <!-- PowerAuth 2.0 Web Auth Service Configuration -->
-    <Parameter name="powerauth.webauth.service.url" value="http://powerauth-webauth:8080/powerauth-webauth"/>
-    <Parameter name="powerauth.webauth.service.oauth.authorizeUrl" value="http://localhost:13030/powerauth-webauth/oauth/authorize"/>
-    <Parameter name="powerauth.webauth.service.oauth.tokenUrl" value="http://powerauth-webauth:8080/powerauth-webauth/oauth/token"/>
-    <Parameter name="powerauth.webauth.service.oauth.clientId" value="democlient"/>
-    <Parameter name="powerauth.webauth.service.oauth.clientSecret" value="changeme"/>
+    <Parameter name="powerauth.webflow.service.url" value="http://powerauth-webflow:8080/powerauth-webflow"/>
+    <Parameter name="powerauth.webflow.service.oauth.authorizeUrl" value="http://localhost:13030/powerauth-webflow/oauth/authorize"/>
+    <Parameter name="powerauth.webflow.service.oauth.tokenUrl" value="http://powerauth-webflow:8080/powerauth-webflow/oauth/token"/>
+    <Parameter name="powerauth.webflow.service.oauth.clientId" value="democlient"/>
+    <Parameter name="powerauth.webflow.service.oauth.clientSecret" value="changeme"/>
 
     <!-- PowerAuth 2.0 Next Step Config -->
     <Parameter name="powerauth.nextstep.service.url" value="http://powerauth-nextstep:8080/powerauth-nextstep"/>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webauth-mysql:3306/powerauth"/>
+    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webflow-mysql:3306/powerauth"/>
     <Parameter name="spring.datasource.username" value="powerauth"/>
     <Parameter name="spring.datasource.password" value=""/>
     <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>

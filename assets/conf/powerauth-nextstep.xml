@@ -2,7 +2,7 @@
 <Context>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webauth-mysql:3306/powerauth"/>
+    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webflow-mysql:3306/powerauth"/>
     <Parameter name="spring.datasource.username" value="powerauth"/>
     <Parameter name="spring.datasource.password" value=""/>
     <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
