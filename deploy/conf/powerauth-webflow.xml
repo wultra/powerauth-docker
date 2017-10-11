@@ -2,7 +2,7 @@
 <Context>
 
     <!-- PowerAuth 2.0 Credential Service URL -->
-    <Parameter name="powerauth.credentials.service.url" value="http://powerauth-nextstep:8080/powerauth-bank-adapter"/>
+    <Parameter name="powerauth.credentials.service.url" value="http://powerauth-nextstep:8080/powerauth-data-adapter"/>
 
     <!-- PowerAuth 2.0 Next Step Service URL -->
     <Parameter name="powerauth.nextstep.service.url" value="http://powerauth-nextstep:8080/powerauth-nextstep"/>
