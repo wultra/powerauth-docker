@@ -1,4 +1,5 @@
 **/.DS_Store
 **/build
+**/deploy/conf/*.xml
 **/deploy/images/*.war
 **/deploy/lib/*.jar
