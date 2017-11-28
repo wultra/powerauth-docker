@@ -2,21 +2,17 @@
 <Context>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-mysql:3306/powerauth"/>
+    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webflow-mysql:3306/powerauth"/>
     <Parameter name="spring.datasource.username" value="powerauth"/>
     <Parameter name="spring.datasource.password" value=""/>
     <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
     <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
 
+    <!-- SMS validity parameters -->
+    <Parameter name="powerauth.authorization.sms-otp.expiration-time-in-seconds" value="300"/>
+    <Parameter name="powerauth.authorization.sms-otp.max-verify-tries-per-message" value="5"/>
+
     <!-- Database Configuration - JNDI -->
     <!--Parameter name="spring.datasource.jndi-name" value=""/-->
-
-    <!-- Application Configuration -->
-    <Parameter name="powerauth.service.applicationName" value="powerauth"/>
-    <Parameter name="powerauth.service.applicationDisplayName" value="PowerAuth 2.0 Server"/>
-    <Parameter name="powerauth.service.applicationEnvironment" value=""/>
-
-    <!-- Security Configuration -->
-    <Parameter name="powerauth.service.restrictAccess" value="false"/>
 
 </Context>

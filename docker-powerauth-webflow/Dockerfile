@@ -14,7 +14,10 @@ ADD deploy/lib/bcprov-jdk15on-158.jar $JAVA_HOME/lib/ext
 RUN echo 'security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvider' >> $JAVA_HOME/lib/security/java.security
 
 # Deploy and run applications
-ADD deploy/conf/powerauth-push-server.xml /usr/local/tomcat/conf/Catalina/localhost/
-ADD deploy/images/powerauth-push-server.war /usr/local/tomcat/webapps/
+ADD deploy/conf/powerauth-webflow.xml /usr/local/tomcat/conf/Catalina/localhost/
+ADD deploy/images/powerauth-webflow.war /usr/local/tomcat/webapps/
+
+ADD deploy/conf/powerauth-data-adapter.xml /usr/local/tomcat/conf/Catalina/localhost/
+ADD deploy/images/powerauth-data-adapter.war /usr/local/tomcat/webapps/
 
 CMD ["catalina.sh", "run"]

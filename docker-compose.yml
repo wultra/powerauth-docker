@@ -3,8 +3,8 @@ services:
 
     # PowerAuth 2.0 Server Database
     powerauth-mysql:
-        image: powerauth-mysql
-        container_name: powerauth-mysql
+        image: powerauth-server-mysql
+        container_name: powerauth-server-mysql
         ports:
             - "23316:3306"
         environment:
@@ -16,36 +16,6 @@ services:
             interval: 5s
             timeout: 5s
             retries: 30
-
-    # PowerAuth 2.0 Server
-    powerauth-java-server:
-        image: powerauth-java-server
-        container_name: powerauth-java-server
-        ports:
-            - "20010:8080"
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
-            interval: 10s
-            timeout: 10s
-            retries: 5
-        depends_on:
-            powerauth-mysql:
-                condition: service_healthy
-
-    # PowerAuth 2.0 Admin
-    powerauth-admin:
-        image: powerauth-admin
-        container_name: powerauth-admin
-        ports:
-            - "20020:8080"
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-admin"]
-            interval: 10s
-            timeout: 10s
-            retries: 5
-        depends_on:
-            powerauth-java-server:
-                condition: service_healthy
 
     # PowerAuth 2.0 Push Server Database
     powerauth-push-mysql:
@@ -63,6 +33,37 @@ services:
             timeout: 5s
             retries: 30
 
+    # PowerAuth 2.0 WebFlow MySQL Database
+    powerauth-webflow-mysql:
+        image: powerauth-webflow-mysql
+        container_name: powerauth-webflow-mysql
+        ports:
+            - "23376:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=${POWERAUTH_WEBFLOW_MYSQL_PASSWORD}
+        volumes:
+            - ${POWERAUTH_WEBFLOW_MYSQL_PATH}:/var/lib/mysql
+        healthcheck:
+            test: mysqladmin -uroot -p${POWERAUTH_WEBFLOW_MYSQL_PASSWORD} ping
+            interval: 5s
+            timeout: 5s
+            retries: 30
+
+    # PowerAuth 2.0 Server
+    powerauth-java-server:
+        image: powerauth-server
+        container_name: powerauth-server
+        ports:
+            - "20010:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        depends_on:
+            powerauth-mysql:
+                condition: service_healthy
+
     # PowerAuth 2.0 Push Server
     powerauth-push-server:
         image: powerauth-push-server
@@ -73,24 +74,41 @@ services:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
             timeout: 10s
-            retries: 5
+            retries: 30
         depends_on:
             powerauth-push-mysql:
                 condition: service_healthy
             powerauth-java-server:
                 condition: service_healthy
 
-    # PowerAuth 2.0 Standard RESTful API Server
-    powerauth-rest-api:
-        image: powerauth-rest-api
-        container_name: powerauth-rest-api
+    # PowerAuth 2.0 NextStep Server
+    powerauth-nextstep:
+        image: powerauth-nextstep
+        container_name: powerauth-nextstep
         ports:
-            - "18080:8080"
+            - "13010:8080"
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-rest-api"]
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-nextstep"]
             interval: 10s
             timeout: 10s
-            retries: 5
+            retries: 30
         depends_on:
+            powerauth-webflow-mysql:
+                condition: service_healthy
+
+    # PowerAuth 2.0 Web Flow Server
+    powerauth-webflow:
+        image: powerauth-webflow
+        container_name: powerauth-webflow
+        ports:
+            - "13030:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webflow"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        depends_on:
+            powerauth-nextstep:
+                condition: service_healthy
             powerauth-java-server:
                 condition: service_healthy

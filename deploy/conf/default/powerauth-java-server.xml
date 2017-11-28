@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- Database Configuration - JDBC -->
+    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-server-mysql:3306/powerauth"/>
+    <Parameter name="spring.datasource.username" value="powerauth"/>
+    <Parameter name="spring.datasource.password" value=""/>
+    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
+
+    <!-- Database Configuration - JNDI -->
+    <!--Parameter name="spring.datasource.jndi-name" value=""/-->
+
+    <!-- Application Configuration -->
+    <Parameter name="powerauth.service.applicationName" value="powerauth"/>
+    <Parameter name="powerauth.service.applicationDisplayName" value="PowerAuth 2.0 Server"/>
+    <Parameter name="powerauth.service.applicationEnvironment" value=""/>
+
+    <!-- Security Configuration -->
+    <Parameter name="powerauth.service.restrictAccess" value="false"/>
+
+</Context>
