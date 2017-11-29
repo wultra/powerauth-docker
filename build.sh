@@ -7,13 +7,22 @@ if ! type "docker" > /dev/null; then
     exit
 fi
 
+# Prepare Build Number
+if [ -z ${TAG+x} ]; then
+    export PRODUCT_VERSION="2017.12"
+    if [ -z ${BUILD+x} ]; then
+        export BUILD=$(date +%s)
+    fi
+    export TAG=$PRODUCT_VERSION.$BUILD
+fi
+
 ## Build Database Images
-docker build -t powerauth-server-mysql -f docker-powerauth-server-mysql/Dockerfile .
-docker build -t powerauth-push-mysql -f docker-powerauth-push-mysql/Dockerfile .
-docker build -t powerauth-webflow-mysql -f docker-powerauth-webflow-mysql/Dockerfile .
+docker build -t powerauth-server-mysql:$TAG -t powerauth-server-mysql:latest -f docker-powerauth-server-mysql/Dockerfile .
+docker build -t powerauth-push-mysql:$TAG -t powerauth-push-mysql:latest -f docker-powerauth-push-mysql/Dockerfile .
+docker build -t powerauth-webflow-mysql:$TAG -t powerauth-webflow-mysql:latest -f docker-powerauth-webflow-mysql/Dockerfile .
 
 ## Build Application Images
-docker build -t powerauth-server -f docker-powerauth-server/Dockerfile .
-docker build -t powerauth-push-server -f docker-powerauth-push-server/Dockerfile .
-docker build -t powerauth-nextstep -f docker-powerauth-nextstep/Dockerfile .
-docker build -t powerauth-webflow -f docker-powerauth-webflow/Dockerfile .
+docker build -t powerauth-server:$TAG -t powerauth-server:latest -f docker-powerauth-server/Dockerfile .
+docker build -t powerauth-push-server:$TAG -t powerauth-push-server:latest -f docker-powerauth-push-server/Dockerfile .
+docker build -t powerauth-nextstep:$TAG -t powerauth-nextstep:latest -f docker-powerauth-nextstep/Dockerfile .
+docker build -t powerauth-webflow:$TAG -t powerauth-webflow:latest -f docker-powerauth-webflow/Dockerfile .
