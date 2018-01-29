@@ -1,15 +1,19 @@
 FROM tomcat:8.5
 LABEL maintainer "petr@lime-company.eu"
 
+# Prepare environment variables
+ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-amd64/jre
+ENV TOMCAT_HOME /usr/local/tomcat
+
 # Clear root context
-RUN rm -rf /usr/local/tomcat/webapps/*
+RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
-ADD deploy/lib/mysql-connector-java.jar /usr/local/tomcat/lib/
-ADD deploy/lib/ojdbc6.jar /usr/local/tomcat/lib/
+ADD deploy/lib/mysql-connector-java.jar $TOMCAT_HOME/lib/
+ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
 
 # Deploy and run applications
-ADD deploy/conf/powerauth-nextstep.xml /usr/local/tomcat/conf/Catalina/localhost/
-ADD deploy/images/powerauth-nextstep.war /usr/local/tomcat/webapps/
+ADD deploy/conf/powerauth-nextstep.xml $TOMCAT_HOME/conf/Catalina/localhost/
+ADD deploy/images/powerauth-nextstep.war $TOMCAT_HOME/webapps/
 
 CMD ["catalina.sh", "run"]
