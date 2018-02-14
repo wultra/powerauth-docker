@@ -77,14 +77,19 @@ CREATE TABLE ns_auth_method (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_user_prefs stores user preferences.
--- Status of authentication methods is stored in this able per user (methods can be enabled or disabled).
+-- Status of authentication methods is stored in this table per user (methods can be enabled or disabled).
 CREATE TABLE ns_user_prefs (
   user_id       VARCHAR(256) PRIMARY KEY,
   auth_method_1 BOOLEAN,
   auth_method_2 BOOLEAN,
   auth_method_3 BOOLEAN,
   auth_method_4 BOOLEAN,
-  auth_method_5 BOOLEAN
+  auth_method_5 BOOLEAN,
+  auth_method_1_config VARCHAR(256),
+  auth_method_2_config VARCHAR(256),
+  auth_method_3_config VARCHAR(256),
+  auth_method_4_config VARCHAR(256),
+  auth_method_5_config VARCHAR(256)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_operation stores details of Web Flow operations.
@@ -101,7 +106,6 @@ CREATE TABLE ns_operation (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_operation_history stores all changes of operations.
--- Data in this table needs to be loaded before Web Flow is started.
 CREATE TABLE ns_operation_history (
   operation_id                VARCHAR(256),
   result_id                   INTEGER,
@@ -113,6 +117,7 @@ CREATE TABLE ns_operation_history (
   response_steps              VARCHAR(4096),
   response_timestamp_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   response_timestamp_expires  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  chosen_auth_method          VARCHAR(32),
   PRIMARY KEY (operation_id, result_id),
   FOREIGN KEY operation_fk (operation_id) REFERENCES ns_operation (operation_id),
   FOREIGN KEY auth_method_fk (request_auth_method) REFERENCES ns_auth_method (auth_method)
@@ -133,6 +138,15 @@ CREATE TABLE ns_step_definition (
   FOREIGN KEY response_auth_method_fk (response_auth_method) REFERENCES ns_auth_method (auth_method)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- Table wf_operation_session maps operations to HTTP sessions.
+-- Table is needed for handling of concurrent operations.
+CREATE TABLE wf_operation_session (
+  operation_id              VARCHAR(256) PRIMARY KEY,
+  http_session_id           VARCHAR(256),
+  result                    VARCHAR(32),
+  timestamp_created         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- Table da_sms_authorization stores data for SMS OTP authorization.
 CREATE TABLE da_sms_authorization (
   message_id           VARCHAR(256) PRIMARY KEY,
@@ -149,6 +163,25 @@ CREATE TABLE da_sms_authorization (
   timestamp_expires    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- Table UserConnection is required only for the demo client application which is based on Spring Social.
+-- See: https://github.com/spring-projects/spring-social
+/*
+CREATE TABLE UserConnection (
+  userId VARCHAR(255) NOT NULL,
+  providerId VARCHAR(255) NOT NULL,
+  providerUserId VARCHAR(255),
+  rank INTEGER NOT NULL,
+  displayName VARCHAR(255),
+  profileUrl VARCHAR(512),
+  imageUrl VARCHAR(512),
+  accessToken VARCHAR(512) not null,
+  secret VARCHAR(512),
+  refreshToken VARCHAR(512),
+  expireTime BIGINT,
+PRIMARY KEY (userId, providerId, providerUserId));
+CREATE UNIQUE INDEX UserConnectionRank on UserConnection(userId, providerId, rank);
+*/
+
 -- INSERT INITIAL DATA
 
 INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, additional_information, autoapprove)
@@ -160,11 +193,11 @@ VALUES ('INIT', 1, FALSE, NULL, NULL, FALSE, NULL, FALSE, NULL);
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, display_name_key)
 VALUES ('USER_ID_ASSIGN', 2, FALSE, NULL, NULL, FALSE, NULL, FALSE, NULL);
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, display_name_key)
-VALUES ('USERNAME_PASSWORD_AUTH', 3, TRUE, 1, TRUE, TRUE, 5, TRUE, 'method.usernamePassword');
+VALUES ('USERNAME_PASSWORD_AUTH', 3, FALSE, NULL, TRUE, TRUE, 5, TRUE, 'method.usernamePassword');
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, display_name_key)
 VALUES ('SHOW_OPERATION_DETAIL', 4, FALSE, NULL, NULL, FALSE, NULL, TRUE, 'method.showOperationDetail');
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, display_name_key)
-VALUES ('POWERAUTH_TOKEN', 4, TRUE, 5, FALSE, TRUE, 5, TRUE, 'method.powerauthToken');
+VALUES ('POWERAUTH_TOKEN', 5, TRUE, 1, FALSE, TRUE, 5, TRUE, 'method.powerauthToken');
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, display_name_key)
 VALUES ('SMS_KEY', 6, FALSE, NULL, NULL, TRUE, 5, TRUE, 'method.smsKey');
 
@@ -267,8 +300,3 @@ VALUES (29, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'AUTH_METHOD_FAILED', 1, N
 -- authorize_payment - update operation (authorize using sms key) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
 VALUES (30, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'AUTH_FAILED', 1, 'SMS_KEY', 'CONTINUE');
-
--- INSERT NEW USER CONFIGURATIONS FOR DUMMY USERS
-INSERT INTO ns_user_prefs (user_id, auth_method_1, auth_method_2, auth_method_3, auth_method_4, auth_method_5) VALUES ('roman', 1, 1, 1, 1, 1);
-INSERT INTO ns_user_prefs (user_id, auth_method_1, auth_method_2, auth_method_3, auth_method_4, auth_method_5) VALUES ('petr', 1, 1, 1, 1, 1);
-INSERT INTO ns_user_prefs (user_id, auth_method_1, auth_method_2, auth_method_3, auth_method_4, auth_method_5) VALUES ('juraj', 1, 1, 1, 1, 1);
