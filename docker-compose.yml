@@ -60,6 +60,14 @@ services:
             interval: 10s
             timeout: 10s
             retries: 30
+        environment:
+            - DB_POWERAUTH_SERVER_URL=${DB_POWERAUTH_SERVER_URL}
+            - DB_POWERAUTH_SERVER_USERNAME=${DB_POWERAUTH_SERVER_USERNAME}
+            - DB_POWERAUTH_SERVER_PASSWORD=${DB_POWERAUTH_SERVER_PASSWORD}
+            - DB_POWERAUTH_SERVER_DRIVER=${DB_POWERAUTH_SERVER_DRIVER}
+            - POWERAUTH_SERVICE_URL=${POWERAUTH_SERVICE_URL}
+            - POWERAUTH_SERVICE_SECURITY_TOKEN=${POWERAUTH_SERVICE_SECURITY_TOKEN}
+            - POWERAUTH_SERVICE_SECURITY_SECRET=${POWERAUTH_SERVICE_SECURITY_SECRET}
         depends_on:
             powerauth-mysql:
                 condition: service_healthy
@@ -75,6 +83,12 @@ services:
             interval: 10s
             timeout: 10s
             retries: 30
+        environment:
+            - POWERAUTH_SERVICE_URL=${POWERAUTH_SERVICE_URL}
+            - DB_PUSH_SERVER_URL=${DB_PUSH_SERVER_URL}
+            - DB_PUSH_SERVER_USERNAME=${DB_PUSH_SERVER_USERNAME}
+            - DB_PUSH_SERVER_PASSWORD=${DB_PUSH_SERVER_PASSWORD}
+            - DB_PUSH_SERVER_DRIVER=${DB_PUSH_SERVER_DRIVER}
         depends_on:
             powerauth-push-mysql:
                 condition: service_healthy
@@ -92,6 +106,11 @@ services:
             interval: 10s
             timeout: 10s
             retries: 30
+        environment:
+            - DB_NEXTSTEP_URL=${DB_NEXTSTEP_URL}
+            - DB_NEXTSTEP_USERNAME=${DB_NEXTSTEP_USERNAME}
+            - DB_NEXTSTEP_PASSWORD=${DB_NEXTSTEP_PASSWORD}
+            - DB_NEXTSTEP_DRIVER=${DB_NEXTSTEP_DRIVER}
         depends_on:
             powerauth-webflow-mysql:
                 condition: service_healthy
@@ -107,6 +126,22 @@ services:
             interval: 10s
             timeout: 10s
             retries: 30
+        environment:
+            - DB_DATA_ADAPTER_URL=${DB_DATA_ADAPTER_URL}
+            - DB_DATA_ADAPTER_USERNAME=${DB_DATA_ADAPTER_USERNAME}
+            - DB_DATA_ADAPTER_PASSWORD=${DB_DATA_ADAPTER_PASSWORD}
+            - DB_DATA_ADAPTER_DRIVER=${DB_DATA_ADAPTER_DRIVER}
+            - DB_WEBFLOW_URL=${DB_WEBFLOW_URL}
+            - DB_WEBFLOW_SCHEME=${DB_WEBFLOW_SCHEME}
+            - DB_WEBFLOW_USERNAME=${DB_WEBFLOW_USERNAME}
+            - DB_WEBFLOW_PASSWORD=${DB_WEBFLOW_PASSWORD}
+            - DB_WEBFLOW_DRIVER=${DB_WEBFLOW_DRIVER}
+            - POWERAUTH_DATA_ADAPTER_URL=${POWERAUTH_DATA_ADAPTER_URL}
+            - POWERAUTH_NEXTSTEP_URL=${POWERAUTH_NEXTSTEP_URL}
+            - POWERAUTH_SERVICE_URL=${POWERAUTH_SERVICE_URL}
+            - POWERAUTH_SERVICE_SECURITY_TOKEN=${POWERAUTH_SERVICE_SECURITY_TOKEN}
+            - POWERAUTH_SERVICE_SECURITY_SECRET=${POWERAUTH_SERVICE_SECURITY_SECRET}
+            - POWERAUTH_PUSH_SERVER_URL=${POWERAUTH_PUSH_SERVER_URL}
         depends_on:
             powerauth-nextstep:
                 condition: service_healthy

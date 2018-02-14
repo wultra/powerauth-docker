@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Check prerequisites
+## Check Prerequisites
 
 if ! type "docker" > /dev/null; then
     echo "Error: 'docker' command must be installed on the system.";

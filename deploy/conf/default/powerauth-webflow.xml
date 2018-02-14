@@ -2,21 +2,21 @@
 <Context>
 
     <!-- PowerAuth 2.0 Credential Service URL -->
-    <Parameter name="powerauth.credentials.service.url" value="http://powerauth-nextstep:8080/powerauth-data-adapter"/>
+    <Parameter name="powerauth.credentials.service.url" value="${POWERAUTH_DATA_ADAPTER_URL}"/>
 
     <!-- PowerAuth 2.0 Next Step Service URL -->
-    <Parameter name="powerauth.nextstep.service.url" value="http://powerauth-nextstep:8080/powerauth-nextstep"/>
+    <Parameter name="powerauth.nextstep.service.url" value="${POWERAUTH_NEXTSTEP_URL}"/>
 
     <!-- PowerAuth 2.0 Server Service URL -->
-    <Parameter name="powerauth.service.url" value="http://powerauth-server:8080/powerauth-java-server/soap"/>
+    <Parameter name="powerauth.service.url" value="${POWERAUTH_SERVICE_URL}"/>
 
     <!-- PowerAuth 2.0 Server Service Security Settings -->
-    <Parameter name="powerauth.service.security.clientToken" value=""/>
-    <Parameter name="powerauth.service.security.clientSecret" value=""/>
+    <Parameter name="powerauth.service.security.clientToken" value="${POWERAUTH_SERVICE_SECURITY_TOKEN}"/>
+    <Parameter name="powerauth.service.security.clientSecret" value="${POWERAUTH_SERVICE_SECURITY_SECRET}"/>
     <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="false"/>
 
     <!-- PowerAuth 2.0 Push Server URL -->
-    <Parameter name="powerauth.push.service.url" value="http://powerauth-push-server:8080/powerauth-push-server"/>
+    <Parameter name="powerauth.push.service.url" value="${POWERAUTH_PUSH_SERVER_URL}"/>
     <Parameter name="powerauth.push.service.appId" value="1"/>
 
     <!-- PowerAuth 2.0 WebFlow Page Customization -->
@@ -25,10 +25,11 @@
     <Parameter name="powerauth.webflow.page.custom-css.url" value=""/>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webflow-mysql:3306/powerauth"/>
-    <Parameter name="spring.datasource.username" value="powerauth"/>
-    <Parameter name="spring.datasource.password" value=""/>
-    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
+    <Parameter name="spring.datasource.url" value="${DB_WEBFLOW_URL}"/>
+    <Parameter name="spring.datasource.username" value="${DB_WEBFLOW_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${DB_WEBFLOW_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${DB_WEBFLOW_DRIVER}"/>
+    <Parameter name="spring.jpa.properties.hibernate.default_schema" value="${DB_WEBFLOW_SCHEME}"/>
     <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
 
     <!-- Database Configuration - JNDI -->

@@ -2,10 +2,10 @@
 <Context>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-server-mysql:3306/powerauth"/>
-    <Parameter name="spring.datasource.username" value="powerauth"/>
-    <Parameter name="spring.datasource.password" value=""/>
-    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
+    <Parameter name="spring.datasource.url" value="${DB_POWERAUTH_SERVER_URL}"/>
+    <Parameter name="spring.datasource.username" value="${DB_POWERAUTH_SERVER_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${DB_POWERAUTH_SERVER_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${DB_POWERAUTH_SERVER_DRIVER}"/>
     <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
 
     <!-- Database Configuration - JNDI -->

@@ -2,11 +2,11 @@
 <Context>
 
     <!-- PowerAuth 2.0 Server Service URL -->
-    <Parameter name="powerauth.service.url" value="http://localhost:8080/powerauth-java-server/soap"/>
+    <Parameter name="powerauth.service.url" value="${POWERAUTH_SERVICE_URL}"/>
 
     <!-- PowerAuth 2.0 Server Service Security Settings -->
-    <Parameter name="powerauth.service.security.clientToken" value=""/>
-    <Parameter name="powerauth.service.security.clientSecret" value=""/>
+    <Parameter name="powerauth.service.security.clientToken" value="${POWERAUTH_SERVICE_SECURITY_TOKEN}"/>
+    <Parameter name="powerauth.service.security.clientSecret" value="${POWERAUTH_SERVICE_SECURITY_SECRET}"/>
     <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="false"/>
 
     <!-- LDAP Settings -->

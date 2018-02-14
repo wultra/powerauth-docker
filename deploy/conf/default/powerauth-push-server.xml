@@ -2,7 +2,7 @@
 <Context>
 
     <!-- PowerAuth 2.0 Server Service URL -->
-    <Parameter name="powerauth.service.url" value="http://powerauth-server:8080/powerauth-java-server/soap"/>
+    <Parameter name="powerauth.service.url" value="${POWERAUTH_SERVICE_URL}"/>
 
     <!-- PowerAuth 2.0 Server Service Security Settings -->
     <Parameter name="powerauth.service.security.clientToken" value=""/>
@@ -10,10 +10,10 @@
     <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="false"/>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-push-mysql:3306/powerauth"/>
-    <Parameter name="spring.datasource.username" value="powerauth"/>
-    <Parameter name="spring.datasource.password" value=""/>
-    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
+    <Parameter name="spring.datasource.url" value="${DB_PUSH_SERVER_URL}"/>
+    <Parameter name="spring.datasource.username" value="${DB_PUSH_SERVER_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${DB_PUSH_SERVER_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${DB_PUSH_SERVER_DRIVER}"/>
     <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
 
     <Parameter name="powerauth.push.service.apns.useDevelopment" value="true"/>
