@@ -21,7 +21,7 @@
 
     <!-- PowerAuth 2.0 WebFlow Page Customization -->
     <Parameter name="powerauth.webflow.page.title" value="PowerAuth 2.0 Web Auth"/>
-    <Parameter name="powerauth.webflow.page.ext-resources.location" value="classpath:/static/resources/"/>
+    <Parameter name="powerauth.webflow.page.ext-resources.location" value="file:/opt/ext-resources/"/>
     <Parameter name="powerauth.webflow.page.custom-css.url" value=""/>
 
     <!-- Database Configuration - JDBC -->
