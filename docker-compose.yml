@@ -1,7 +1,7 @@
 version: '2.1'
 services:
 
-    # PowerAuth 2.0 Server Database
+    # PowerAuth Server Database
     powerauth-mysql:
         image: powerauth-server-mysql
         container_name: powerauth-server-mysql
@@ -17,7 +17,7 @@ services:
             timeout: 5s
             retries: 30
 
-    # PowerAuth 2.0 Push Server Database
+    # PowerAuth Push Server Database
     powerauth-push-mysql:
         image: powerauth-push-mysql
         container_name: powerauth-push-mysql
@@ -33,7 +33,7 @@ services:
             timeout: 5s
             retries: 30
 
-    # PowerAuth 2.0 WebFlow MySQL Database
+    # PowerAuth WebFlow MySQL Database
     powerauth-webflow-mysql:
         image: powerauth-webflow-mysql
         container_name: powerauth-webflow-mysql
@@ -49,7 +49,7 @@ services:
             timeout: 5s
             retries: 30
 
-    # PowerAuth 2.0 Server
+    # PowerAuth Server
     powerauth-java-server:
         image: powerauth-server
         container_name: powerauth-server
@@ -64,7 +64,7 @@ services:
             powerauth-mysql:
                 condition: service_healthy
 
-    # PowerAuth 2.0 Push Server
+    # PowerAuth Push Server
     powerauth-push-server:
         image: powerauth-push-server
         container_name: powerauth-push-server
@@ -81,7 +81,7 @@ services:
             powerauth-java-server:
                 condition: service_healthy
 
-    # PowerAuth 2.0 NextStep Server
+    # PowerAuth NextStep Server
     powerauth-nextstep:
         image: powerauth-nextstep
         container_name: powerauth-nextstep
@@ -96,7 +96,22 @@ services:
             powerauth-webflow-mysql:
                 condition: service_healthy
 
-    # PowerAuth 2.0 Web Flow Server
+    # PowerAuth Data Adapter Server
+    powerauth-data-adapter:
+        image: powerauth-data-adapter
+        container_name: powerauth-data-adapter
+        ports:
+            - "13050:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        depends_on:
+            powerauth-webflow-mysql:
+                condition: service_healthy
+
+    # PowerAuth Web Flow Server
     powerauth-webflow:
         image: powerauth-webflow
         container_name: powerauth-webflow
