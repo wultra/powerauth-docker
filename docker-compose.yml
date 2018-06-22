@@ -184,7 +184,39 @@ services:
         depends_on:
             powerauth-webflow-mysql:
                 condition: service_healthy
-    
+
+    # PowerAuth Data Adapter
+    powerauth-data-adapter:
+        image: powerauth-data-adapter
+        container_name: powerauth-data-adapter
+        ports:
+            - "13050:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        environment:
+            - DATA_ADAPTER_DATASOURCE_URL=${DATA_ADAPTER_DATASOURCE_URL}
+            - DATA_ADAPTER_DATASOURCE_USERNAME=${DATA_ADAPTER_DATASOURCE_USERNAME}
+            - DATA_ADAPTER_DATASOURCE_PASSWORD=${DATA_ADAPTER_DATASOURCE_PASSWORD}
+            - DATA_ADAPTER_DATASOURCE_DRIVER=${DATA_ADAPTER_DATASOURCE_DRIVER}
+            - DATA_ADAPTER_JPA_DDL_AUTO=${DATA_ADAPTER_JPA_DDL_AUTO}
+            - DATA_ADAPTER_JPA_CHARSET=${DATA_ADAPTER_JPA_CHARSET}
+            - DATA_ADAPTER_JPA_CHARACTER_ENCODING=${DATA_ADAPTER_JPA_CHARACTER_ENCODING}
+            - DATA_ADAPTER_JPA_USE_UNICODE=${DATA_ADAPTER_JPA_USE_UNICODE}
+            - DATA_ADAPTER_JPA_DATABASE_PLATFORM=${DATA_ADAPTER_JPA_DATABASE_PLATFORM}
+            - DATA_ADAPTER_SMS_EXPIRATION=${DATA_ADAPTER_SMS_EXPIRATION}
+            - DATA_ADAPTER_SMS_MAX_TRIES=${DATA_ADAPTER_SMS_MAX_TRIES}
+            - DATA_ADAPTER_DATASOURCE_JNDI_NAME=${DATA_ADAPTER_DATASOURCE_JNDI_NAME}
+            - DATA_ADAPTER_SPRING_JMX_ENABLED=${DATA_ADAPTER_SPRING_JMX_ENABLED}
+            - DATA_ADAPTER_APPLICATION_NAME=${DATA_ADAPTER_APPLICATION_NAME}
+            - DATA_ADAPTER_APPLICATION_DISPLAY_NAME=${DATA_ADAPTER_APPLICATION_DISPLAY_NAME}
+            - DATA_ADAPTER_APPLICATION_ENVIRONMENT=${DATA_ADAPTER_APPLICATION_ENVIRONMENT}
+        depends_on:
+            powerauth-webflow-mysql:
+                condition: service_healthy
+
     # PowerAuth Web Flow Server
     powerauth-webflow:
         image: powerauth-webflow
@@ -227,39 +259,8 @@ services:
                 condition: service_healthy
             powerauth-nextstep:
                 condition: service_healthy
+            powerauth-data-adapter:
+                condition: service_healthy
             powerauth-java-server:
                 condition: service_healthy
 
-    # PowerAuth Data Adapter
-    powerauth-data-adapter:
-        image: powerauth-data-adapter
-        container_name: powerauth-data-adapter
-        ports:
-            - "13050:8080"
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
-            interval: 10s
-            timeout: 10s
-            retries: 30
-        environment:
-            - DATA_ADAPTER_DATASOURCE_URL=${DATA_ADAPTER_DATASOURCE_URL}
-            - DATA_ADAPTER_DATASOURCE_USERNAME=${DATA_ADAPTER_DATASOURCE_USERNAME}
-            - DATA_ADAPTER_DATASOURCE_PASSWORD=${DATA_ADAPTER_DATASOURCE_PASSWORD}
-            - DATA_ADAPTER_DATASOURCE_DRIVER=${DATA_ADAPTER_DATASOURCE_DRIVER}
-            - DATA_ADAPTER_JPA_DDL_AUTO=${DATA_ADAPTER_JPA_DDL_AUTO}
-            - DATA_ADAPTER_JPA_CHARSET=${DATA_ADAPTER_JPA_CHARSET}
-            - DATA_ADAPTER_JPA_CHARACTER_ENCODING=${DATA_ADAPTER_JPA_CHARACTER_ENCODING}
-            - DATA_ADAPTER_JPA_USE_UNICODE=${DATA_ADAPTER_JPA_USE_UNICODE}
-            - DATA_ADAPTER_JPA_DATABASE_PLATFORM=${DATA_ADAPTER_JPA_DATABASE_PLATFORM}
-            - DATA_ADAPTER_SMS_EXPIRATION=${DATA_ADAPTER_SMS_EXPIRATION}
-            - DATA_ADAPTER_SMS_MAX_TRIES=${DATA_ADAPTER_SMS_MAX_TRIES}
-            - DATA_ADAPTER_DATASOURCE_JNDI_NAME=${DATA_ADAPTER_DATASOURCE_JNDI_NAME}
-            - DATA_ADAPTER_SPRING_JMX_ENABLED=${DATA_ADAPTER_SPRING_JMX_ENABLED}
-            - DATA_ADAPTER_APPLICATION_NAME=${DATA_ADAPTER_APPLICATION_NAME}
-            - DATA_ADAPTER_APPLICATION_DISPLAY_NAME=${DATA_ADAPTER_APPLICATION_DISPLAY_NAME}
-            - DATA_ADAPTER_APPLICATION_ENVIRONMENT=${DATA_ADAPTER_APPLICATION_ENVIRONMENT}
-        depends_on:
-            powerauth-webflow-mysql:
-                condition: service_healthy
-            powerauth-webflow:
-                condition: service_healthy
