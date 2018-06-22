@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 
-    <!-- PowerAuth 2.0 Server Service URL -->
+    <!-- PowerAuth Server Service URL -->
     <Parameter name="powerauth.service.url" value="${PUSH_SERVER_POWERAUTH_SERVICE_URL}"/>
 
-    <!-- PowerAuth 2.0 Server Service Security Settings -->
+    <!-- PowerAuth Server Service Security Settings -->
     <Parameter name="powerauth.service.security.clientToken" value="${PUSH_SERVER_SECURITY_CLIENT_TOKEN}"/>
     <Parameter name="powerauth.service.security.clientSecret" value="${PUSH_SERVER_SECURITY_CLIENT_SECRET}"/>
     <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${PUSH_SERVER_ACCEPT_INVALID_SSL_CERTIFICATE}"/>
