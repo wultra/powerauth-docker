@@ -231,7 +231,7 @@ services:
                 condition: service_healthy
 
     # PowerAuth Data Adapter
-    powerauth-webflow:
+    powerauth-data-adapter:
         image: powerauth-data-adapter
         container_name: powerauth-data-adapter
         ports:
