@@ -9,7 +9,7 @@ fi
 
 # Prepare Build Number
 if [ -z ${TAG+x} ]; then
-    export PRODUCT_VERSION="2018.3"
+    export PRODUCT_VERSION="2018.6"
     if [ -z ${BUILD+x} ]; then
         export BUILD=$(date +%s)
     fi
@@ -26,3 +26,4 @@ docker build -t powerauth-server:$TAG -t powerauth-server:latest -f docker-power
 docker build -t powerauth-push-server:$TAG -t powerauth-push-server:latest -f docker-powerauth-push-server/Dockerfile .
 docker build -t powerauth-nextstep:$TAG -t powerauth-nextstep:latest -f docker-powerauth-nextstep/Dockerfile .
 docker build -t powerauth-webflow:$TAG -t powerauth-webflow:latest -f docker-powerauth-webflow/Dockerfile .
+docker build -t powerauth-data-adapter:$TAG -t powerauth-data-adapter:latest -f docker-powerauth-data-adapter/Dockerfile .
