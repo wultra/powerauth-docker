@@ -19,11 +19,11 @@ RUN echo 'security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvide
 # Add valve for proxy with SSL termination
 RUN sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' $TOMCAT_HOME/conf/server.xml
 
-# Customize web app resources
-ADD deploy/data/ext-resources /opt/ext-resources
-
 # Deploy and run applications
 ADD deploy/conf/powerauth-webflow.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-webflow.war $TOMCAT_HOME/webapps/
+
+# Customize web app resources
+ADD deploy/data/ext-resources /opt/ext-resources
 
 CMD ["catalina.sh", "run"]

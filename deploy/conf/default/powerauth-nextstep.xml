@@ -2,10 +2,32 @@
 <Context>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webflow-mysql:3306/powerauth"/>
-    <Parameter name="spring.datasource.username" value="powerauth"/>
-    <Parameter name="spring.datasource.password" value=""/>
-    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
-    <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
+    <Parameter name="spring.datasource.url" value="${NEXTSTEP_DATASOURCE_URL}"/>
+    <Parameter name="spring.datasource.username" value="${NEXTSTEP_DATASOURCE_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${NEXTSTEP_DATASOURCE_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${NEXTSTEP_DATASOURCE_DRIVER}"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="${NEXTSTEP_JPA_DDL_AUTO}"/>
+
+    <!-- Configuration of Database Charset -->
+    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${NEXTSTEP_JPA_CHARSET}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${NEXTSTEP_JPA_CHARACTER_ENCODING}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${NEXTSTEP_JPA_USE_UNICODE}"/>
+
+    <!-- Additional JPA Configuration -->
+    <Parameter name="spring.jpa.database-platform" value="${NEXTSTEP_JPA_DATABASE_PLATFORM}"/>
+
+    <!-- Operation Expiration Time in Seconds -->
+    <Parameter name="powerauth.nextstep.operation.expirationTimeInSeconds" value="${NEXTSTEP_OPERATION_EXPIRATION_TIME}"/>
+
+    <!-- Database Configuration - JNDI -->
+    <Parameter name="spring.datasource.jndi-name" value="${NEXTSTEP_DATASOURCE_JNDI_NAME}"/>
+
+    <!-- JMX Configuration -->
+    <Parameter name="spring.jmx.enabled" value="${NEXTSTEP_SPRING_JMX_ENABLED}"/>
+
+    <!-- Application Configuration -->
+    <Parameter name="powerauth.nextstep.service.applicationName" value="${NEXTSTEP_APPLICATION_NAME}"/>
+    <Parameter name="powerauth.nextstep.service.applicationDisplayName" value="${NEXTSTEP_APPLICATION_DISPLAY_NAME}"/>
+    <Parameter name="powerauth.nextstep.service.applicationEnvironment" value="${NEXTSTEP_APPLICATION_ENVIRONMENT}"/>
 
 </Context>
