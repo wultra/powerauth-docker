@@ -184,7 +184,7 @@ services:
         depends_on:
             powerauth-webflow-mysql:
                 condition: service_healthy
-
+    
     # PowerAuth Web Flow Server
     powerauth-webflow:
         image: powerauth-webflow
@@ -235,7 +235,7 @@ services:
         image: powerauth-data-adapter
         container_name: powerauth-data-adapter
         ports:
-            - "13030:8080"
+            - "13050:8080"
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
             interval: 10s

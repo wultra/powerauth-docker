@@ -12,6 +12,10 @@ RUN rm -rf $TOMCAT_HOME/webapps/*
 ADD deploy/lib/mysql-connector-java.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
 
+# Add Bouncy Castle to JRE
+ADD deploy/lib/bcprov-jdk15on-158.jar $JAVA_HOME/lib/ext
+RUN echo 'security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvider' >> $JAVA_HOME/lib/security/java.security
+
 # Deploy and run applications
 ADD deploy/conf/powerauth-data-adapter.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-data-adapter.war $TOMCAT_HOME/webapps/
