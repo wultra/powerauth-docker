@@ -26,7 +26,7 @@
     <Parameter name="spring.jmx.enabled" value="${POWERAUTH_SERVER_SPRING_JMX_ENABLED}"/>
 
     <!-- Security Configuration -->
-    <Parameter name="powerauth.service.restrictAccess" value="{POWERAUTH_SERVER_RESTRICT_ACCESS}"/>
+    <Parameter name="powerauth.service.restrictAccess" value="${POWERAUTH_SERVER_RESTRICT_ACCESS}"/>
 
     <!-- Master DB encryption key -->
     <Parameter name="powerauth.server.db.master.encryption.key" value="${POWERAUTH_SERVER_MASTER_DB_ENCRYPTION_KEY}"/>
