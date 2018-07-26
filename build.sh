@@ -27,3 +27,5 @@ docker build -t powerauth-push-server:$TAG -t powerauth-push-server:latest -f do
 docker build -t powerauth-nextstep:$TAG -t powerauth-nextstep:latest -f docker-powerauth-nextstep/Dockerfile .
 docker build -t powerauth-data-adapter:$TAG -t powerauth-data-adapter:latest -f docker-powerauth-data-adapter/Dockerfile .
 docker build -t powerauth-webflow:$TAG -t powerauth-webflow:latest -f docker-powerauth-webflow/Dockerfile .
+
+echo "TAG: $TAG"
