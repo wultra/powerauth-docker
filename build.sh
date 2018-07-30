@@ -17,15 +17,15 @@ if [ -z ${TAG+x} ]; then
 fi
 
 ## Build Database Images
-docker build -t powerauth-server-mysql:$TAG -t powerauth-server-mysql:latest -f docker-powerauth-server-mysql/Dockerfile .
-docker build -t powerauth-push-mysql:$TAG -t powerauth-push-mysql:latest -f docker-powerauth-push-mysql/Dockerfile .
-docker build -t powerauth-webflow-mysql:$TAG -t powerauth-webflow-mysql:latest -f docker-powerauth-webflow-mysql/Dockerfile .
+docker build -t powerauth/server-mysql:$TAG -t powerauth/server-mysql:latest -f docker-powerauth-server-mysql/Dockerfile .
+docker build -t powerauth/push-mysql:$TAG -t powerauth/push-mysql:latest -f docker-powerauth-push-mysql/Dockerfile .
+docker build -t powerauth/webflow-mysql:$TAG -t powerauth/webflow-mysql:latest -f docker-powerauth-webflow-mysql/Dockerfile .
 
 ## Build Application Images
-docker build -t powerauth-server:$TAG -t powerauth-server:latest -f docker-powerauth-server/Dockerfile .
-docker build -t powerauth-push-server:$TAG -t powerauth-push-server:latest -f docker-powerauth-push-server/Dockerfile .
-docker build -t powerauth-nextstep:$TAG -t powerauth-nextstep:latest -f docker-powerauth-nextstep/Dockerfile .
-docker build -t powerauth-data-adapter:$TAG -t powerauth-data-adapter:latest -f docker-powerauth-data-adapter/Dockerfile .
-docker build -t powerauth-webflow:$TAG -t powerauth-webflow:latest -f docker-powerauth-webflow/Dockerfile .
+docker build -t powerauth/server:$TAG -t powerauth/server:latest -f docker-powerauth-server/Dockerfile .
+docker build -t powerauth/push-server:$TAG -t powerauth/push-server:latest -f docker-powerauth-push-server/Dockerfile .
+docker build -t powerauth/nextstep:$TAG -t powerauth/nextstep:latest -f docker-powerauth-nextstep/Dockerfile .
+docker build -t powerauth/data-adapter:$TAG -t powerauth/data-adapter:latest -f docker-powerauth-data-adapter/Dockerfile .
+docker build -t powerauth/webflow:$TAG -t powerauth/webflow:latest -f docker-powerauth-webflow/Dockerfile .
 
 echo "TAG: $TAG"
