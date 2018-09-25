@@ -33,6 +33,22 @@ services:
             timeout: 5s
             retries: 30
 
+    # PowerAuth WebFlow MySQL Database
+    powerauth-webflow-mysql:
+        image: powerauth/webflow-mysql
+        container_name: powerauth-webflow-mysql
+        ports:
+            - "23376:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=${POWERAUTH_WEBFLOW_MYSQL_PASSWORD}
+        volumes:
+            - ${POWERAUTH_WEBFLOW_MYSQL_PATH}:/var/lib/mysql
+        healthcheck:
+            test: mysqladmin -uroot -p${POWERAUTH_WEBFLOW_MYSQL_PASSWORD} ping
+            interval: 5s
+            timeout: 5s
+            retries: 30
+
     # PowerAuth Server
     powerauth-java-server:
         image: powerauth/server
@@ -137,3 +153,114 @@ services:
                 condition: service_healthy
             powerauth-java-server:
                 condition: service_healthy
+
+    # PowerAuth NextStep Server
+    powerauth-nextstep:
+        image: powerauth/nextstep
+        container_name: powerauth-nextstep
+        ports:
+            - "13010:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-nextstep"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        environment:
+            - NEXTSTEP_DATASOURCE_URL=${NEXTSTEP_DATASOURCE_URL}
+            - NEXTSTEP_DATASOURCE_USERNAME=${NEXTSTEP_DATASOURCE_USERNAME}
+            - NEXTSTEP_DATASOURCE_PASSWORD=${NEXTSTEP_DATASOURCE_PASSWORD}
+            - NEXTSTEP_DATASOURCE_DRIVER=${NEXTSTEP_DATASOURCE_DRIVER}
+            - NEXTSTEP_JPA_DDL_AUTO=${NEXTSTEP_JPA_DDL_AUTO}
+            - NEXTSTEP_JPA_CHARSET=${NEXTSTEP_JPA_CHARSET}
+            - NEXTSTEP_JPA_CHARACTER_ENCODING=${NEXTSTEP_JPA_CHARACTER_ENCODING}
+            - NEXTSTEP_JPA_USE_UNICODE=${NEXTSTEP_JPA_USE_UNICODE}
+            - NEXTSTEP_JPA_DATABASE_PLATFORM=${NEXTSTEP_JPA_DATABASE_PLATFORM}
+            - NEXTSTEP_OPERATION_EXPIRATION_TIME=${NEXTSTEP_OPERATION_EXPIRATION_TIME}
+            - NEXTSTEP_DATASOURCE_JNDI_NAME=${NEXTSTEP_DATASOURCE_JNDI_NAME}
+            - NEXTSTEP_SPRING_JMX_ENABLED=${NEXTSTEP_SPRING_JMX_ENABLED}
+            - NEXTSTEP_APPLICATION_NAME=${NEXTSTEP_APPLICATION_NAME}
+            - NEXTSTEP_APPLICATION_DISPLAY_NAME=${NEXTSTEP_APPLICATION_DISPLAY_NAME}
+            - NEXTSTEP_APPLICATION_ENVIRONMENT=${NEXTSTEP_APPLICATION_ENVIRONMENT}
+        depends_on:
+            powerauth-webflow-mysql:
+                condition: service_healthy
+
+    # PowerAuth Data Adapter
+    powerauth-data-adapter:
+        image: powerauth/data-adapter
+        container_name: powerauth-data-adapter
+        ports:
+            - "13050:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        environment:
+            - DATA_ADAPTER_DATASOURCE_URL=${DATA_ADAPTER_DATASOURCE_URL}
+            - DATA_ADAPTER_DATASOURCE_USERNAME=${DATA_ADAPTER_DATASOURCE_USERNAME}
+            - DATA_ADAPTER_DATASOURCE_PASSWORD=${DATA_ADAPTER_DATASOURCE_PASSWORD}
+            - DATA_ADAPTER_DATASOURCE_DRIVER=${DATA_ADAPTER_DATASOURCE_DRIVER}
+            - DATA_ADAPTER_JPA_DDL_AUTO=${DATA_ADAPTER_JPA_DDL_AUTO}
+            - DATA_ADAPTER_JPA_CHARSET=${DATA_ADAPTER_JPA_CHARSET}
+            - DATA_ADAPTER_JPA_CHARACTER_ENCODING=${DATA_ADAPTER_JPA_CHARACTER_ENCODING}
+            - DATA_ADAPTER_JPA_USE_UNICODE=${DATA_ADAPTER_JPA_USE_UNICODE}
+            - DATA_ADAPTER_JPA_DATABASE_PLATFORM=${DATA_ADAPTER_JPA_DATABASE_PLATFORM}
+            - DATA_ADAPTER_SMS_EXPIRATION=${DATA_ADAPTER_SMS_EXPIRATION}
+            - DATA_ADAPTER_SMS_MAX_TRIES=${DATA_ADAPTER_SMS_MAX_TRIES}
+            - DATA_ADAPTER_DATASOURCE_JNDI_NAME=${DATA_ADAPTER_DATASOURCE_JNDI_NAME}
+            - DATA_ADAPTER_SPRING_JMX_ENABLED=${DATA_ADAPTER_SPRING_JMX_ENABLED}
+            - DATA_ADAPTER_APPLICATION_NAME=${DATA_ADAPTER_APPLICATION_NAME}
+            - DATA_ADAPTER_APPLICATION_DISPLAY_NAME=${DATA_ADAPTER_APPLICATION_DISPLAY_NAME}
+            - DATA_ADAPTER_APPLICATION_ENVIRONMENT=${DATA_ADAPTER_APPLICATION_ENVIRONMENT}
+        depends_on:
+            powerauth-webflow-mysql:
+                condition: service_healthy
+
+    # PowerAuth Web Flow Server
+    powerauth-webflow:
+        image: powerauth/webflow
+        container_name: powerauth-webflow
+        ports:
+            - "13030:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webflow"]
+            interval: 10s
+            timeout: 10s
+            retries: 30
+        environment:
+            - WEBFLOW_DATA_ADAPTER_URL=${WEBFLOW_DATA_ADAPTER_URL}
+            - WEBFLOW_NEXTSTEP_URL=${WEBFLOW_NEXTSTEP_URL}
+            - WEBFLOW_POWERAUTH_SERVICE_URL=${WEBFLOW_POWERAUTH_SERVICE_URL}
+            - WEBFLOW_POWERAUTH_SECURITY_TOKEN=${WEBFLOW_POWERAUTH_SECURITY_TOKEN}
+            - WEBFLOW_POWERAUTH_SECURITY_SECRET=${WEBFLOW_POWERAUTH_SECURITY_SECRET}
+            - WEBFLOW_ACCEPT_INVALID_SSL_CERTIFICATE=${WEBFLOW_ACCEPT_INVALID_SSL_CERTIFICATE}
+            - WEBFLOW_PUSH_SERVER_URL=${WEBFLOW_PUSH_SERVER_URL}
+            - WEBFLOW_DATASOURCE_URL=${WEBFLOW_DATASOURCE_URL}
+            - WEBFLOW_DATASOURCE_USERNAME=${WEBFLOW_DATASOURCE_USERNAME}
+            - WEBFLOW_DATASOURCE_PASSWORD=${WEBFLOW_DATASOURCE_PASSWORD}
+            - WEBFLOW_DATASOURCE_DRIVER=${WEBFLOW_DATASOURCE_DRIVER}
+            - WEBFLOW_JPA_DDL_AUTO=${WEBFLOW_JPA_DDL_AUTO}
+            - WEBFLOW_JPA_CHARSET=${WEBFLOW_JPA_CHARSET}
+            - WEBFLOW_JPA_CHARACTER_ENCODING=${WEBFLOW_JPA_CHARACTER_ENCODING}
+            - WEBFLOW_JPA_USE_UNICODE=${WEBFLOW_JPA_USE_UNICODE}
+            - WEBFLOW_JPA_DATABASE_PLATFORM=${WEBFLOW_JPA_DATABASE_PLATFORM}
+            - WEBFLOW_DATASOURCE_JNDI_NAME=${WEBFLOW_DATASOURCE_JNDI_NAME}
+            - WEBFLOW_PAGE_TITLE=${WEBFLOW_PAGE_TITLE}
+            - WEBFLOW_PAGE_EXT_RESOURCES_LOCATION=${WEBFLOW_PAGE_EXT_RESOURCES_LOCATION}
+            - WEBFLOW_PAGE_CUSTOM_CSS_URL=${WEBFLOW_PAGE_CUSTOM_CSS_URL}
+            - WEBFLOW_OFFLINE_MODE_AVAILABLE=${WEBFLOW_OFFLINE_MODE_AVAILABLE}
+            - WEBFLOW_SPRING_JMX_ENABLED=${WEBFLOW_SPRING_JMX_ENABLED}
+            - WEBFLOW_APPLICATION_NAME=${WEBFLOW_APPLICATION_NAME}
+            - WEBFLOW_APPLICATION_DISPLAY_NAME=${WEBFLOW_APPLICATION_DISPLAY_NAME}
+            - WEBFLOW_APPLICATION_ENVIRONMENT=${WEBFLOW_APPLICATION_ENVIRONMENT}
+        depends_on:
+            powerauth-webflow-mysql:
+                condition: service_healthy
+            powerauth-nextstep:
+                condition: service_healthy
+            powerauth-data-adapter:
+                condition: service_healthy
+            powerauth-java-server:
+                condition: service_healthy
+

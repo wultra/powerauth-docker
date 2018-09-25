@@ -2,21 +2,38 @@
 <Context>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-server-mysql:3306/powerauth"/>
-    <Parameter name="spring.datasource.username" value="powerauth"/>
-    <Parameter name="spring.datasource.password" value=""/>
-    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
-    <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
+    <Parameter name="spring.datasource.url" value="${POWERAUTH_SERVER_DATASOURCE_URL}"/>
+    <Parameter name="spring.datasource.username" value="${POWERAUTH_SERVER_DATASOURCE_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${POWERAUTH_SERVER_DATASOURCE_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${POWERAUTH_SERVER_DATASOURCE_DRIVER}"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="${POWERAUTH_SERVER_JPA_DDL_AUTO}"/>
+
+    <!-- Configuration of Database Charset -->
+    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${POWERAUTH_SERVER_JPA_CHARSET}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${POWERAUTH_SERVER_JPA_CHARACTER_ENCODING}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${POWERAUTH_SERVER_JPA_USE_UNICODE}"/>
+
+    <!-- Additional JPA Configuration -->
+    <Parameter name="spring.jpa.database-platform" value="${POWERAUTH_SERVER_JPA_DATABASE_PLATFORM}"/>
+
+    <!-- Database Lock Timeout Configuration -->
+    <Parameter name="javax.persistence.lock.timeout" value="${POWERAUTH_SERVER_JPA_LOCK_TIMEOUT}"/>
 
     <!-- Database Configuration - JNDI -->
-    <!--Parameter name="spring.datasource.jndi-name" value=""/-->
+    <Parameter name="spring.datasource.jndi-name" value="${POWERAUTH_SERVER_DATASOURCE_JNDI_NAME}"/>
 
-    <!-- Application Configuration -->
-    <Parameter name="powerauth.service.applicationName" value="powerauth"/>
-    <Parameter name="powerauth.service.applicationDisplayName" value="PowerAuth 2.0 Server"/>
-    <Parameter name="powerauth.service.applicationEnvironment" value=""/>
+    <!-- JMX Configuration -->
+    <Parameter name="spring.jmx.enabled" value="${POWERAUTH_SERVER_SPRING_JMX_ENABLED}"/>
 
     <!-- Security Configuration -->
-    <Parameter name="powerauth.service.restrictAccess" value="false"/>
+    <Parameter name="powerauth.service.restrictAccess" value="${POWERAUTH_SERVER_RESTRICT_ACCESS}"/>
+
+    <!-- Master DB encryption key -->
+    <Parameter name="powerauth.server.db.master.encryption.key" value="${POWERAUTH_SERVER_MASTER_DB_ENCRYPTION_KEY}"/>
+
+    <!-- Application Configuration -->
+    <Parameter name="powerauth.service.applicationName" value="${POWERAUTH_SERVER_APPLICATION_NAME}"/>
+    <Parameter name="powerauth.service.applicationDisplayName" value="${POWERAUTH_SERVER_APPLICATION_DISPLAY_NAME}"/>
+    <Parameter name="powerauth.service.applicationEnvironment" value="${POWERAUTH_SERVER_APPLICATION_ENVIRONMENT}"/>
 
 </Context>

@@ -1,6 +1,6 @@
 ![](./assets/powerauth-docker-blue.png)
 
-# Docker Images for PowerAuth 2.0
+# Docker Images for PowerAuth
 
 You can run the whole PowerAuth software stack in Docker easily. Please follow our [Getting Started Guide](https://github.com/lime-company/powerauth-docker/wiki/Getting-Started).
 
@@ -10,4 +10,4 @@ For the Docker deployment, we currently support only base technologies - Docker 
 
 ## License
 
-Sources for Docker images are licensed using Apache 2.0 license, you can use them with no restriction. Please note that some of the PowerAuth components that are part of the installation are licensed under restrictive AGPL license. If you are using PowerAuth 2.0, please let us know. We will be happy to share and promote your project.
+Sources for Docker images are licensed using Apache 2.0 license, you can use them with no restriction. Please note that some of the PowerAuth components that are part of the installation are licensed under restrictive AGPL license. If you are using PowerAuth, please let us know. We will be happy to share and promote your project.

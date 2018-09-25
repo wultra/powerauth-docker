@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 
-    <!-- PowerAuth 2.0 Server Service URL -->
-    <Parameter name="powerauth.service.url" value="http://localhost:8080/powerauth-java-server/soap"/>
+    <!-- PowerAuth Server Service URL -->
+    <Parameter name="powerauth.service.url" value="${POWERAUTH_ADMIN_POWERAUTH_SERVICE_URL}"/>
 
-    <!-- PowerAuth 2.0 Server Service Security Settings -->
-    <Parameter name="powerauth.service.security.clientToken" value=""/>
-    <Parameter name="powerauth.service.security.clientSecret" value=""/>
-    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="false"/>
+    <!-- PowerAuth Server Service Security Settings -->
+    <Parameter name="powerauth.service.security.clientToken" value="${POWERAUTH_ADMIN_SECURITY_CLIENT_TOKEN}"/>
+    <Parameter name="powerauth.service.security.clientSecret" value="${POWERAUTH_ADMIN_SECURITY_CLIENT_SECRET}"/>
+    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${POWERAUTH_ADMIN_ACCEPT_INVALID_SSL_CERTIFICATE}"/>
 
     <!-- LDAP Settings -->
-    <Parameter name="powerauth.admin.security.method" value="ldap"/>
-    <Parameter name="powerauth.admin.security.ldap.userDNPatterns" value="uid={0},ou=people"/>
-    <Parameter name="powerauth.admin.security.ldap.userSearchBase" value=""/>
-    <Parameter name="powerauth.admin.security.ldap.userSearchFilter" value=""/>
-    <Parameter name="powerauth.admin.security.ldap.groupSearchBase" value="ou=groups"/>
-    <Parameter name="powerauth.admin.security.ldap.groupSearchFilter" value=""/>
-    <Parameter name="powerauth.admin.security.ldap.groupRoleAttribute" value=""/>
-    <Parameter name="powerauth.admin.security.ldap.url" value=""/>
-    <Parameter name="powerauth.admin.security.ldap.port" value=""/>
-    <Parameter name="powerauth.admin.security.ldap.root" value="dc=powerauth,dc=com"/>
-    <Parameter name="powerauth.admin.security.ldap.ldif" value="file:/usr/local/tomcat/conf/ldap/ldap-local.ldif"/>
-    <Parameter name="powerauth.admin.security.ldap.managerDN" value=""/>
-    <Parameter name="powerauth.admin.security.ldap.managerPassword" value=""/>
+    <Parameter name="powerauth.admin.security.method" value="${POWERAUTH_ADMIN_SECURITY_METHOD}"/>
+    <Parameter name="powerauth.admin.security.ldap.userDNPatterns" value="${POWERAUTH_ADMIN_LDAP_USER_DN_PATTERNS}"/>
+    <Parameter name="powerauth.admin.security.ldap.userSearchBase" value="${POWERAUTH_ADMIN_LDAP_USER_SEARCH_BASE}"/>
+    <Parameter name="powerauth.admin.security.ldap.userSearchFilter" value="${POWERAUTH_ADMIN_LDAP_USER_SEARCH_FILTER}"/>
+    <Parameter name="powerauth.admin.security.ldap.groupSearchBase" value="${POWERAUTH_ADMIN_LDAP_GROUP_SEARCH_BASE}"/>
+    <Parameter name="powerauth.admin.security.ldap.groupSearchFilter" value="${POWERAUTH_ADMIN_LDAP_GROUP_SEARCH_FILTER}"/>
+    <Parameter name="powerauth.admin.security.ldap.groupRoleAttribute" value="${POWERAUTH_ADMIN_LDAP_GROUP_ROLE_ATTRIBUTE}"/>
+    <Parameter name="powerauth.admin.security.ldap.url" value="${POWERAUTH_ADMIN_LDAP_URL}"/>
+    <Parameter name="powerauth.admin.security.ldap.port" value="${POWERAUTH_ADMIN_LDAP_PORT}"/>
+    <Parameter name="powerauth.admin.security.ldap.root" value="${POWERAUTH_ADMIN_LDAP_ROOT}"/>
+    <Parameter name="powerauth.admin.security.ldap.ldif" value="${POWERAUTH_ADMIN_LDAP_LDIF}"/>
+    <Parameter name="powerauth.admin.security.ldap.managerDN" value="${POWERAUTH_ADMIN_LDAP_MANAGER_DN}"/>
+    <Parameter name="powerauth.admin.security.ldap.managerPassword" value="${POWERAUTH_ADMIN_LDAP_MANAGER_PASSWORD}"/>
+
+    <!-- Application Service Configuration -->
+    <Parameter name="powerauth.admin.service.applicationName" value="${POWERAUTH_ADMIN_APPLICATION_NAME}"/>
+    <Parameter name="powerauth.admin.service.applicationDisplayName" value="${POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME}"/>
+    <Parameter name="powerauth.admin.service.applicationEnvironment" value="${POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT}"/>
 
 </Context>

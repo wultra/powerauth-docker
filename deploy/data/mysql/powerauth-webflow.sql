@@ -92,6 +92,15 @@ CREATE TABLE ns_user_prefs (
   auth_method_5_config VARCHAR(256)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- Table ns_operation_config stores configuration of operations.
+-- Each operation type (defined by operation_name) has a related mobile token template and configuration.
+CREATE TABLE ns_operation_config (
+  operation_name            VARCHAR(32) PRIMARY KEY,
+  template_version          CHAR,
+  template_id               INTEGER,
+  mobile_token_mode         VARCHAR(256)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- Table ns_operation stores details of Web Flow operations.
 -- Only the last status is stored in this table, changes of operations are stored in table ns_operation_history.
 CREATE TABLE ns_operation (
@@ -181,11 +190,10 @@ CREATE TABLE UserConnection (
 PRIMARY KEY (userId, providerId, providerUserId));
 CREATE UNIQUE INDEX UserConnectionRank on UserConnection(userId, providerId, rank);
 */
-
--- INSERT INITIAL DATA
-
+-- default oauth 2.0 client
+-- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
 INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, additional_information, autoapprove)
-VALUES ('democlient', 'changeme', 'profile', 'authorization_code', '{}', 'true');
+VALUES ('democlient', '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.', 'profile', 'authorization_code', '{}', 'true');
 
 -- authentication methods
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, display_name_key)
@@ -200,6 +208,10 @@ INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_pr
 VALUES ('POWERAUTH_TOKEN', 5, TRUE, 1, FALSE, TRUE, 5, TRUE, 'method.powerauthToken');
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, display_name_key)
 VALUES ('SMS_KEY', 6, FALSE, NULL, NULL, TRUE, 5, TRUE, 'method.smsKey');
+
+-- operation configuration
+INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_mode) VALUES ('login', 'A', 2, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
+INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_mode) VALUES ('authorize_payment', 'A', 1, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
 
 -- login - init operation -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)

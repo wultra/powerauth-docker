@@ -1,37 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 
-    <!-- PowerAuth 2.0 Credential Service URL -->
-    <Parameter name="powerauth.credentials.service.url" value="http://powerauth-nextstep:8080/powerauth-data-adapter"/>
+    <!-- PowerAuth Data Adapter Service URL -->
+    <Parameter name="powerauth.dataAdapter.service.url" value="${WEBFLOW_DATA_ADAPTER_URL}"/>
 
-    <!-- PowerAuth 2.0 Next Step Service URL -->
-    <Parameter name="powerauth.nextstep.service.url" value="http://powerauth-nextstep:8080/powerauth-nextstep"/>
+    <!-- PowerAuth Next Step Service URL -->
+    <Parameter name="powerauth.nextstep.service.url" value="${WEBFLOW_NEXTSTEP_URL}"/>
 
-    <!-- PowerAuth 2.0 Server Service URL -->
-    <Parameter name="powerauth.service.url" value="http://powerauth-server:8080/powerauth-java-server/soap"/>
+    <!-- PowerAuth Server Service URL -->
+    <Parameter name="powerauth.service.url" value="${WEBFLOW_POWERAUTH_SERVICE_URL}"/>
 
-    <!-- PowerAuth 2.0 Server Service Security Settings -->
-    <Parameter name="powerauth.service.security.clientToken" value=""/>
-    <Parameter name="powerauth.service.security.clientSecret" value=""/>
-    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="false"/>
+    <!-- PowerAuth Server Service Security Settings -->
+    <Parameter name="powerauth.service.security.clientToken" value="${WEBFLOW_POWERAUTH_SECURITY_TOKEN}"/>
+    <Parameter name="powerauth.service.security.clientSecret" value="${WEBFLOW_POWERAUTH_SECURITY_SECRET}"/>
+    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${WEBFLOW_ACCEPT_INVALID_SSL_CERTIFICATE}"/>
 
-    <!-- PowerAuth 2.0 Push Server URL -->
-    <Parameter name="powerauth.push.service.url" value="http://powerauth-push-server:8080/powerauth-push-server"/>
-    <Parameter name="powerauth.push.service.appId" value="1"/>
-
-    <!-- PowerAuth 2.0 WebFlow Page Customization -->
-    <Parameter name="powerauth.webflow.page.title" value="PowerAuth 2.0 Web Auth"/>
-    <Parameter name="powerauth.webflow.page.ext-resources.location" value="classpath:/static/resources/"/>
-    <Parameter name="powerauth.webflow.page.custom-css.url" value=""/>
+    <!-- PowerAuth Push Server URL -->
+    <Parameter name="powerauth.push.service.url" value="${WEBFLOW_PUSH_SERVER_URL}"/>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="jdbc:mysql://powerauth-webflow-mysql:3306/powerauth"/>
-    <Parameter name="spring.datasource.username" value="powerauth"/>
-    <Parameter name="spring.datasource.password" value=""/>
-    <Parameter name="spring.datasource.driver-class-name" value="com.mysql.jdbc.Driver"/>
-    <Parameter name="spring.jpa.hibernate.ddl-auto" value="none"/>
+    <Parameter name="spring.datasource.url" value="${WEBFLOW_DATASOURCE_URL}"/>
+    <Parameter name="spring.datasource.username" value="${WEBFLOW_DATASOURCE_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${WEBFLOW_DATASOURCE_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${WEBFLOW_DATASOURCE_DRIVER}"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="${WEBFLOW_JPA_DDL_AUTO}"/>
+
+    <!-- Configuration of Database Charset -->
+    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${WEBFLOW_JPA_CHARSET}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${WEBFLOW_JPA_CHARACTER_ENCODING}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${WEBFLOW_JPA_USE_UNICODE}"/>
+
+    <!-- Additional JPA Configuration -->
+    <Parameter name="spring.jpa.database-platform" value="${WEBFLOW_JPA_DATABASE_PLATFORM}"/>
 
     <!-- Database Configuration - JNDI -->
-    <!--Parameter name="spring.datasource.jndi-name" value=""/-->
+    <Parameter name="spring.datasource.jndi-name" value="${WEBFLOW_DATASOURCE_JNDI_NAME}"/>
+
+    <!-- PowerAuth WebFlow Page Customization -->
+    <Parameter name="powerauth.webflow.page.title" value="${WEBFLOW_PAGE_TITLE}"/>
+    <Parameter name="powerauth.webflow.page.ext-resources.location" value="${WEBFLOW_PAGE_EXT_RESOURCES_LOCATION}"/>
+    <Parameter name="powerauth.webflow.page.custom-css.url" value="${WEBFLOW_PAGE_CUSTOM_CSS_URL}"/>
+
+    <!-- Web Flow Offline Mode Configuration -->
+    <Parameter name="powerauth.webflow.offlineMode.available" value="${WEBFLOW_OFFLINE_MODE_AVAILABLE}"/>
+
+    <!-- JMX Configuration -->
+    <Parameter name="spring.jmx.enabled" value="${WEBFLOW_SPRING_JMX_ENABLED}"/>
+
+    <!-- Application Service Configuration -->
+    <Parameter name="powerauth.dataAdapter.service.applicationName" value="${WEBFLOW_APPLICATION_NAME}"/>
+    <Parameter name="powerauth.dataAdapter.service.applicationDisplayName" value="${WEBFLOW_APPLICATION_DISPLAY_NAME}"/>
+    <Parameter name="powerauth.dataAdapter.service.applicationEnvironment" value="${WEBFLOW_APPLICATION_ENVIRONMENT}"/>
 
 </Context>
