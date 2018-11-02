@@ -2,7 +2,7 @@
 
 # Docker Images for PowerAuth
 
-You can run the whole PowerAuth software stack in Docker easily. Please follow our [Getting Started Guide](https://github.com/lime-company/powerauth-docker/wiki/Getting-Started).
+You can run the whole PowerAuth software stack in Docker easily. Please follow our [Getting Started Guide](https://github.com/wultra/powerauth-docker/wiki/Getting-Started).
 
 ## Supported Technologies
 
