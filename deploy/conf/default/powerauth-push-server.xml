@@ -61,4 +61,7 @@
     <Parameter name="powerauth.push.service.applicationDisplayName" value="${PUSH_SERVER_APPLICATION_DISPLAY_NAME}"/>
     <Parameter name="powerauth.push.service.applicationEnvironment" value="${PUSH_SERVER_APPLICATION_ENVIRONMENT}"/>
 
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${PUSH_SERVER_LOGGING}"/>
+
 </Context>

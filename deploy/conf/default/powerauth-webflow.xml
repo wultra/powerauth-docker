@@ -52,4 +52,7 @@
     <Parameter name="powerauth.dataAdapter.service.applicationDisplayName" value="${WEBFLOW_APPLICATION_DISPLAY_NAME}"/>
     <Parameter name="powerauth.dataAdapter.service.applicationEnvironment" value="${WEBFLOW_APPLICATION_ENVIRONMENT}"/>
 
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${WEBFLOW_LOGGING}"/>
+
 </Context>
