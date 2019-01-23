@@ -1,6 +1,6 @@
 # PowerAuth Docker Documentation
 
-This is the wiki page for Docker deployment of a complete PowerAuth infrastructure.
+This documentation describes how to use Docker for deployment of complete PowerAuth infrastructure.
 
 Following topics are covered:
 
