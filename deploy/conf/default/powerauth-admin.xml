@@ -29,4 +29,7 @@
     <Parameter name="powerauth.admin.service.applicationDisplayName" value="${POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME}"/>
     <Parameter name="powerauth.admin.service.applicationEnvironment" value="${POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT}"/>
 
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${POWERAUTH_ADMIN_LOGGING}"/>
+
 </Context>

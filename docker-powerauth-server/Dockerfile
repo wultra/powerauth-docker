@@ -1,5 +1,5 @@
 FROM tomcat:8.5
-LABEL maintainer "petr@lime-company.eu"
+LABEL maintainer="petr@wultra.com"
 
 # Prepare environment variables
 ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-amd64/jre

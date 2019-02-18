@@ -31,4 +31,7 @@
     <Parameter name="powerauth.dataAdapter.service.applicationDisplayName" value="${DATA_ADAPTER_APPLICATION_DISPLAY_NAME}"/>
     <Parameter name="powerauth.dataAdapter.service.applicationEnvironment" value="${DATA_ADAPTER_APPLICATION_ENVIRONMENT}"/>
 
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${DATA_ADAPTER_LOGGING}"/>
+
 </Context>

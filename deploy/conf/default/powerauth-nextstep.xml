@@ -30,4 +30,7 @@
     <Parameter name="powerauth.nextstep.service.applicationDisplayName" value="${NEXTSTEP_APPLICATION_DISPLAY_NAME}"/>
     <Parameter name="powerauth.nextstep.service.applicationEnvironment" value="${NEXTSTEP_APPLICATION_ENVIRONMENT}"/>
 
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${NEXTSTEP_LOGGING}"/>
+
 </Context>
