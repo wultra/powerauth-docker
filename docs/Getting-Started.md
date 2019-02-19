@@ -168,8 +168,8 @@ curl --request POST \
   --data '{
   "requestObject": {
     "appId": 1,
-    "userId": "user123456",
     "message": {
+      "userId": "user123456",
       "attributes": {
         "personal": false,
         "silent": false
