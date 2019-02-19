@@ -150,9 +150,9 @@ CREATE TABLE `pa_activation_history` (
   CONSTRAINT `FK_HISTORY_ACTIVATION_ID` FOREIGN KEY (`activation_id`) REFERENCES `pa_activation` (`activation_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
----
---- Indexes for better performance. InnoDB engine creates indexes on foreign keys automatically, so they are not included.
----
+--
+-- Indexes for better performance. InnoDB engine creates indexes on foreign keys automatically, so they are not included.
+--
 
 CREATE INDEX PA_ACTIVATION_CODE ON PA_ACTIVATION(ACTIVATION_CODE);
 

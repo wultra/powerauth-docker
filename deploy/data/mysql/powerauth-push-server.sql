@@ -64,9 +64,9 @@ CREATE TABLE push_campaign_user (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
----
---- Indexes for better performance.
----
+--
+-- Indexes for better performance.
+--
 
 CREATE UNIQUE INDEX PUSH_APP_CRED_APP ON PUSH_APP_CREDENTIALS(APP_ID);
 
