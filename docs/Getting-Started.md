@@ -156,10 +156,10 @@ In order to configure APNs and FCM messages, you need to follow these steps:
         - Bundle ID _(note: used as the "topic")_
         - APNs private key file _(note: a file with `*.p8` extension)_
     - For Android, you need to obtain the following information from the [Firebase Console]():
-        - Package Name (as an identifier of the Android application)
-        - Server key _(note: the current Push Server version uses FCM legacy API - this will change in upcoming version)_
-
-To test the push notifications later, you can call the following comand - don't forget to replace the `appId` and your `userId`:
+        - Project ID (visible in *Project Settings*) 
+        - Private key for FCM HTTP API v1 (see [FCM documentation](https://firebase.google.com/docs/cloud-messaging/auth-server))     
+           
+To test the push notifications later, you can call the following command - don't forget to replace the `appId` and your `userId`:
 
 ```sh
 curl --request POST \
