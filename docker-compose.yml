@@ -39,6 +39,7 @@ services:
         container_name: powerauth-server
         ports:
             - "20010:8080"
+        mem_limit: ${POWERAUTH_SERVER_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
             interval: 10s
@@ -84,6 +85,7 @@ services:
             - POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME=${POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME}
             - POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT=${POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT}
             - POWERAUTH_ADMIN_LOGGING=${POWERAUTH_ADMIN_LOGGING}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
             powerauth-mysql:
                 condition: service_healthy
@@ -94,6 +96,7 @@ services:
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
+        mem_limit: ${PUSH_SERVER_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
@@ -135,6 +138,7 @@ services:
             - PUSH_SERVER_APPLICATION_DISPLAY_NAME=${PUSH_SERVER_APPLICATION_DISPLAY_NAME}
             - PUSH_SERVER_APPLICATION_ENVIRONMENT=${PUSH_SERVER_APPLICATION_ENVIRONMENT}
             - PUSH_SERVER_LOGGING=${PUSH_SERVER_LOGGING}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
             powerauth-push-mysql:
                 condition: service_healthy
