@@ -132,6 +132,11 @@ Request:
 {}
 ```
 
+HTTP header:
+``` 
+Content-Type: application/json
+```
+
 Response:
 ```json
 {
