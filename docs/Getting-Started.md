@@ -94,7 +94,7 @@ After you start the Docker images, the following databases and applications are 
 |--------------------------|------------------------------------------|----------|----------|
 | PowerAuth Server DB      | `jdbc:mysql://localhost:23316/powerauth` | `root`   | `root`   |
 | PowerAuth Push Server DB | `jdbc:mysql://localhost:23336/powerauth` | `root`   | `root`   |
-| PowerAuth Web Flow DB    | `jdbc:mysql://localhost:23376/powerauth` | `root`   | `root    |
+| PowerAuth Web Flow DB    | `jdbc:mysql://localhost:23376/powerauth` | `root`   | `root`   |
 
 _Note: All databases are already created with the correct structure and contain necessary configuration._
 
