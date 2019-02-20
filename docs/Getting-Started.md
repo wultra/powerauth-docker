@@ -57,7 +57,7 @@ docker pull powerauth/push-mysql
 
 ### 3. Configure Docker Images
 
-If you don't do anything with the configuration, everything will just work on your local machine. However, if you need to change the Docker images (which is recommended for the production deployment), see: [Building Docker Images](./Building-Docker-Images).
+If you don't do anything with the configuration, everything will just work on your local machine. However, if you need to change the Docker images (which is recommended for the production deployment), see: [Building Docker Images](./Building-Docker-Images.md).
 
 ### 4. Run
 
@@ -102,11 +102,13 @@ _Note: All databases are already created with the correct structure and contain 
 
 | Application            | Important Paths             | URL                                                                  |
 |------------------------|-----------------------------|----------------------------------------------------------------------|
-| PowerAuth Server       | SOAP endpoint               | http://localhost:20010/powerauth-server/soap                         |
-|                        | WSDL path                   | http://localhost:20010/powerauth-server/soap/service.wsdl            |
+| PowerAuth Server       | SOAP endpoint               | http://localhost:20010/powerauth-java-server/soap                    |
+|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/service-v3.wsdl    |
+|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/service-v2.wsdl    |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
+|                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
-|                        | Status URL                  | http://192.168.5.107:20030/powerauth-push-server/push/service/status |
+|                        | Status URL                  | http://localhost:20030/powerauth-push-server/push/service/status     |
 |                        | Swagger Documentation       | http://localhost:20030/powerauth-push-server/swagger-ui.html         |
 | PowerAuth Web Flow     | Base URL                    | http://localhost:13030/powerauth-webflow                             |
 |                        | Status URL                  | http://localhost:13030/powerauth-webflow/api/service/status          |
@@ -120,6 +122,31 @@ _Note: All databases are already created with the correct structure and contain 
 | PowerAuth Data Adapter | Base URL                    | http://localhost:13050/powerauth-data-adapter                        |
 |                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui.html        |
 |                        | Status URL                  | http://localhost:13050/powerauth-data-adapter/api/service/status     |
+
+You can verify status of PowerAuth server using POST method:
+
+URL: http://localhost:20010/powerauth-java-server/rest/v3/status
+
+Request:
+```json
+{}
+```
+
+Response:
+```json
+{
+  "responseObject": {
+    "status": "OK",
+    "applicationName": "powerauth-server",
+    "applicationDisplayName": "PowerAuth Server",
+    "applicationEnvironment": "",
+    "version": "0.21.0",
+    "buildTime": "2019-02-05T15:50:19.948+0000",
+    "timestamp": "2019-02-20T13:31:32.953+0000"
+  },
+  "status": "OK"
+}
+```
 
 ### 5. Configure System For Testing
 
