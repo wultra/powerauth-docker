@@ -187,7 +187,7 @@ In order to configure APNs and FCM messages, you need to follow these steps:
         - Key ID
         - Bundle ID _(note: used as the "topic")_
         - APNs private key file _(note: a file with `*.p8` extension)_
-    - For Android, you need to obtain the following information from the [Firebase Console]():
+    - For Android, you need to obtain the following information from the [Firebase Console](https://console.firebase.google.com):
         - Project ID (visible in *Project Settings*) 
         - Private key for FCM HTTP API v1 (see [FCM documentation](https://firebase.google.com/docs/cloud-messaging/auth-server))     
            
