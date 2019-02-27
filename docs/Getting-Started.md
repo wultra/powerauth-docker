@@ -472,8 +472,6 @@ curl --request POST \
 
 If you now try to approve payment with the `tester` user, Mobile token should be offerred as an option.
 
-####
-
 ## License
 
 All sources are licensed using Apache 2.0 license, you can use them with no restriction. If you are using PowerAuth, please let us know. We will be happy to share and promote your project.
