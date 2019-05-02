@@ -13,7 +13,7 @@ ADD deploy/lib/mysql-connector-java.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
 
 # Add Bouncy Castle to JRE
-ADD deploy/lib/bcprov-jdk15on-160.jar $JAVA_HOME/lib/ext
+ADD deploy/lib/bcprov-jdk15on-161.jar $JAVA_HOME/lib/ext
 RUN echo 'security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvider' >> $JAVA_HOME/lib/security/java.security
 
 # Deploy and run applications
