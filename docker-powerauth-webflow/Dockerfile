@@ -4,6 +4,7 @@ LABEL maintainer="petr@wultra.com"
 # Prepare environment variables
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
 ENV TOMCAT_HOME /usr/local/tomcat
+ENV WEBFLOW_RESOURCES /opt/ext-resources
 
 # Clear root context
 RUN rm -rf $TOMCAT_HOME/webapps/*
@@ -24,6 +25,13 @@ ADD deploy/conf/powerauth-webflow.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-webflow.war $TOMCAT_HOME/webapps/
 
 # Customize web app resources
-ADD deploy/data/ext-resources /opt/ext-resources
+ADD deploy/data/ext-resources $WEBFLOW_RESOURCES
 
+# Create user tomcat and run Tomcat under this user
+RUN groupadd -r tomcat
+RUN useradd -r -g tomcat -d $TOMCAT_HOME -s /sbin/nologin tomcat
+RUN chown -R tomcat:tomcat $TOMCAT_HOME
+RUN chown -R tomcat:tomcat $WEBFLOW_RESOURCES
+
+USER tomcat
 CMD ["catalina.sh", "run"]

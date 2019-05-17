@@ -20,4 +20,10 @@ RUN echo 'security.provider.14=org.bouncycastle.jce.provider.BouncyCastleProvide
 ADD deploy/conf/powerauth-push-server.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-push-server.war $TOMCAT_HOME/webapps/
 
+# Create user tomcat and run Tomcat under this user
+RUN groupadd -r tomcat
+RUN useradd -r -g tomcat -d $TOMCAT_HOME -s /sbin/nologin tomcat
+RUN chown -R tomcat:tomcat $TOMCAT_HOME
+
+USER tomcat
 CMD ["catalina.sh", "run"]
