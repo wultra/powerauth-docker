@@ -24,4 +24,10 @@ ADD deploy/data/ldap/ldap-local.ldif $TOMCAT_HOME/conf/ldap/
 ADD deploy/conf/powerauth-admin.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-admin.war $TOMCAT_HOME/webapps/
 
+# Create user tomcat and run Tomcat under this user
+RUN groupadd -r tomcat
+RUN useradd -r -g tomcat -d $TOMCAT_HOME -s /sbin/nologin tomcat
+RUN chown -R tomcat:tomcat $TOMCAT_HOME
+
+USER tomcat
 CMD ["catalina.sh", "run"]
