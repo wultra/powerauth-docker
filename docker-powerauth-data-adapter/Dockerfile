@@ -1,8 +1,8 @@
-FROM tomcat:9.0.19-jre11
+FROM tomcat:9-jdk11
 LABEL maintainer="petr@wultra.com"
 
 # Prepare environment variables
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+ENV JAVA_HOME /usr/local/openjdk-11
 ENV TOMCAT_HOME /usr/local/tomcat
 
 # Clear root context
