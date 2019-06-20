@@ -2,7 +2,7 @@ FROM tomcat:8.5
 LABEL maintainer="petr@wultra.com"
 
 # Prepare environment variables
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-amd64/jre
+ENV JAVA_HOME /usr/local/openjdk-8/jre
 ENV TOMCAT_HOME /usr/local/tomcat
 
 # Clear root context
