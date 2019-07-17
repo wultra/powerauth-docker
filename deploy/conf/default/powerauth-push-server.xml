@@ -57,6 +57,7 @@
 
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${PUSH_SERVER_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${PUSH_SERVER_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Push Message Gateway Connect Timeout in Milliseconds -->
     <Parameter name="powerauth.push.service.fcm.connect.timeout" value="${PUSH_SERVER_FCM_CONNECT_TIMEOUT}"/>
