@@ -25,6 +25,7 @@
 
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${DATA_ADAPTER_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${DATA_ADAPTER_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Application Service Configuration -->
     <Parameter name="powerauth.dataAdapter.service.applicationName" value="${DATA_ADAPTER_APPLICATION_NAME}"/>
