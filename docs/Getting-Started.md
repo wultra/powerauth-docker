@@ -251,6 +251,7 @@ curl --request POST \
   "requestObject": {
     "operationName": "authorize_payment",
     "operationId": null,
+    "organizationId": null,
     "operationData": "A1*A100CZK*Q238400856/0300**D20170629*NUtility Bill Payment - 05/2017",
     "params": [],
     "formData": {
@@ -301,34 +302,19 @@ curl --request POST \
           "valueFormatType": "TEXT",
           "formattedValue": null,
           "note": "Utility Bill Payment - 05/2017"
-        },
-        {
-          "type": "NOTE",
-          "id": "operation.note",
-          "label": null,
-          "valueFormatType": "TEXT",
-          "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
-        },
-        {
-          "type": "NOTE",
-          "id": "operation.note",
-          "label": null,
-          "valueFormatType": "TEXT",
-          "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
-        },
-        {
-          "type": "NOTE",
-          "id": "operation.note",
-          "label": null,
-          "valueFormatType": "TEXT",
-          "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
-        }        
+        }
       ],
-      "dynamicDataLoaded": false,
-      "userInput": {}
+      "applicationContext": {
+        "id": "DEMO",
+        "name": "Demo application",
+        "description": "Web Flow demo application",
+        "extras": {
+          "applicationOwner": "Wultra",
+          "requestedScopes": [
+            "OAUTH"
+          ]
+        }
+      }
     }
   }
 }'
@@ -338,98 +324,86 @@ The response of this command will look something like this:
 
 ```json
 {
-    "status": "OK",
-    "responseObject": {
-        "operationId": "9133b4c0-89e6-43e5-91fe-8ce8e714d1dc",
-        "operationName": "authorize_payment",
-        "result": "CONTINUE",
-        "resultDescription": null,
-        "timestampCreated": "2018-11-27T17:37:25+0000",
-        "timestampExpires": "2018-11-27T17:42:25+0000",
-        "operationData": null,
-        "steps": [{
-            "authMethod": "USER_ID_ASSIGN",
-            "params": []
-        }, {
-            "authMethod": "USERNAME_PASSWORD_AUTH",
-            "params": []
-        }],
-        "formData": {
-            "title": {
-                "id": "operation.title",
-                "message": null
-            },
-            "greeting": {
-                "id": "operation.greeting",
-                "message": null
-            },
-            "summary": {
-                "id": "operation.summary",
-                "message": null
-            },
-            "config": [],
-            "banners": [],
-            "parameters": [{
-                "type": "AMOUNT",
-                "id": "operation.amount",
-                "label": null,
-                "valueFormatType": "AMOUNT",
-                "formattedValue": null,
-                "amount": 100,
-                "currency": "CZK",
-                "currencyId": "operation.currency"
-            }, {
-                "type": "KEY_VALUE",
-                "id": "operation.account",
-                "label": null,
-                "valueFormatType": "ACCOUNT",
-                "formattedValue": null,
-                "value": "238400856/0300"
-            }, {
-                "type": "KEY_VALUE",
-                "id": "operation.dueDate",
-                "label": null,
-                "valueFormatType": "DATE",
-                "formattedValue": null,
-                "value": "2017-06-29"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }],
-            "dynamicDataLoaded": false,
-            "userInput": {}
+  "status": "OK",
+  "responseObject": {
+    "operationId": "09c61bc4-0b40-42c9-be03-a602bf889ad4",
+    "operationName": "authorize_payment",
+    "organizationId": null,
+    "result": "CONTINUE",
+    "resultDescription": null,
+    "timestampCreated": "2019-07-30T14:10:49+0000",
+    "timestampExpires": "2019-07-30T14:15:49+0000",
+    "operationData": null,
+    "steps": [
+      {
+        "authMethod": "USER_ID_ASSIGN",
+        "params": []
+      },
+      {
+        "authMethod": "USERNAME_PASSWORD_AUTH",
+        "params": []
+      }
+    ],
+    "formData": {
+      "title": {
+        "id": "operation.title",
+        "message": null
+      },
+      "greeting": {
+        "id": "operation.greeting",
+        "message": null
+      },
+      "summary": {
+        "id": "operation.summary",
+        "message": null
+      },
+      "config": [],
+      "banners": [],
+      "parameters": [
+        {
+          "type": "AMOUNT",
+          "id": "operation.amount",
+          "label": null,
+          "valueFormatType": "AMOUNT",
+          "formattedValues": {},
+          "amount": 100,
+          "currency": "CZK",
+          "currencyId": "operation.currency"
         },
-        "expired": false
-    }
+        {
+          "type": "KEY_VALUE",
+          "id": "operation.account",
+          "label": null,
+          "valueFormatType": "ACCOUNT",
+          "formattedValues": {},
+          "value": "238400856/0300"
+        },
+        {
+          "type": "KEY_VALUE",
+          "id": "operation.dueDate",
+          "label": null,
+          "valueFormatType": "DATE",
+          "formattedValues": {},
+          "value": "2017-06-29"
+        },
+        {
+          "type": "NOTE",
+          "id": "operation.note",
+          "label": null,
+          "valueFormatType": "TEXT",
+          "formattedValues": {},
+          "note": "Utility Bill Payment - 05/2017"
+        }
+      ],
+      "dynamicDataLoaded": false,
+      "userInput": {}
+    },
+    "expired": false
+  }
 }
 ```
 
-Copy the `operationId` value (`9133b4c0-89e6-43e5-91fe-8ce8e714d1dc`), paste it in the second tab of the testing web application (into "Operation ID" field on the "Authorization" tab) and click "Authorize" button. Proceed with login and SMS code verification as if you created a new payment via the testing web application UI.
+Copy the `operationId` value (`09c61bc4-0b40-42c9-be03-a602bf889ad4`), paste it in the second tab of the testing web application (into "Operation ID" field on the "Authorization" tab) and click "Authorize" button. Proceed with login and SMS code verification as if you created a new payment via the testing web application UI.
 
 #### 5.5 Compile and Customize Mobile Token App
 
