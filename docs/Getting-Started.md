@@ -252,7 +252,7 @@ curl --request POST \
     "operationName": "authorize_payment",
     "operationId": null,
     "organizationId": null,
-    "operationData": "A1*A100CZK*Q238400856/0300**D20170629*NUtility Bill Payment - 05/2017",
+    "operationData": "A1*A100CZK*Q238400856/0300**D20190629*NUtility Bill Payment - 05/2019",
     "params": [],
     "formData": {
       "title": {
@@ -293,7 +293,7 @@ curl --request POST \
           "label": null,
           "valueFormatType": "DATE",
           "formattedValue": null,
-          "value": "2017-06-29"
+          "value": "2019-06-29"
         },
         {
           "type": "NOTE",
@@ -301,7 +301,7 @@ curl --request POST \
           "label": null,
           "valueFormatType": "TEXT",
           "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
+          "note": "Utility Bill Payment - 05/2019"
         }
       ],
       "applicationContext": {
@@ -384,7 +384,7 @@ The response of this command will look something like this:
           "label": null,
           "valueFormatType": "DATE",
           "formattedValues": {},
-          "value": "2017-06-29"
+          "value": "2019-06-29"
         },
         {
           "type": "NOTE",
@@ -392,7 +392,7 @@ The response of this command will look something like this:
           "label": null,
           "valueFormatType": "TEXT",
           "formattedValues": {},
-          "note": "Utility Bill Payment - 05/2017"
+          "note": "Utility Bill Payment - 05/2019"
         }
       ],
       "dynamicDataLoaded": false,
