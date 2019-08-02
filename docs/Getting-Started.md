@@ -222,7 +222,7 @@ curl --request POST \
 To test the complex web federated login via Web Flow, you can use our testing tool. Follow these steps:
 
 1. Download and unpack `powerauth-webflow-testing.zip` file from the releases:
-    - https://github.com/lime-company/powerauth-docker/releases
+    - https://github.com/wultra/powerauth-docker/releases
 2. Review the `application.properties` file.
     - _Note: If you use the default values for the configuration, everything will just work._
     - _Note: By default, Web Flow uses a demo OAuth 2.0 credentials "democlient" / "changeme"._
@@ -310,8 +310,8 @@ curl --request POST \
         "description": "Web Flow demo application",
         "extras": {
           "applicationOwner": "Wultra",
-          "requestedScopes": [
-            "OAUTH"
+          "_requestedScopes": [
+            "PISP"
           ]
         }
       }
