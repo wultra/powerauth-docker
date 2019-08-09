@@ -33,14 +33,14 @@
     <!-- APNS Configuration -->
     <Parameter name="powerauth.push.service.apns.useDevelopment" value="${PUSH_SERVER_APNS_DEVELOPMENT}"/>
     <Parameter name="powerauth.push.service.apns.proxy.enabled" value="${PUSH_SERVER_APNS_PROXY_ENABLED}"/>
-    <Parameter name="powerauth.push.service.apns.proxy.url" value="${PUSH_SERVER_APNS_PROXY_HOST}"/>
+    <Parameter name="powerauth.push.service.apns.proxy.host" value="${PUSH_SERVER_APNS_PROXY_HOST}"/>
     <Parameter name="powerauth.push.service.apns.proxy.port" value="${PUSH_SERVER_APNS_PROXY_PORT}"/>
     <Parameter name="powerauth.push.service.apns.proxy.username" value="${PUSH_SERVER_APNS_PROXY_USERNAME}"/>
     <Parameter name="powerauth.push.service.apns.proxy.password" value="${PUSH_SERVER_APNS_PROXY_PASSWORD}"/>
 
     <!-- FCM Configuration -->
     <Parameter name="powerauth.push.service.fcm.proxy.enabled" value="${PUSH_SERVER_FCM_PROXY_ENABLED}"/>
-    <Parameter name="powerauth.push.service.fcm.proxy.url" value="${PUSH_SERVER_FCM_PROXY_HOST}"/>
+    <Parameter name="powerauth.push.service.fcm.proxy.host" value="${PUSH_SERVER_FCM_PROXY_HOST}"/>
     <Parameter name="powerauth.push.service.fcm.proxy.port" value="${PUSH_SERVER_FCM_PROXY_PORT}"/>
     <Parameter name="powerauth.push.service.fcm.proxy.username" value="${PUSH_SERVER_FCM_PROXY_USERNAME}"/>
     <Parameter name="powerauth.push.service.fcm.proxy.password" value="${PUSH_SERVER_FCM_PROXY_PASSWORD}"/>
@@ -57,6 +57,7 @@
 
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${PUSH_SERVER_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${PUSH_SERVER_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Push Message Gateway Connect Timeout in Milliseconds -->
     <Parameter name="powerauth.push.service.fcm.connect.timeout" value="${PUSH_SERVER_FCM_CONNECT_TIMEOUT}"/>

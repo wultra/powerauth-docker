@@ -17,16 +17,33 @@
     <Parameter name="spring.jpa.database-platform" value="${POWERAUTH_SERVER_JPA_DATABASE_PLATFORM}"/>
 
     <!-- Database Lock Timeout Configuration -->
-    <Parameter name="javax.persistence.lock.timeout" value="${POWERAUTH_SERVER_JPA_LOCK_TIMEOUT}"/>
+    <Parameter name="spring.jpa.properties.lock.timeout" value="${POWERAUTH_SERVER_JPA_LOCK_TIMEOUT}"/>
 
     <!-- Database Configuration - JNDI -->
     <Parameter name="spring.datasource.jndi-name" value="${POWERAUTH_SERVER_DATASOURCE_JNDI_NAME}"/>
 
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${POWERAUTH_SERVER_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${POWERAUTH_SERVER_SPRING_JMX_DEFAULT_DOMAIN}"/>
+
+    <!-- HTTP Proxy Settings -->
+    <Parameter name="powerauth.service.http.proxy.enabled" value="${POWERAUTH_SERVER_HTTP_PROXY_ENABLED}"/>
+    <Parameter name="powerauth.service.http.proxy.host" value="${POWERAUTH_SERVER_HTTP_PROXY_HOST}"/>
+    <Parameter name="powerauth.service.http.proxy.port" value="${POWERAUTH_SERVER_HTTP_PROXY_PORT}"/>
+    <Parameter name="powerauth.service.http.proxy.username" value="${POWERAUTH_SERVER_HTTP_PROXY_USERNAME}"/>
+    <Parameter name="powerauth.service.http.proxy.password" value="${POWERAUTH_SERVER_HTTP_PROXY_PASSWORD}"/>
+
+    <!-- Service Connect Timeout in Milliseconds -->
+    <Parameter name="powerauth.service.http.connection.timeout" value="${POWERAUTH_SERVER_HTTP_CONNECTION_TIMEOUT}"/>
+
+    <!-- Token Timestamp Validity in Milliseconds -->
+    <Parameter name="powerauth.service.token.timestamp.validity" value="${POWERAUTH_SERVER_TOKEN_TIMESTAMP_VALIDITY}"/>
 
     <!-- Security Configuration -->
     <Parameter name="powerauth.service.restrictAccess" value="${POWERAUTH_SERVER_RESTRICT_ACCESS}"/>
+
+    <!-- Recovery Code Configuration -->
+    <Parameter name="powerauth.service.recovery.maxFailedAttempts" value="${POWERAUTH_SERVER_RECOVERY_MAX_FAILED_ATTEMPTS}"/>
 
     <!-- Master DB encryption key -->
     <Parameter name="powerauth.server.db.master.encryption.key" value="${POWERAUTH_SERVER_MASTER_DB_ENCRYPTION_KEY}"/>

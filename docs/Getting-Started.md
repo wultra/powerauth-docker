@@ -103,8 +103,8 @@ _Note: All databases are already created with the correct structure and contain 
 | Application            | Important Paths             | URL                                                                  |
 |------------------------|-----------------------------|----------------------------------------------------------------------|
 | PowerAuth Server       | SOAP endpoint               | http://localhost:20010/powerauth-java-server/soap                    |
-|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/service-v3.wsdl    |
-|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/service-v2.wsdl    |
+|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/service-V3.wsdl    |
+|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/service-V2.wsdl    |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
@@ -187,7 +187,7 @@ In order to configure APNs and FCM messages, you need to follow these steps:
         - Key ID
         - Bundle ID _(note: used as the "topic")_
         - APNs private key file _(note: a file with `*.p8` extension)_
-    - For Android, you need to obtain the following information from the [Firebase Console]():
+    - For Android, you need to obtain the following information from the [Firebase Console](https://console.firebase.google.com):
         - Project ID (visible in *Project Settings*) 
         - Private key for FCM HTTP API v1 (see [FCM documentation](https://firebase.google.com/docs/cloud-messaging/auth-server))     
            
@@ -222,7 +222,7 @@ curl --request POST \
 To test the complex web federated login via Web Flow, you can use our testing tool. Follow these steps:
 
 1. Download and unpack `powerauth-webflow-testing.zip` file from the releases:
-    - https://github.com/lime-company/powerauth-docker/releases
+    - https://github.com/wultra/powerauth-docker/releases
 2. Review the `application.properties` file.
     - _Note: If you use the default values for the configuration, everything will just work._
     - _Note: By default, Web Flow uses a demo OAuth 2.0 credentials "democlient" / "changeme"._
@@ -251,7 +251,8 @@ curl --request POST \
   "requestObject": {
     "operationName": "authorize_payment",
     "operationId": null,
-    "operationData": "A1*A100CZK*Q238400856/0300**D20170629*NUtility Bill Payment - 05/2017",
+    "organizationId": null,
+    "operationData": "A1*A100CZK*Q238400856/0300**D20190629*NUtility Bill Payment - 05/2019",
     "params": [],
     "formData": {
       "title": {
@@ -292,7 +293,7 @@ curl --request POST \
           "label": null,
           "valueFormatType": "DATE",
           "formattedValue": null,
-          "value": "2017-06-29"
+          "value": "2019-06-29"
         },
         {
           "type": "NOTE",
@@ -300,35 +301,20 @@ curl --request POST \
           "label": null,
           "valueFormatType": "TEXT",
           "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
-        },
-        {
-          "type": "NOTE",
-          "id": "operation.note",
-          "label": null,
-          "valueFormatType": "TEXT",
-          "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
-        },
-        {
-          "type": "NOTE",
-          "id": "operation.note",
-          "label": null,
-          "valueFormatType": "TEXT",
-          "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
-        },
-        {
-          "type": "NOTE",
-          "id": "operation.note",
-          "label": null,
-          "valueFormatType": "TEXT",
-          "formattedValue": null,
-          "note": "Utility Bill Payment - 05/2017"
-        }        
+          "note": "Utility Bill Payment - 05/2019"
+        }
       ],
-      "dynamicDataLoaded": false,
-      "userInput": {}
+      "applicationContext": {
+        "id": "DEMO",
+        "name": "Demo application",
+        "description": "Web Flow demo application",
+        "extras": {
+          "applicationOwner": "Wultra",
+          "_requestedScopes": [
+            "PISP"
+          ]
+        }
+      }
     }
   }
 }'
@@ -338,98 +324,86 @@ The response of this command will look something like this:
 
 ```json
 {
-    "status": "OK",
-    "responseObject": {
-        "operationId": "9133b4c0-89e6-43e5-91fe-8ce8e714d1dc",
-        "operationName": "authorize_payment",
-        "result": "CONTINUE",
-        "resultDescription": null,
-        "timestampCreated": "2018-11-27T17:37:25+0000",
-        "timestampExpires": "2018-11-27T17:42:25+0000",
-        "operationData": null,
-        "steps": [{
-            "authMethod": "USER_ID_ASSIGN",
-            "params": []
-        }, {
-            "authMethod": "USERNAME_PASSWORD_AUTH",
-            "params": []
-        }],
-        "formData": {
-            "title": {
-                "id": "operation.title",
-                "message": null
-            },
-            "greeting": {
-                "id": "operation.greeting",
-                "message": null
-            },
-            "summary": {
-                "id": "operation.summary",
-                "message": null
-            },
-            "config": [],
-            "banners": [],
-            "parameters": [{
-                "type": "AMOUNT",
-                "id": "operation.amount",
-                "label": null,
-                "valueFormatType": "AMOUNT",
-                "formattedValue": null,
-                "amount": 100,
-                "currency": "CZK",
-                "currencyId": "operation.currency"
-            }, {
-                "type": "KEY_VALUE",
-                "id": "operation.account",
-                "label": null,
-                "valueFormatType": "ACCOUNT",
-                "formattedValue": null,
-                "value": "238400856/0300"
-            }, {
-                "type": "KEY_VALUE",
-                "id": "operation.dueDate",
-                "label": null,
-                "valueFormatType": "DATE",
-                "formattedValue": null,
-                "value": "2017-06-29"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }, {
-                "type": "NOTE",
-                "id": "operation.note",
-                "label": null,
-                "valueFormatType": "TEXT",
-                "formattedValue": null,
-                "note": "Utility Bill Payment - 05/2017"
-            }],
-            "dynamicDataLoaded": false,
-            "userInput": {}
+  "status": "OK",
+  "responseObject": {
+    "operationId": "09c61bc4-0b40-42c9-be03-a602bf889ad4",
+    "operationName": "authorize_payment",
+    "organizationId": null,
+    "result": "CONTINUE",
+    "resultDescription": null,
+    "timestampCreated": "2019-07-30T14:10:49+0000",
+    "timestampExpires": "2019-07-30T14:15:49+0000",
+    "operationData": null,
+    "steps": [
+      {
+        "authMethod": "USER_ID_ASSIGN",
+        "params": []
+      },
+      {
+        "authMethod": "USERNAME_PASSWORD_AUTH",
+        "params": []
+      }
+    ],
+    "formData": {
+      "title": {
+        "id": "operation.title",
+        "message": null
+      },
+      "greeting": {
+        "id": "operation.greeting",
+        "message": null
+      },
+      "summary": {
+        "id": "operation.summary",
+        "message": null
+      },
+      "config": [],
+      "banners": [],
+      "parameters": [
+        {
+          "type": "AMOUNT",
+          "id": "operation.amount",
+          "label": null,
+          "valueFormatType": "AMOUNT",
+          "formattedValues": {},
+          "amount": 100,
+          "currency": "CZK",
+          "currencyId": "operation.currency"
         },
-        "expired": false
-    }
+        {
+          "type": "KEY_VALUE",
+          "id": "operation.account",
+          "label": null,
+          "valueFormatType": "ACCOUNT",
+          "formattedValues": {},
+          "value": "238400856/0300"
+        },
+        {
+          "type": "KEY_VALUE",
+          "id": "operation.dueDate",
+          "label": null,
+          "valueFormatType": "DATE",
+          "formattedValues": {},
+          "value": "2019-06-29"
+        },
+        {
+          "type": "NOTE",
+          "id": "operation.note",
+          "label": null,
+          "valueFormatType": "TEXT",
+          "formattedValues": {},
+          "note": "Utility Bill Payment - 05/2019"
+        }
+      ],
+      "dynamicDataLoaded": false,
+      "userInput": {}
+    },
+    "expired": false
+  }
 }
 ```
 
-Copy the `operationId` value (`9133b4c0-89e6-43e5-91fe-8ce8e714d1dc`), paste it in the second tab of the testing web application (into "Operation ID" field on the "Authorization" tab) and click "Authorize" button. Proceed with login and SMS code verification as if you created a new payment via the testing web application UI.
+Copy the `operationId` value (`09c61bc4-0b40-42c9-be03-a602bf889ad4`), paste it in the second tab of the testing web application (into "Operation ID" field on the "Authorization" tab) and click "Authorize" button. Proceed with login and SMS code verification as if you created a new payment via the testing web application UI.
 
 #### 5.5 Compile and Customize Mobile Token App
 
@@ -471,8 +445,6 @@ curl --request POST \
 ```
 
 If you now try to approve payment with the `tester` user, Mobile token should be offerred as an option.
-
-####
 
 ## License
 

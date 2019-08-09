@@ -44,8 +44,23 @@
     <!-- Web Flow Offline Mode Configuration -->
     <Parameter name="powerauth.webflow.offlineMode.available" value="${WEBFLOW_OFFLINE_MODE_AVAILABLE}"/>
 
+    <!-- Configuration of Android Security Warning -->
+    <Parameter name="powerauth.webflow.android.showSecurityWarning" value="${WEBFLOW_SHOW_SECURITY_WARNING_ANDROID}"/>
+
+    <!-- Configuration of Optional User Password Encryption -->
+    <Parameter name="powerauth.webflow.password.protection.type" value="${WEBFLOW_PASSWORD_PROTECTION_TYPE}"/>
+    <Parameter name="powerauth.webflow.password.encryption.transformation" value="${WEBFLOW_PASSWORD_ENCRYPTION_TRANSFORMATION}"/>
+    <Parameter name="powerauth.webflow.password.encryption.key" value="${WEBFLOW_PASSWORD_ENCRYPTION_KEY}"/>
+
+    <!-- Configuration of Delay for Resending SMS in Milliseconds -->
+    <Parameter name="powerauth.webflow.sms.resend.delayMs" value="${WEBFLOW_SMS_RESEND_DELAY_MS}"/>
+
+    <!-- Configuration of Delay for Showing Operation Timeout Warning in Milliseconds -->
+    <Parameter name="powerauth.webflow.timeout.warning.delayMs" value="${WEBFLOW_TIMEOUT_WARNING_DELAY_MS}"/>
+
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${WEBFLOW_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${WEBFLOW_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Application Service Configuration -->
     <Parameter name="powerauth.dataAdapter.service.applicationName" value="${WEBFLOW_APPLICATION_NAME}"/>

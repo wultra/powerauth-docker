@@ -24,6 +24,7 @@
 
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${NEXTSTEP_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${NEXTSTEP_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Application Configuration -->
     <Parameter name="powerauth.nextstep.service.applicationName" value="${NEXTSTEP_APPLICATION_NAME}"/>
