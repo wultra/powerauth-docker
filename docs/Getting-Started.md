@@ -103,8 +103,8 @@ _Note: All databases are already created with the correct structure and contain 
 | Application            | Important Paths             | URL                                                                  |
 |------------------------|-----------------------------|----------------------------------------------------------------------|
 | PowerAuth Server       | SOAP endpoint               | http://localhost:20010/powerauth-java-server/soap                    |
-|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/service-V3.wsdl    |
-|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/service-V2.wsdl    |
+|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/serviceV3.wsdl    |
+|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/serviceV2.wsdl    |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
