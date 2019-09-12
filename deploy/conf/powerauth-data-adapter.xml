@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- Database Configuration - JDBC -->
+    <Parameter name="spring.datasource.url" value="${DATA_ADAPTER_DATASOURCE_URL}"/>
+    <Parameter name="spring.datasource.username" value="${DATA_ADAPTER_DATASOURCE_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${DATA_ADAPTER_DATASOURCE_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${DATA_ADAPTER_DATASOURCE_DRIVER}"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="${DATA_ADAPTER_JPA_DDL_AUTO}"/>
+
+    <!-- Configuration of Database Charset -->
+    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${DATA_ADAPTER_JPA_CHARSET}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${DATA_ADAPTER_JPA_CHARACTER_ENCODING}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${DATA_ADAPTER_JPA_USE_UNICODE}"/>
+
+    <!-- Additional JPA Configuration -->
+    <Parameter name="spring.jpa.database-platform" value="${DATA_ADAPTER_JPA_DATABASE_PLATFORM}"/>
+
+    <!-- SMS Validity Parameters -->
+    <Parameter name="powerauth.authorization.sms-otp.expiration-time-in-seconds" value="${DATA_ADAPTER_SMS_EXPIRATION}"/>
+    <Parameter name="powerauth.authorization.sms-otp.max-verify-tries-per-message" value="${DATA_ADAPTER_SMS_MAX_TRIES}"/>
+
+    <!-- Database Configuration - JNDI -->
+    <Parameter name="spring.datasource.jndi-name" value="${DATA_ADAPTER_DATASOURCE_JNDI_NAME}"/>
+
+    <!-- JMX Configuration -->
+    <Parameter name="spring.jmx.enabled" value="${DATA_ADAPTER_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${DATA_ADAPTER_SPRING_JMX_DEFAULT_DOMAIN}"/>
+
+    <!-- Application Service Configuration -->
+    <Parameter name="powerauth.dataAdapter.service.applicationName" value="${DATA_ADAPTER_APPLICATION_NAME}"/>
+    <Parameter name="powerauth.dataAdapter.service.applicationDisplayName" value="${DATA_ADAPTER_APPLICATION_DISPLAY_NAME}"/>
+    <Parameter name="powerauth.dataAdapter.service.applicationEnvironment" value="${DATA_ADAPTER_APPLICATION_ENVIRONMENT}"/>
+
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${DATA_ADAPTER_LOGGING}"/>
+
+</Context>
