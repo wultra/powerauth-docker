@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- Database Configuration - JDBC -->
+    <Parameter name="spring.datasource.url" value="${POWERAUTH_TPP_ENGINE_DATASOURCE_URL}"/>
+    <Parameter name="spring.datasource.username" value="${POWERAUTH_TPP_ENGINE_DATASOURCE_USERNAME}"/>
+    <Parameter name="spring.datasource.password" value="${POWERAUTH_TPP_ENGINE_DATASOURCE_PASSWORD}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${POWERAUTH_TPP_ENGINE_DATASOURCE_DRIVER}"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="${POWERAUTH_TPP_ENGINE_JPA_DDL_AUTO}"/>
+
+    <!-- Configuration of Database Charset -->
+    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${POWERAUTH_TPP_ENGINE_JPA_CHARSET}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${POWERAUTH_TPP_ENGINE_JPA_CHARACTER_ENCODING}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${POWERAUTH_TPP_ENGINE_JPA_USE_UNICODE}"/>
+
+    <!-- Additional JPA Configuration -->
+    <Parameter name="spring.jpa.database-platform" value="${POWERAUTH_TPP_ENGINE_JPA_DATABASE_PLATFORM}"/>
+
+    <!-- Database Configuration - JNDI -->
+    <Parameter name="spring.datasource.jndi-name" value="${POWERAUTH_TPP_ENGINE_DATASOURCE_JNDI_NAME}"/>
+
+    <!-- JMX Configuration -->
+    <Parameter name="spring.jmx.enabled" value="${POWERAUTH_TPP_ENGINE_SPRING_JMX_ENABLED}"/>
+    <Parameter name="spring.jmx.default-domain" value="${POWERAUTH_TPP_ENGINE_SPRING_JMX_DEFAULT_DOMAIN}"/>
+
+    <!-- Application Configuration -->
+    <Parameter name="powerauth.tppEngine.service.applicationName" value="${POWERAUTH_TPP_ENGINE_APPLICATION_NAME}"/>
+    <Parameter name="powerauth.tppEngine.service.applicationDisplayName" value="${POWERAUTH_TPP_ENGINE_APPLICATION_DISPLAY_NAME}"/>
+    <Parameter name="powerauth.tppEngine.service.applicationEnvironment" value="${POWERAUTH_TPP_ENGINE_APPLICATION_ENVIRONMENT}"/>
+
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${POWERAUTH_TPP_ENGINE_LOGGING}"/>
+
+</Context>

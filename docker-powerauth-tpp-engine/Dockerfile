@@ -14,8 +14,8 @@ ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Deploy and run applications
-ADD deploy/conf/powerauth-nextstep.xml $TOMCAT_HOME/conf/Catalina/localhost/
-ADD deploy/images/powerauth-nextstep.war $TOMCAT_HOME/webapps/
+ADD deploy/conf/powerauth-tpp-engine.xml $TOMCAT_HOME/conf/Catalina/localhost/
+ADD deploy/images/powerauth-tpp-engine.war $TOMCAT_HOME/webapps/
 
 # Create user tomcat and run Tomcat under this user
 RUN groupadd -r tomcat
