@@ -191,56 +191,35 @@ CREATE TABLE da_sms_authorization (
   timestamp_expires    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE tpp_consent
-(
-	`consent_id` VARCHAR(64) PRIMARY KEY NOT NULL,
-	`consent_name` VARCHAR(128) NOT NULL,
-	`consent_text` TEXT NOT NULL,
-	`version` INT NOT NULL
+CREATE TABLE tpp_consent (
+	consent_id VARCHAR(64) PRIMARY KEY NOT NULL,
+	consent_name VARCHAR(128) NOT NULL,
+	consent_text TEXT NOT NULL,
+	version INT NOT NULL
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE tpp_user_consent
-(
-    `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `user_id` VARCHAR(256) NOT NULL,
-    `client_id` VARCHAR(256) NOT NULL,
-    `consent_id` VARCHAR(64) NOT NULL,
-    `external_id` VARCHAR(256) NOT NULL,
-    `consent_parameters` TEXT NOT NULL,
-    `timestamp_created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `timestamp_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE tpp_user_consent (
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id VARCHAR(256) NOT NULL,
+    client_id VARCHAR(256) NOT NULL,
+    consent_id VARCHAR(64) NOT NULL,
+    external_id VARCHAR(256) NOT NULL,
+    consent_parameters TEXT NOT NULL,
+    timestamp_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    timestamp_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE tpp_user_consent_history
-(
-    `id` INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `user_id` VARCHAR(256) NOT NULL,
-    `client_id` VARCHAR(256) NOT NULL,
-    `consent_id` VARCHAR(64) NOT NULL,
-    `consent_change` VARCHAR(16) NOT NULL,
-    `external_id` VARCHAR(256) NOT NULL,
-    `consent_parameters` TEXT NOT NULL,
-    `timestamp_created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE tpp_user_consent_history (
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id VARCHAR(256) NOT NULL,
+    client_id VARCHAR(256) NOT NULL,
+    consent_id VARCHAR(64) NOT NULL,
+    consent_change VARCHAR(16) NOT NULL,
+    external_id VARCHAR(256) NOT NULL,
+    consent_parameters TEXT NOT NULL,
+    timestamp_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Table UserConnection is required only for the demo client application which is based on Spring Social.
--- See: https://github.com/spring-projects/spring-social
-/*
-CREATE TABLE UserConnection (
-  userId VARCHAR(255) NOT NULL,
-  providerId VARCHAR(255) NOT NULL,
-  providerUserId VARCHAR(255),
-  rank INTEGER NOT NULL,
-  displayName VARCHAR(255),
-  profileUrl VARCHAR(512),
-  imageUrl VARCHAR(512),
-  accessToken VARCHAR(512) NOT NULL,
-  secret VARCHAR(512),
-  refreshToken VARCHAR(512),
-  expireTime BIGINT,
-PRIMARY KEY (userId, providerId, providerUserId));
-CREATE UNIQUE INDEX UserConnectionRank on UserConnection(userId, providerId, rank);
-*/
 -- default oauth 2.0 client
 -- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
 INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, additional_information, autoapprove)
