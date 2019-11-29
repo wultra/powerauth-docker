@@ -305,14 +305,14 @@ curl --request POST \
         }
       ],
       "applicationContext": {
-        "id": "DEMO",
+        "id": "democlient",
         "name": "Demo application",
         "description": "Web Flow demo application",
+        "originalScopes": [
+          "pisp"
+        ],
         "extras": {
-          "applicationOwner": "Wultra",
-          "_requestedScopes": [
-            "PISP"
-          ]
+          "applicationOwner": "Wultra"
         }
       }
     }

@@ -58,6 +58,14 @@
     <!-- Configuration of Delay for Showing Operation Timeout Warning in Milliseconds -->
     <Parameter name="powerauth.webflow.timeout.warning.delayMs" value="${WEBFLOW_TIMEOUT_WARNING_DELAY_MS}"/>
 
+    <!-- Configuration of Anti-Fraud System Parameters -->
+    <Parameter name="powerauth.webflow.afs.enabled" value="${WEBFLOW_AFS_ENABLED}"/>
+    <Parameter name="powerauth.webflow.afs.type" value="${WEBFLOW_AFS_TYPE}"/>
+    <Parameter name="powerauth.webflow.afs.detectIpAddress" value="${WEBFLOW_AFS_DETECT_IP_ADDRESS}"/>
+    <Parameter name="powerauth.webflow.afs.forceIpv4" value="${WEBFLOW_AFS_FORCE_IPV4}"/>
+    <Parameter name="powerauth.webflow.afs.tm.cookies.deviceTag" value="${WEBFLOW_AFS_TM_COOKIES_DEVICE_TAG}"/>
+    <Parameter name="powerauth.webflow.afs.tm.cookies.sessionSid" value="${WEBFLOW_AFS_TM_COOKIES_SESSION_SID}"/>
+
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${WEBFLOW_SPRING_JMX_ENABLED}"/>
     <Parameter name="spring.jmx.default-domain" value="${WEBFLOW_SPRING_JMX_DEFAULT_DOMAIN}"/>
