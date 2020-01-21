@@ -145,9 +145,9 @@ Response:
     "applicationName": "powerauth-server",
     "applicationDisplayName": "PowerAuth Server",
     "applicationEnvironment": "",
-    "version": "0.21.0",
-    "buildTime": "2019-02-05T15:50:19.948+0000",
-    "timestamp": "2019-02-20T13:31:32.953+0000"
+    "version": "0.23.0",
+    "buildTime": "2020-01-05T15:50:19.948+0000",
+    "timestamp": "2020-01-20T13:31:32.953+0000"
   },
   "status": "OK"
 }
@@ -308,9 +308,7 @@ curl --request POST \
         "id": "democlient",
         "name": "Demo application",
         "description": "Web Flow demo application",
-        "originalScopes": [
-          "pisp"
-        ],
+        "originalScopes": ["pisp"], 
         "extras": {
           "applicationOwner": "Wultra"
         }

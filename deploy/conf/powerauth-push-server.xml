@@ -49,7 +49,7 @@
     <!-- Push Campaign Batch Size -->
     <Parameter name="powerauth.push.service.campaign.batchSize" value="${PUSH_SERVER_CAMPAIGN_BATCH_SIZE}"/>
 
-    <!-- Storage of Sent Messages Enabled -->
+    <!-- Whether Storage of Sent Messages Is Enabled -->
     <Parameter name="powerauth.push.service.message.storage.enabled" value="${PUSH_SERVER_MESSAGE_STORAGE_ENABLED}"/>
 
     <!-- Whether Push Device Registration Supports Associated Activations -->

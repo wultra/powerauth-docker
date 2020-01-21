@@ -71,9 +71,9 @@
     <Parameter name="spring.jmx.default-domain" value="${WEBFLOW_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Application Service Configuration -->
-    <Parameter name="powerauth.dataAdapter.service.applicationName" value="${WEBFLOW_APPLICATION_NAME}"/>
-    <Parameter name="powerauth.dataAdapter.service.applicationDisplayName" value="${WEBFLOW_APPLICATION_DISPLAY_NAME}"/>
-    <Parameter name="powerauth.dataAdapter.service.applicationEnvironment" value="${WEBFLOW_APPLICATION_ENVIRONMENT}"/>
+    <Parameter name="powerauth.webflow.service.applicationName" value="${WEBFLOW_APPLICATION_NAME}"/>
+    <Parameter name="powerauth.webflow.service.applicationDisplayName" value="${WEBFLOW_APPLICATION_DISPLAY_NAME}"/>
+    <Parameter name="powerauth.webflow.service.applicationEnvironment" value="${WEBFLOW_APPLICATION_ENVIRONMENT}"/>
 
     <!-- Custom Logging Configuration -->
     <Parameter name="logging.config" value="${WEBFLOW_LOGGING}"/>
