@@ -2,3 +2,4 @@
 **/build
 **/deploy/images/*.war
 **/deploy/lib/*.jar
+**/.idea

@@ -48,6 +48,9 @@
     <!-- Master DB encryption key -->
     <Parameter name="powerauth.server.db.master.encryption.key" value="${POWERAUTH_SERVER_MASTER_DB_ENCRYPTION_KEY}"/>
 
+    <!-- Whether Biometry Is Enabled in Secure Vault -->
+    <Parameter name="powerauth.service.secureVault.enableBiometricAuthentication" value="${POWERAUTH_SERVER_SECURE_VAULT_ENABLE_BIOMETRY}"/>
+
     <!-- Application Configuration -->
     <Parameter name="powerauth.service.applicationName" value="${POWERAUTH_SERVER_APPLICATION_NAME}"/>
     <Parameter name="powerauth.service.applicationDisplayName" value="${POWERAUTH_SERVER_APPLICATION_DISPLAY_NAME}"/>

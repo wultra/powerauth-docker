@@ -305,7 +305,7 @@ curl --request POST \
         }
       ],
       "applicationContext": {
-        "id": "DEMO",
+        "id": "democlient",
         "name": "Demo application",
         "description": "Web Flow demo application",
         "originalScopes": ["pisp"], 
