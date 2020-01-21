@@ -28,9 +28,9 @@ CREATE TABLE oauth_client_details (
 -- Table oauth_client_token stores OAuth2 tokens for retrieval by client applications.
 -- See: https://docs.spring.io/spring-security/oauth/apidocs/org/springframework/security/oauth2/client/token/JdbcClientTokenServices.html
 CREATE TABLE oauth_client_token (
+  authentication_id VARCHAR(256) PRIMARY KEY,
   token_id          VARCHAR(256),
   token             LONG VARBINARY,
-  authentication_id VARCHAR(256) PRIMARY KEY,
   user_name         VARCHAR(256),
   client_id         VARCHAR(256)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -38,9 +38,9 @@ CREATE TABLE oauth_client_token (
 -- Table oauth_access_token stores OAuth2 access tokens.
 -- See: https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/main/java/org/springframework/security/oauth2/provider/token/store/JdbcTokenStore.java
 CREATE TABLE oauth_access_token (
+  authentication_id VARCHAR(256) PRIMARY KEY,
   token_id          VARCHAR(256),
   token             LONG VARBINARY,
-  authentication_id VARCHAR(256) PRIMARY KEY,
   user_name         VARCHAR(256),
   client_id         VARCHAR(256),
   authentication    LONG VARBINARY,
@@ -99,7 +99,10 @@ CREATE TABLE ns_operation_config (
   operation_name            VARCHAR(32) PRIMARY KEY NOT NULL,
   template_version          CHAR NOT NULL,
   template_id               INTEGER NOT NULL,
-  mobile_token_mode         VARCHAR(256) NOT NULL
+  mobile_token_enabled      BOOLEAN DEFAULT FALSE NOT NULL,
+  mobile_token_mode         VARCHAR(256) NOT NULL,
+  afs_enabled               BOOLEAN NOT NULL DEFAULT FALSE,
+  afs_config_id             VARCHAR(256)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_organization stores definitions of organizations related to the operations.
@@ -115,19 +118,22 @@ CREATE TABLE ns_organization (
 -- Table ns_operation stores details of Web Flow operations.
 -- Only the last status is stored in this table, changes of operations are stored in table ns_operation_history.
 CREATE TABLE ns_operation (
-  operation_id              VARCHAR(256) PRIMARY KEY NOT NULL,
-  operation_name            VARCHAR(32) NOT NULL,
-  operation_data            TEXT NOT NULL,
-  operation_form_data       TEXT,
-  application_id            VARCHAR(256),
-  application_name          VARCHAR(256),
-  application_description   VARCHAR(256),
-  application_extras        TEXT,
-  user_id                   VARCHAR(256),
-  organization_id           VARCHAR(256),
-  result                    VARCHAR(32),
-  timestamp_created         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  timestamp_expires         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  operation_id                  VARCHAR(256) PRIMARY KEY NOT NULL,
+  operation_name                VARCHAR(32) NOT NULL,
+  operation_data                TEXT NOT NULL,
+  operation_form_data           TEXT,
+  application_id                VARCHAR(256),
+  application_name              VARCHAR(256),
+  application_description       VARCHAR(256),
+  application_original_scopes   VARCHAR(256),
+  application_extras            TEXT,
+  user_id                       VARCHAR(256),
+  organization_id               VARCHAR(256),
+  user_account_status           VARCHAR(32),
+  external_transaction_id       VARCHAR(256),
+  result                        VARCHAR(32),
+  timestamp_created             TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  timestamp_expires             TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY organization_fk (organization_id) REFERENCES ns_organization (organization_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -136,6 +142,7 @@ CREATE TABLE ns_operation_history (
   operation_id                VARCHAR(256) NOT NULL,
   result_id                   INTEGER NOT NULL,
   request_auth_method         VARCHAR(32) NOT NULL,
+  request_auth_instruments    VARCHAR(256),
   request_auth_step_result    VARCHAR(32) NOT NULL,
   request_params              VARCHAR(4096),
   response_result             VARCHAR(32) NOT NULL,
@@ -144,9 +151,24 @@ CREATE TABLE ns_operation_history (
   response_timestamp_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   response_timestamp_expires  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   chosen_auth_method          VARCHAR(32),
+  mobile_token_active         BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (operation_id, result_id),
   FOREIGN KEY operation_fk (operation_id) REFERENCES ns_operation (operation_id),
   FOREIGN KEY auth_method_fk (request_auth_method) REFERENCES ns_auth_method (auth_method)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Table ns_operation_afs stores AFS requests and responses.
+CREATE TABLE ns_operation_afs (
+  afs_action_id               INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  operation_id                VARCHAR(256) NOT NULL,
+  request_afs_action          VARCHAR(256) NOT NULL,
+  request_step_index          INTEGER NOT NULL,
+  request_afs_extras          VARCHAR(256),
+  response_afs_apply          BOOLEAN NOT NULL DEFAULT FALSE,
+  response_afs_label          VARCHAR(256),
+  response_afs_extras         VARCHAR(256),
+  timestamp_created           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY operation_afs_fk (operation_id) REFERENCES ns_operation (operation_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_step_definition stores definitions of authentication/authorization steps.
@@ -169,8 +191,18 @@ CREATE TABLE ns_step_definition (
 CREATE TABLE wf_operation_session (
   operation_id              VARCHAR(256) PRIMARY KEY NOT NULL,
   http_session_id           VARCHAR(256) NOT NULL,
+  operation_hash            VARCHAR(256),
+  websocket_session_id      VARCHAR(32),
+  client_ip_address         VARCHAR(32),
   result                    VARCHAR(32) NOT NULL,
   timestamp_created         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Table wf_afs_config is used to configure anti-fraud system parameters.
+CREATE TABLE wf_afs_config (
+  config_id                 VARCHAR(256) PRIMARY KEY NOT NULL,
+  js_snippet_url            VARCHAR(256) NOT NULL,
+  parameters                TEXT
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table da_sms_authorization stores data for SMS OTP authorization.
@@ -190,28 +222,77 @@ CREATE TABLE da_sms_authorization (
   timestamp_expires    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Table UserConnection is required only for the demo client application which is based on Spring Social.
--- See: https://github.com/spring-projects/spring-social
-/*
-CREATE TABLE UserConnection (
-  userId VARCHAR(255) NOT NULL,
-  providerId VARCHAR(255) NOT NULL,
-  providerUserId VARCHAR(255),
-  rank INTEGER NOT NULL,
-  displayName VARCHAR(255),
-  profileUrl VARCHAR(512),
-  imageUrl VARCHAR(512),
-  accessToken VARCHAR(512) NOT NULL,
-  secret VARCHAR(512),
-  refreshToken VARCHAR(512),
-  expireTime BIGINT,
-PRIMARY KEY (userId, providerId, providerUserId));
-CREATE UNIQUE INDEX UserConnectionRank on UserConnection(userId, providerId, rank);
-*/
+-- Table da_user_credentials stores built-in users for the data adapter
+CREATE TABLE da_user_credentials (
+  user_id               VARCHAR(128) PRIMARY KEY NOT NULL,
+  username              VARCHAR(255) NOT NULL,
+  password_hash         VARCHAR(255) NOT NULL,
+  family_name           VARCHAR(255) NOT NULL,
+  given_name            VARCHAR(255) NOT NULL,
+  organization_id       VARCHAR(64)  NOT NULL,
+  phone_number          VARCHAR(255) NOT NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Table for the list of consent currently given by a user
+CREATE TABLE tpp_consent (
+  consent_id            VARCHAR(64) PRIMARY KEY NOT NULL,
+  consent_name          VARCHAR(128) NOT NULL,
+  consent_text          TEXT NOT NULL,
+  version               INT NOT NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Table for the list of changes in consent history by given user
+CREATE TABLE tpp_user_consent (
+  id                    INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  user_id               VARCHAR(256) NOT NULL,
+  client_id             VARCHAR(256) NOT NULL,
+  consent_id            VARCHAR(64) NOT NULL,
+  external_id           VARCHAR(256) NOT NULL,
+  consent_parameters    TEXT NOT NULL,
+  timestamp_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  timestamp_updated     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE tpp_user_consent_history (
+  id                    INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  user_id               VARCHAR(256) NOT NULL,
+  client_id             VARCHAR(256) NOT NULL,
+  consent_id            VARCHAR(64) NOT NULL,
+  consent_change        VARCHAR(16) NOT NULL,
+  external_id           VARCHAR(256) NOT NULL,
+  consent_parameters    TEXT NOT NULL,
+  timestamp_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE tpp_detail (
+  tpp_id                INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  tpp_name              VARCHAR(256) NOT NULL,
+  tpp_info              TEXT NULL,
+  tpp_address           TEXT NULL,
+  tpp_website           TEXT NULL,
+  tpp_phone             VARCHAR(256) NULL,
+  tpp_email             VARCHAR(256) NULL,
+  tpp_logo              BLOB NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE tpp_app_detail (
+  tpp_id                INTEGER NOT NULL,
+  app_client_id         VARCHAR(256) NOT NULL,
+  app_name              VARCHAR(256) NOT NULL,
+  app_info              TEXT NULL,
+  PRIMARY KEY (tpp_id, app_client_id),
+  FOREIGN KEY tpp_detail_fk (tpp_id) REFERENCES tpp_detail (tpp_id),
+  FOREIGN KEY tpp_client_secret_fk (app_client_id) REFERENCES oauth_client_details (client_id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE INDEX wf_operation_hash ON wf_operation_session (operation_hash);
+CREATE INDEX wf_websocket_session ON wf_operation_session (websocket_session_id);
+CREATE UNIQUE INDEX ns_operation_afs_unique on ns_operation_afs (operation_id, request_afs_action, request_step_index);
+
 -- default oauth 2.0 client
 -- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
-INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, additional_information, autoapprove)
-VALUES ('democlient', '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.', 'profile', 'authorization_code', '{}', 'true');
+INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, web_server_redirect_uri, additional_information, autoapprove)
+VALUES ('democlient', '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.', 'profile', 'authorization_code', 'http://localhost:8080/powerauth-webflow-client/connect/demo', '{}', 'true');
 
 -- authentication methods
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, has_mobile_token, display_name_key)
@@ -249,17 +330,21 @@ VALUES (1, 'login', 'CREATE', NULL, NULL, 1, 'USER_ID_ASSIGN', 'CONTINUE');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
 VALUES (2, 'login', 'CREATE', NULL, NULL, 2, 'USERNAME_PASSWORD_AUTH', 'CONTINUE');
 
+-- login - update operation - CANCELED -> FAILED
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (3, 'login', 'UPDATE', 'INIT', 'CANCELED', 1, 'INIT', 'FAILED');
+
 -- login - update operation - CONFIRMED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (3, 'login', 'UPDATE', 'USER_ID_ASSIGN', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
+VALUES (4, 'login', 'UPDATE', 'USER_ID_ASSIGN', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (4, 'login', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
+VALUES (5, 'login', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
 
 -- login - update operation - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (5, 'login', 'UPDATE', 'USER_ID_ASSIGN', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (6, 'login', 'UPDATE', 'USER_ID_ASSIGN', 'CANCELED', 1, NULL, 'FAILED');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (6, 'login', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (7, 'login', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CANCELED', 1, NULL, 'FAILED');
 
 -- login - update operation - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
@@ -406,7 +491,7 @@ VALUES (48, 'login_sca', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 1, NULL, 'FA
 
 -- login_sca - update operation (consent) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (49, 'login_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'LOGIN_SCA', 'CONTINUE');
+VALUES (49, 'login_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
 
 -- authorize_payment_sca - init operation -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
@@ -458,4 +543,13 @@ VALUES (61, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 
 
 -- authorize_payment_sca - update operation (consent) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (62, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'APPROVAL_SCA', 'CONTINUE');
+VALUES (62, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
+
+-- default consents for PSD2
+-- "aisp" consent
+INSERT INTO tpp_consent (consent_id, consent_name, consent_text, version)
+VALUES ('aisp', 'Access Information Service Provider', '<p>I give a consent to <strong>{{TPP_NAME}}</strong> that allows access to my payment accounts via <strong>{{APP_NAME}}</strong></p>', 1);
+
+-- "pisp" consent
+INSERT INTO tpp_consent (consent_id, consent_name, consent_text, version)
+VALUES ('pisp', 'Payment Initiation Service Provider', '<p>I give a consent to <strong>{{TPP_NAME}}</strong> that allows payment initiation from my payment accounts via <strong>{{APP_NAME}}</strong></p>', 1);

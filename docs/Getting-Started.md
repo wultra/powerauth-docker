@@ -103,8 +103,8 @@ _Note: All databases are already created with the correct structure and contain 
 | Application            | Important Paths             | URL                                                                  |
 |------------------------|-----------------------------|----------------------------------------------------------------------|
 | PowerAuth Server       | SOAP endpoint               | http://localhost:20010/powerauth-java-server/soap                    |
-|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/service-V3.wsdl    |
-|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/service-V2.wsdl    |
+|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/serviceV3.wsdl    |
+|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/serviceV2.wsdl    |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
@@ -133,7 +133,7 @@ Request:
 ```
 
 HTTP header:
-``` 
+```
 Content-Type: application/json
 ```
 
@@ -145,9 +145,9 @@ Response:
     "applicationName": "powerauth-server",
     "applicationDisplayName": "PowerAuth Server",
     "applicationEnvironment": "",
-    "version": "0.21.0",
-    "buildTime": "2019-02-05T15:50:19.948+0000",
-    "timestamp": "2019-02-20T13:31:32.953+0000"
+    "version": "0.23.0",
+    "buildTime": "2020-01-05T15:50:19.948+0000",
+    "timestamp": "2020-01-20T13:31:32.953+0000"
   },
   "status": "OK"
 }
@@ -188,9 +188,9 @@ In order to configure APNs and FCM messages, you need to follow these steps:
         - Bundle ID _(note: used as the "topic")_
         - APNs private key file _(note: a file with `*.p8` extension)_
     - For Android, you need to obtain the following information from the [Firebase Console](https://console.firebase.google.com):
-        - Project ID (visible in *Project Settings*) 
+        - Project ID (visible in *Project Settings*)
         - Private key for FCM HTTP API v1 (see [FCM documentation](https://firebase.google.com/docs/cloud-messaging/auth-server))     
-           
+
 To test the push notifications later, you can call the following command - don't forget to replace the `appId` and your `userId`:
 
 ```sh
@@ -305,14 +305,12 @@ curl --request POST \
         }
       ],
       "applicationContext": {
-        "id": "DEMO",
+        "id": "democlient",
         "name": "Demo application",
         "description": "Web Flow demo application",
+        "originalScopes": ["pisp"], 
         "extras": {
-          "applicationOwner": "Wultra",
-          "_requestedScopes": [
-            "PISP"
-          ]
+          "applicationOwner": "Wultra"
         }
       }
     }

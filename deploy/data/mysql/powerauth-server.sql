@@ -14,7 +14,7 @@ USE powerauth;
 
 CREATE TABLE `pa_application` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -94,6 +94,7 @@ CREATE TABLE `pa_signature_audit` (
   `note` text NOT NULL,
   `timestamp_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `version` int(2) DEFAULT 2,
+  `signature_version` varchar(255),
   PRIMARY KEY (`id`),
   CONSTRAINT `FK_ACTIVATION_ID` FOREIGN KEY (`activation_id`) REFERENCES `pa_activation` (`activation_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
