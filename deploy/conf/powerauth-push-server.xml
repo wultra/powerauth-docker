@@ -49,8 +49,11 @@
     <!-- Push Campaign Batch Size -->
     <Parameter name="powerauth.push.service.campaign.batchSize" value="${PUSH_SERVER_CAMPAIGN_BATCH_SIZE}"/>
 
-    <!-- Storage of Sent Messages Enabled -->
+    <!-- Whether Storage of Sent Messages Is Enabled -->
     <Parameter name="powerauth.push.service.message.storage.enabled" value="${PUSH_SERVER_MESSAGE_STORAGE_ENABLED}"/>
+
+    <!-- Whether Registration of Multiple Activations for Same Push Token Is Enabled -->
+    <Parameter name="powerauth.push.service.registration.multipleActivations.enabled=false" value="${PUSH_SERVER_REGISTRATION_MULTIPLE_ACTIVATIONS_ENABLED}"/>
 
     <!-- Spring Batch Configuration -->
     <Parameter name="spring.batch.job.enabled" value="${PUSH_SERVER_SPRING_BATCH_JOB_ENABLED}"/>
