@@ -6,3 +6,4 @@ Place following files here:
 - powerauth-nextstep.war
 - powerauth-push-server.war
 - powerauth-webflow.war
+- powerauth-tpp-engine.war
