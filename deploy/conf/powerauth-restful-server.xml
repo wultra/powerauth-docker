@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- PowerAuth Server Service URL -->
+    <Parameter name="powerauth.service.url" value="${POWERAUTH_RESTFUL_POWERAUTH_SERVICE_URL}"/>
+
+    <!-- PowerAuth Server Service Security Settings -->
+    <Parameter name="powerauth.service.security.clientToken" value="${POWERAUTH_RESTFUL_SECURITY_CLIENT_TOKEN}"/>
+    <Parameter name="powerauth.service.security.clientSecret" value="${POWERAUTH_RESTFUL_SECURITY_CLIENT_SECRET}"/>
+
+    <!-- Custom Logging Configuration -->
+    <Parameter name="logging.config" value="${POWERAUTH_ADMIN_LOGGING}"/>
+
+</Context>
