@@ -205,6 +205,18 @@ CREATE TABLE wf_afs_config (
   parameters                TEXT
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- Table wf_certificate_verification is used for storing information about verified client TLS certificates.
+CREATE TABLE wf_certificate_verification (
+  operation_id               VARCHAR(256) NOT NULL,
+  auth_method                VARCHAR(32) NOT NULL,
+  client_certificate_issuer  VARCHAR(4000) NOT NULL,
+  client_certificate_subject VARCHAR(4000) NOT NULL,
+  client_certificate_sn      VARCHAR(256) NOT NULL,
+  operation_data             TEXT NOT NULL,
+  timestamp_verified         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (operation_id, auth_method)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- Table da_sms_authorization stores data for SMS OTP authorization.
 CREATE TABLE da_sms_authorization (
   message_id           VARCHAR(256) PRIMARY KEY NOT NULL,
@@ -247,7 +259,7 @@ CREATE TABLE tpp_user_consent (
   user_id               VARCHAR(256) NOT NULL,
   client_id             VARCHAR(256) NOT NULL,
   consent_id            VARCHAR(64) NOT NULL,
-  external_id           VARCHAR(256) NOT NULL,
+  external_id           VARCHAR(256),
   consent_parameters    TEXT NOT NULL,
   timestamp_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   timestamp_updated     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -259,7 +271,7 @@ CREATE TABLE tpp_user_consent_history (
   client_id             VARCHAR(256) NOT NULL,
   consent_id            VARCHAR(64) NOT NULL,
   consent_change        VARCHAR(16) NOT NULL,
-  external_id           VARCHAR(256) NOT NULL,
+  external_id           VARCHAR(256),
   consent_parameters    TEXT NOT NULL,
   timestamp_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -267,6 +279,7 @@ CREATE TABLE tpp_user_consent_history (
 CREATE TABLE tpp_detail (
   tpp_id                INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
   tpp_name              VARCHAR(256) NOT NULL,
+  tpp_license           VARCHAR(256) NOT NULL,
   tpp_info              TEXT NULL,
   tpp_address           TEXT NULL,
   tpp_website           TEXT NULL,
@@ -280,6 +293,7 @@ CREATE TABLE tpp_app_detail (
   app_client_id         VARCHAR(256) NOT NULL,
   app_name              VARCHAR(256) NOT NULL,
   app_info              TEXT NULL,
+  app_type              VARCHAR(32) NULL,
   PRIMARY KEY (tpp_id, app_client_id),
   FOREIGN KEY tpp_detail_fk (tpp_id) REFERENCES tpp_detail (tpp_id),
   FOREIGN KEY tpp_client_secret_fk (app_client_id) REFERENCES oauth_client_details (client_id)
@@ -287,7 +301,9 @@ CREATE TABLE tpp_app_detail (
 
 CREATE INDEX wf_operation_hash ON wf_operation_session (operation_hash);
 CREATE INDEX wf_websocket_session ON wf_operation_session (websocket_session_id);
+CREATE INDEX ns_operation_pending ON ns_operation (user_id, result);
 CREATE UNIQUE INDEX ns_operation_afs_unique on ns_operation_afs (operation_id, request_afs_action, request_step_index);
+CREATE INDEX wf_certificate_operation ON wf_certificate_verification (operation_id);
 
 -- default oauth 2.0 client
 -- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
@@ -315,10 +331,10 @@ INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_pr
 VALUES ('APPROVAL_SCA', 9, FALSE, NULL, NULL, TRUE, 5, TRUE, TRUE, 'method.approvalSca');
 
 -- operation configuration
-INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_mode) VALUES ('login', 'A', 2, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
-INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_mode) VALUES ('login_sca', 'A', 2, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
-INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_mode) VALUES ('authorize_payment', 'A', 1, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
-INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_mode) VALUES ('authorize_payment_sca', 'A', 1, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
+INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_enabled, mobile_token_mode) VALUES ('login', 'A', 2, FALSE, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
+INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_enabled, mobile_token_mode) VALUES ('login_sca', 'A', 2, FALSE, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
+INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_enabled, mobile_token_mode) VALUES ('authorize_payment', 'A', 1, FALSE, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
+INSERT INTO ns_operation_config (operation_name, template_version, template_id, mobile_token_enabled, mobile_token_mode) VALUES ('authorize_payment_sca', 'A', 1, FALSE, '{"type":"2FA","variants":["possession_knowledge","possession_biometry"]}');
 
 -- organization configuration
 INSERT INTO ns_organization (organization_id, display_name_key, is_default, order_number) VALUES ('RETAIL', 'organization.retail', TRUE, 1);
@@ -380,176 +396,199 @@ VALUES (17, 'authorize_payment', 'CREATE', NULL, NULL, 1, 'USER_ID_ASSIGN', 'CON
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
 VALUES (18, 'authorize_payment', 'CREATE', NULL, NULL, 2, 'USERNAME_PASSWORD_AUTH', 'CONTINUE');
 
+-- authorize_payment - update operation - CANCELED -> FAILED
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (19, 'authorize_payment', 'UPDATE', 'INIT', 'CANCELED', 1, 'INIT', 'FAILED');
+
 -- authorize_payment - update operation (login) - CONFIRMED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (19, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'CONFIRMED', 1, 'POWERAUTH_TOKEN', 'CONTINUE');
+VALUES (20, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'CONFIRMED', 1, 'POWERAUTH_TOKEN', 'CONTINUE');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (20, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'CONFIRMED', 2, 'SMS_KEY', 'CONTINUE');
+VALUES (21, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'CONFIRMED', 2, 'SMS_KEY', 'CONTINUE');
 
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (21, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CONFIRMED', 1, 'POWERAUTH_TOKEN', 'CONTINUE');
+VALUES (22, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CONFIRMED', 1, 'POWERAUTH_TOKEN', 'CONTINUE');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (22, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CONFIRMED', 2, 'SMS_KEY', 'CONTINUE');
+VALUES (23, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CONFIRMED', 2, 'SMS_KEY', 'CONTINUE');
 
 -- authorize_payment - update operation (login) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (23, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (24, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'CANCELED', 1, NULL, 'FAILED');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (24, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (25, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'CANCELED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (login) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (25, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (26, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (26, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (27, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (login) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (27, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_FAILED', 1, 'USER_ID_ASSIGN', 'CONTINUE');
+VALUES (28, 'authorize_payment', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_FAILED', 1, 'USER_ID_ASSIGN', 'CONTINUE');
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (28, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'AUTH_FAILED', 1, 'USERNAME_PASSWORD_AUTH', 'CONTINUE');
+VALUES (29, 'authorize_payment', 'UPDATE', 'USERNAME_PASSWORD_AUTH', 'AUTH_FAILED', 1, 'USERNAME_PASSWORD_AUTH', 'CONTINUE');
 
 -- authorize_payment - update operation (authorize using mobile token) - CONFIRMED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (29, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
+VALUES (30, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
 
 -- authorize_payment - update operation (authorize using mobile token) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (30, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (31, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'CANCELED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (authorize using mobile token) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (31, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (32, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (authorize using mobile token) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (32, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'AUTH_FAILED', 1, 'POWERAUTH_TOKEN', 'CONTINUE');
+VALUES (33, 'authorize_payment', 'UPDATE', 'POWERAUTH_TOKEN', 'AUTH_FAILED', 1, 'POWERAUTH_TOKEN', 'CONTINUE');
 
 -- authorize_payment - update operation (authorize using sms key) - CONFIRMED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (33, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
+VALUES (34, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
 
 -- authorize_payment - update operation (authorize using sms key) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (34, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (35, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'CANCELED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (authorize using sms key) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (35, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (36, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (authorize using sms key) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (36, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'AUTH_FAILED', 1, 'SMS_KEY', 'CONTINUE');
+VALUES (37, 'authorize_payment', 'UPDATE', 'SMS_KEY', 'AUTH_FAILED', 1, 'SMS_KEY', 'CONTINUE');
 
 -- authorize_payment - update operation (consent) - CONFIRMED -> DONE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (37, 'authorize_payment', 'UPDATE', 'CONSENT', 'CONFIRMED', 1, NULL, 'DONE');
+VALUES (38, 'authorize_payment', 'UPDATE', 'CONSENT', 'CONFIRMED', 1, NULL, 'DONE');
 
 -- authorize_payment - update operation (consent) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (38, 'authorize_payment', 'UPDATE', 'CONSENT', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (39, 'authorize_payment', 'UPDATE', 'CONSENT', 'CANCELED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (consent) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (39, 'authorize_payment', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (40, 'authorize_payment', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- authorize_payment - update operation (consent) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (40, 'authorize_payment', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
+VALUES (41, 'authorize_payment', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
 
 -- login_sca - init operation -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (41, 'login_sca', 'CREATE', NULL, NULL, 1, 'LOGIN_SCA', 'CONTINUE');
+VALUES (42, 'login_sca', 'CREATE', NULL, NULL, 1, 'LOGIN_SCA', 'CONTINUE');
+
+-- login_sca - update operation - CANCELED -> FAILED
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (43, 'login_sca', 'UPDATE', 'INIT', 'CANCELED', 1, 'INIT', 'FAILED');
 
 -- login_sca - update operation (login) - CONFIRMED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (42, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
+VALUES (44, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
 
 -- login_sca - update operation (login) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (43, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (45, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'CANCELED', 1, NULL, 'FAILED');
 
 -- login_sca - update operation (login) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (44, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (46, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- login_sca - update operation (login) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (45, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_FAILED', 1, 'LOGIN_SCA', 'CONTINUE');
+VALUES (47, 'login_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_FAILED', 1, 'LOGIN_SCA', 'CONTINUE');
 
 -- login_sca - update operation (consent) - CONFIRMED -> DONE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (46, 'login_sca', 'UPDATE', 'CONSENT', 'CONFIRMED', 1, NULL, 'DONE');
+VALUES (48, 'login_sca', 'UPDATE', 'CONSENT', 'CONFIRMED', 1, NULL, 'DONE');
 
 -- login_sca - update operation (consent) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (47, 'login_sca', 'UPDATE', 'CONSENT', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (49, 'login_sca', 'UPDATE', 'CONSENT', 'CANCELED', 1, NULL, 'FAILED');
 
 -- login_sca - update operation (consent) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (48, 'login_sca', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (50, 'login_sca', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- login_sca - update operation (consent) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (49, 'login_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
+VALUES (51, 'login_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
 
 -- authorize_payment_sca - init operation -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (50, 'authorize_payment_sca', 'CREATE', NULL, NULL, 1, 'LOGIN_SCA', 'CONTINUE');
+VALUES (52, 'authorize_payment_sca', 'CREATE', NULL, NULL, 1, 'LOGIN_SCA', 'CONTINUE');
+
+-- authorize_payment_sca - update operation - CANCELED -> FAILED
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (53, 'authorize_payment_sca', 'UPDATE', 'INIT', 'CANCELED', 1, 'INIT', 'FAILED');
 
 -- authorize_payment_sca - update operation (login) - CONFIRMED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (51, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'CONFIRMED', 1, 'APPROVAL_SCA', 'CONTINUE');
+VALUES (54, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'CONFIRMED', 1, 'APPROVAL_SCA', 'CONTINUE');
 
 -- authorize_payment_sca - update operation (login) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (52, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (55, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'CANCELED', 1, NULL, 'FAILED');
 
 -- authorize_payment_sca - update operation (login) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (53, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (56, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- authorize_payment_sca - update operation (login) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (54, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_FAILED', 1, 'LOGIN_SCA', 'CONTINUE');
+VALUES (57, 'authorize_payment_sca', 'UPDATE', 'LOGIN_SCA', 'AUTH_FAILED', 1, 'LOGIN_SCA', 'CONTINUE');
 
 -- authorize_payment_sca - update operation (approval) - CONFIRMED -> DONE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (55, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
+VALUES (58, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'CONFIRMED', 1, 'CONSENT', 'CONTINUE');
 
 -- authorize_payment_sca - update operation (approval) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (56, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (59, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'CANCELED', 1, NULL, 'FAILED');
 
 -- authorize_payment_sca - update operation (approval) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (57, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (60, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- authorize_payment_sca - update operation (approval) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (58, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'AUTH_FAILED', 1, 'APPROVAL_SCA', 'CONTINUE');
+VALUES (61, 'authorize_payment_sca', 'UPDATE', 'APPROVAL_SCA', 'AUTH_FAILED', 1, 'APPROVAL_SCA', 'CONTINUE');
 
 -- authorize_payment_sca - update operation (consent) - CONFIRMED -> DONE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (59, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'CONFIRMED', 1, NULL, 'DONE');
+VALUES (62, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'CONFIRMED', 1, NULL, 'DONE');
 
 -- authorize_payment_sca - update operation (consent) - CANCELED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (60, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'CANCELED', 1, NULL, 'FAILED');
+VALUES (63, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'CANCELED', 1, NULL, 'FAILED');
 
 -- authorize_payment_sca - update operation (consent) - AUTH_METHOD_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (61, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
+VALUES (64, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'AUTH_METHOD_FAILED', 1, NULL, 'FAILED');
 
 -- authorize_payment_sca - update operation (consent) - AUTH_FAILED -> CONTINUE
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
-VALUES (62, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
+VALUES (65, 'authorize_payment_sca', 'UPDATE', 'CONSENT', 'AUTH_FAILED', 1, 'CONSENT', 'CONTINUE');
 
--- default consents for PSD2
--- "aisp" consent
-INSERT INTO tpp_consent (consent_id, consent_name, consent_text, version)
-VALUES ('aisp', 'Access Information Service Provider', '<p>I give a consent to <strong>{{TPP_NAME}}</strong> that allows access to my payment accounts via <strong>{{APP_NAME}}</strong></p>', 1);
+-- authorize_payment_sca - init operation -> CONTINUE
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (66, 'authorize_payment_sca', 'CREATE', null, null, 1, 'USER_ID_ASSIGN', 'CONTINUE');
 
--- "pisp" consent
-INSERT INTO tpp_consent (consent_id, consent_name, consent_text, version)
-VALUES ('pisp', 'Payment Initiation Service Provider', '<p>I give a consent to <strong>{{TPP_NAME}}</strong> that allows payment initiation from my payment accounts via <strong>{{APP_NAME}}</strong></p>', 1);
+-- authorize_payment_sca - update operation (user ID assignment) - CONFIRMED -> CONTINUE
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (67, 'authorize_payment_sca', 'UPDATE', 'USER_ID_ASSIGN', 'CONFIRMED', 1, 'APPROVAL_SCA', 'CONTINUE');
+
+-- authorize_payment_sca - update operation (user ID assignment) - CANCELED -> FAILED
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (68, 'authorize_payment_sca', 'UPDATE', 'USER_ID_ASSIGN', 'CANCELED', 1, null, 'FAILED');
+
+-- authorize_payment_sca - update operation (user ID assignment) - AUTH_METHOD_FAILED -> FAILED
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (69, 'authorize_payment_sca', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_METHOD_FAILED', 1, null, 'FAILED');
+
+-- authorize_payment_sca - update operation (user ID assignment) - AUTH_FAILED -> FAILED
+INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
+VALUES (70, 'authorize_payment_sca', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_FAILED', 1, null, 'FAILED');

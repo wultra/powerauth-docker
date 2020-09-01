@@ -66,6 +66,10 @@
     <Parameter name="powerauth.webflow.afs.tm.cookies.deviceTag" value="${WEBFLOW_AFS_TM_COOKIES_DEVICE_TAG}"/>
     <Parameter name="powerauth.webflow.afs.tm.cookies.sessionSid" value="${WEBFLOW_AFS_TM_COOKIES_SESSION_SID}"/>
 
+    <!-- Configuration of CORS security -->
+    <Parameter name="powerauth.webflow.security.cors.enabled" value="${WEBFLOW_SECURITY_CORS_ENABLED}"/>
+    <Parameter name="powerauth.webflow.security.cors.allowOrigin" value="${WEBFLOW_SECURITY_CORS_ALLOW_ORIGIN}"/>
+
     <!-- JMX Configuration -->
     <Parameter name="spring.jmx.enabled" value="${WEBFLOW_SPRING_JMX_ENABLED}"/>
     <Parameter name="spring.jmx.default-domain" value="${WEBFLOW_SPRING_JMX_DEFAULT_DOMAIN}"/>
