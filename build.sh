@@ -9,7 +9,7 @@ fi
 
 # Prepare Build Number
 if [ -z ${TAG+x} ]; then
-    export PRODUCT_VERSION="2019.11"
+    export PRODUCT_VERSION="2020.05"
     if [ -z ${BUILD+x} ]; then
         export BUILD=$(date +%s)
     fi
