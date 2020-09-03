@@ -43,6 +43,7 @@ docker pull powerauth/push-mysql
 docker pull powerauth/webflow
 docker pull powerauth/nextstep
 docker pull powerauth/data-adapter
+docker pull powerauth/tpp-engine
 docker pull powerauth/webflow-mysql
 ```
 
@@ -122,6 +123,8 @@ _Note: All databases are already created with the correct structure and contain 
 | PowerAuth Data Adapter | Base URL                    | http://localhost:13050/powerauth-data-adapter                        |
 |                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui.html        |
 |                        | Status URL                  | http://localhost:13050/powerauth-data-adapter/api/service/status     |
+| PowerAuth TPP Engine   | Base URL                    | http://localhost:13060/powerauth-tpp-engine                        |
+|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui.html        |
 
 You can verify status of PowerAuth server using POST method:
 
