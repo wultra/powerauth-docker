@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- PowerAuth Server Service URL -->
+    <Parameter name="powerauth.service.url" value="${ENROLLMENT_SERVER_POWERAUTH_SERVICE_URL}"/>
+
+    <Parameter name="powerauth.service.security.clientSecret" value="${ENROLLMENT_SERVER_POWERAUTH_SERVICE_SECURITY_CLIENT_SECRET}"/>
+    <Parameter name="powerauth.service.security.clientSecret" value="${ENROLLMENT_SERVER_POWERAUTH_SERVICE_SECURITY_CLIENT_TOKEN}"/>
+
+</Context>

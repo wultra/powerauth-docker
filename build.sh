@@ -28,5 +28,7 @@ docker build -t powerauth/nextstep:$TAG -t powerauth/nextstep:latest -f docker-p
 docker build -t powerauth/data-adapter:$TAG -t powerauth/data-adapter:latest -f docker-powerauth-data-adapter/Dockerfile .
 docker build -t powerauth/webflow:$TAG -t powerauth/webflow:latest -f docker-powerauth-webflow/Dockerfile .
 docker build -t powerauth/tpp-engine:$TAG -t powerauth/tpp-engine:latest -f docker-powerauth-tpp-engine/Dockerfile .
+docker build -t powerauth/enrollment-server:$TAG -t powerauth/enrollment-server:latest -f docker-powerauth-enrollment-server/Dockerfile .
+docker build -t powerauth/cloud:$TAG -t powerauth/cloud:latest -f docker-powerauth-cloud/Dockerfile .
 
 echo "TAG: $TAG"
