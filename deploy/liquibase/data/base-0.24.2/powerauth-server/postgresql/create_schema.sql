@@ -4,6 +4,7 @@
 CREATE SEQUENCE "pa_application_seq" MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20;
 CREATE SEQUENCE "pa_application_version_seq" MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20;
 CREATE SEQUENCE "pa_master_keypair_seq" MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20;
+CREATE SEQUENCE "pa_operation_template_seq" MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20;
 CREATE SEQUENCE "pa_signature_audit_seq" MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20;
 CREATE SEQUENCE "pa_activation_history_seq" MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20;
 CREATE SEQUENCE "pa_recovery_code_seq" MINVALUE 1 MAXVALUE 999999999999999999 INCREMENT BY 1 START WITH 1 CACHE 20;
@@ -28,6 +29,7 @@ CREATE TABLE "pa_activation"
     "ctr_data"                      VARCHAR(255),
     "device_public_key_base64"      VARCHAR(255),
     "extras"                        VARCHAR(255),
+    "flags"                         VARCHAR(255),
     "platform"                      VARCHAR(255),
     "device_info"                   VARCHAR(255),
     "failed_attempts"               INTEGER NOT NULL,
@@ -48,8 +50,9 @@ CREATE TABLE "pa_activation"
 --
 CREATE TABLE "pa_application"
 (
-    "id"                          INTEGER NOT NULL PRIMARY KEY,
-    "name"                        VARCHAR(255) NOT NULL
+    "id"                            INTEGER NOT NULL PRIMARY KEY,
+    "name"                          VARCHAR(255) NOT NULL,
+    "roles"                         VARCHAR(255)
 );
 
 
@@ -77,6 +80,42 @@ CREATE TABLE "pa_master_keypair"
     "master_key_public_base64"      VARCHAR(255) NOT NULL,
     "name"                          VARCHAR(255),
     "timestamp_created"             TIMESTAMP (6) NOT NULL
+);
+
+---
+--- DDL for Table PA_OPERATION
+---
+CREATE TABLE "pa_operation"
+(
+	"id" VARCHAR(37) NOT NULL PRIMARY KEY,
+	"user_id" varchar(255) NOT NULL,
+	"application_id" BIGINT NOT NULL,
+	"template_id" BIGINT NULL,
+	"external_id" VARCHAR(255) NULL,
+	"operation_type" VARCHAR(255) NOT NULL,
+	"data" TEXT NOT NULL,
+	"parameters" TEXT NULL,
+	"status" INTEGER NOT NULL,
+	"signature_type" VARCHAR(255) NOT NULL,
+	"failure_count" BIGINT DEFAULT 0 NOT NULL,
+	"max_failure_count" BIGINT NOT NULL,
+	"timestamp_created" TIMESTAMP NOT NULL,
+	"timestamp_expires" TIMESTAMP NOT NULL,
+	"timestamp_finalized" TIMESTAMP NULL
+);
+
+---
+--- DDL for Table PA_OPERATION_TEMPLATE
+---
+CREATE TABLE pa_operation_template
+(
+	"id" BIGINT NOT NULL PRIMARY KEY,
+	"template_name" VARCHAR(255) NOT NULL,
+	"operation_type" VARCHAR(255) NOT NULL,
+	"data_template" VARCHAR(255) NOT NULL,
+	"signature_type" VARCHAR(255) NOT NULL,
+	"max_failure_count" BIGINT NOT NULL,
+	"expiration" BIGINT NOT NULL
 );
 
 --
@@ -119,7 +158,8 @@ CREATE TABLE "pa_application_callback"
     "id"                 VARCHAR(37) NOT NULL PRIMARY KEY,
     "application_id"     INTEGER NOT NULL,
     "name"               VARCHAR(255),
-    "callback_url"       VARCHAR(1024)
+    "callback_url"       VARCHAR(1024),
+    "attributes"         VARCHAR(1024)
 );
 
 --
@@ -185,14 +225,15 @@ CREATE TABLE "pa_recovery_puk" (
 --
 
 CREATE TABLE "pa_recovery_config" (
-    "id"                            INTEGER NOT NULL PRIMARY KEY,
-    "application_id"                INTEGER NOT NULL,
-    "activation_recovery_enabled"   BOOLEAN NOT NULL DEFAULT FALSE,
-    "recovery_postcard_enabled"     BOOLEAN NOT NULL DEFAULT FALSE,
-    "allow_multiple_recovery_codes" BOOLEAN NOT NULL DEFAULT FALSE,
-    "postcard_private_key_base64"   VARCHAR(255),
-    "postcard_public_key_base64"    VARCHAR(255),
-    "remote_public_key_base64"      VARCHAR(255)
+    "id"                                INTEGER NOT NULL PRIMARY KEY,
+    "application_id"                    INTEGER NOT NULL,
+    "activation_recovery_enabled"       BOOLEAN NOT NULL DEFAULT FALSE,
+    "recovery_postcard_enabled"         BOOLEAN NOT NULL DEFAULT FALSE,
+    "allow_multiple_recovery_codes"     BOOLEAN NOT NULL DEFAULT FALSE,
+    "postcard_private_key_base64"       VARCHAR(255),
+    "postcard_private_key_encryption"   INTEGER DEFAULT 0 NOT NULL,
+    "postcard_public_key_base64"        VARCHAR(255),
+    "remote_public_key_base64"          VARCHAR(255)
 );
 
 --
@@ -266,6 +307,14 @@ CREATE INDEX PA_ACTIVATION_HISTORY_CREATED ON PA_ACTIVATION_HISTORY(TIMESTAMP_CR
 CREATE INDEX PA_APPLICATION_VERSION_APP ON PA_APPLICATION_VERSION(APPLICATION_ID);
 
 CREATE INDEX PA_MASTER_KEYPAIR_APPLICATION ON PA_MASTER_KEYPAIR(APPLICATION_ID);
+
+CREATE INDEX PA_OPERATION_USER ON PA_OPERATION (USER_ID);
+
+CREATE INDEX PA_OPERATION_TS_CREATED_IDX ON PA_OPERATION (TIMESTAMP_CREATED DESC);
+
+CREATE INDEX PA_OPERATION_TS_EXPIRES_IDX ON PA_OPERATION (TIMESTAMP_EXPIRES ASC);
+
+CREATE INDEX PA_OPERATION_TEMPLATE_NAME_IDX ON PA_OPERATION_TEMPLATE (TEMPLATE_NAME);
 
 CREATE UNIQUE INDEX PA_APP_VERSION_APP_KEY ON PA_APPLICATION_VERSION(APPLICATION_KEY);
 
