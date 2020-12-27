@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS "pa_application" CASCADE;
 DROP TABLE IF EXISTS "pa_application_version" CASCADE;
 DROP TABLE IF EXISTS "pa_token" CASCADE;
 DROP TABLE IF EXISTS "pa_master_keypair" CASCADE;
+DROP TABLE IF EXISTS "pa_operation" CASCADE;
+DROP TABLE IF EXISTS "pa_operation_template" CASCADE;
 DROP TABLE IF EXISTS "pa_signature_audit" CASCADE;
 DROP TABLE IF EXISTS "pa_integration" CASCADE;
 DROP TABLE IF EXISTS "pa_application_callback" CASCADE;
