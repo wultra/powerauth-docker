@@ -2,11 +2,11 @@ FROM tomcat:9-jdk11
 
 LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 
+USER root
+
 # NGINX Docker image installation
 # This setup was inspired by https://hub.docker.com/_/nginx/ (stable)
 # https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/
-
-USER root
 
 ENV NGINX_VERSION 1.18.0
 ENV NJS_VERSION   0.4.4
@@ -205,14 +205,9 @@ ADD deploy/liquibase/data $LIQUIBASE_HOME/data
 EXPOSE 80
 STOPSIGNAL SIGQUIT
 
-# Run Liquibase update
-USER liquibase
-CMD ["liquibase", "--changeLogFile=$LIQUIBASE_HOME/data/changelog.xml", "--username=$POWERAUTH_SERVER_DATASOURCE_USERNAME", "--password=$POWERAUTH_SERVER_DATASOURCE_PASSWORD --url=$POWERAUTH_SERVER_DATASOURCE_URL", "update"]
-
-# Run NGINX
 USER root
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /~
 
-# Run Tomcat
-USER tomcat
-CMD ["catalina.sh", "run"]
+# Define entry point with mandatory commands (liquibase, nginx)
+COPY deploy/docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
