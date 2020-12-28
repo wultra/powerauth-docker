@@ -205,13 +205,14 @@ ADD deploy/liquibase/data $LIQUIBASE_HOME/data
 EXPOSE 80
 STOPSIGNAL SIGQUIT
 
-COPY deploy/docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# Run Liquibase update
+USER liquibase
+CMD ["liquibase", "--changeLogFile=$LIQUIBASE_HOME/data/changelog.xml", "--username=$POWERAUTH_SERVER_DATASOURCE_USERNAME", "--password=$POWERAUTH_SERVER_DATASOURCE_PASSWORD --url=$POWERAUTH_SERVER_DATASOURCE_URL", "update"]
+
+# Run NGINX
+USER root
+CMD ["nginx", "-g", "daemon off;"]
 
 # Run Tomcat
 USER tomcat
 CMD ["catalina.sh", "run"]
-
-# Run NGINX
-USER nginx
-CMD ["nginx", "-g", "daemon off;"]
