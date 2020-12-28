@@ -1,118 +1,122 @@
 FROM tomcat:9-jdk11
 
-LABEL maintainer="petr@wultra.com"
-
+LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 
 # NGINX Docker image installation
-# This setup was inspired by https://hub.docker.com/_/nginx/ (alpine)
+# This setup was inspired by https://hub.docker.com/_/nginx/ (stable)
 # https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/
 
-LABEL maintainer="NGINX Docker Maintainers <docker-maint@nginx.com>"
+USER root
 
-ENV NGINX_VERSION 1.19.6
-ENV NJS_VERSION   0.5.0
-ENV PKG_RELEASE   1
+ENV NGINX_VERSION 1.18.0
+ENV NJS_VERSION   0.4.4
+ENV PKG_RELEASE   2~buster
+
+# Download certificate and key from the customer portal (https://cs.nginx.com)
+# and copy to the build context
+#COPY deploy/nginx/nginx-repo.crt /etc/ssl/nginx/
+#COPY deploy/nginx/nginx-repo.key /etc/ssl/nginx/
+
+ENV NGINX_GPGKEY 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
 
 RUN set -x \
 # create nginx user/group first, to be consistent throughout docker variants
-    && addgroup -g 101 -S nginx \
-    && adduser -S -D -H -u 101 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx \
-    && apkArch="$(cat /etc/apk/arch)" \
+    && addgroup --system --gid 101 nginx \
+    && adduser --system --disabled-login --ingroup nginx --no-create-home --home /nonexistent --gecos "nginx user" --shell /bin/false --uid 101 nginx \
+    && apt-get update \
+    && apt-get install --no-install-recommends --no-install-suggests -y gnupg1 ca-certificates \
+    && \
+    NGINX_GPGKEY=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
+    found=''; \
+    for server in \
+        ha.pool.sks-keyservers.net \
+        hkp://keyserver.ubuntu.com:80 \
+        hkp://p80.pool.sks-keyservers.net:80 \
+        pgp.mit.edu \
+    ; do \
+        echo "Fetching GPG key $NGINX_GPGKEY from $server"; \
+        apt-key adv --keyserver "$server" --keyserver-options timeout=10 --recv-keys "$NGINX_GPGKEY" && found=yes && break; \
+    done; \
+    test -z "$found" && echo >&2 "error: failed to fetch GPG key $NGINX_GPGKEY" && exit 1; \
+    apt-get remove --purge --auto-remove -y gnupg1 && rm -rf /var/lib/apt/lists/* \
+    && dpkgArch="$(dpkg --print-architecture)" \
     && nginxPackages=" \
-        nginx=${NGINX_VERSION}-r${PKG_RELEASE} \
-        nginx-module-xslt=${NGINX_VERSION}-r${PKG_RELEASE} \
-        nginx-module-geoip=${NGINX_VERSION}-r${PKG_RELEASE} \
-        nginx-module-image-filter=${NGINX_VERSION}-r${PKG_RELEASE} \
-        nginx-module-njs=${NGINX_VERSION}.${NJS_VERSION}-r${PKG_RELEASE} \
+        nginx=${NGINX_VERSION}-${PKG_RELEASE} \
+        nginx-module-xslt=${NGINX_VERSION}-${PKG_RELEASE} \
+        nginx-module-geoip=${NGINX_VERSION}-${PKG_RELEASE} \
+        nginx-module-image-filter=${NGINX_VERSION}-${PKG_RELEASE} \
+        nginx-module-njs=${NGINX_VERSION}.${NJS_VERSION}-${PKG_RELEASE} \
     " \
-    && case "$apkArch" in \
-        x86_64) \
-# arches officially built by upstream
-            set -x \
-            && KEY_SHA512="e7fa8303923d9b95db37a77ad46c68fd4755ff935d0a534d26eba83de193c76166c68bfe7f65471bf8881004ef4aa6df3e34689c305662750c0172fca5d8552a *stdin" \
-            && apk add --no-cache --virtual .cert-deps \
-                openssl \
-            && wget -O /tmp/nginx_signing.rsa.pub https://nginx.org/keys/nginx_signing.rsa.pub \
-            && if [ "$(openssl rsa -pubin -in /tmp/nginx_signing.rsa.pub -text -noout | openssl sha512 -r)" = "$KEY_SHA512" ]; then \
-                echo "key verification succeeded!"; \
-                mv /tmp/nginx_signing.rsa.pub /etc/apk/keys/; \
-            else \
-                echo "key verification failed!"; \
-                exit 1; \
-            fi \
-            && apk del .cert-deps \
-            && apk add -X "https://nginx.org/packages/mainline/alpine/v$(egrep -o '^[0-9]+\.[0-9]+' /etc/alpine-release)/main" --no-cache $nginxPackages \
+    && case "$dpkgArch" in \
+        amd64|i386|arm64) \
+# arches officialy built by upstream
+            echo "deb https://nginx.org/packages/debian/ buster nginx" >> /etc/apt/sources.list.d/nginx.list \
+            && apt-get update \
             ;; \
         *) \
 # we're on an architecture upstream doesn't officially build for
-# let's build binaries from the published packaging sources
-            set -x \
+# let's build binaries from the published source packages
+            echo "deb-src https://nginx.org/packages/debian/ buster nginx" >> /etc/apt/sources.list.d/nginx.list \
+            \
+# new directory for storing sources and .deb files
             && tempDir="$(mktemp -d)" \
-            && chown nobody:nobody $tempDir \
-            && apk add --no-cache --virtual .build-deps \
-                gcc \
-                libc-dev \
-                make \
-                openssl-dev \
-                pcre-dev \
-                zlib-dev \
-                linux-headers \
-                libxslt-dev \
-                gd-dev \
-                geoip-dev \
-                perl-dev \
-                libedit-dev \
-                mercurial \
-                bash \
-                alpine-sdk \
-                findutils \
-            && su nobody -s /bin/sh -c " \
-                export HOME=${tempDir} \
-                && cd ${tempDir} \
-                && hg clone https://hg.nginx.org/pkg-oss \
-                && cd pkg-oss \
-                && hg up ${NGINX_VERSION}-${PKG_RELEASE} \
-                && cd alpine \
-                && make all \
-                && apk index -o ${tempDir}/packages/alpine/${apkArch}/APKINDEX.tar.gz ${tempDir}/packages/alpine/${apkArch}/*.apk \
-                && abuild-sign -k ${tempDir}/.abuild/abuild-key.rsa ${tempDir}/packages/alpine/${apkArch}/APKINDEX.tar.gz \
-                " \
-            && cp ${tempDir}/.abuild/abuild-key.rsa.pub /etc/apk/keys/ \
-            && apk del .build-deps \
-            && apk add -X ${tempDir}/packages/alpine/ --no-cache $nginxPackages \
+            && chmod 777 "$tempDir" \
+# (777 to ensure APT's "_apt" user can access it too)
+            \
+# save list of currently-installed packages so build dependencies can be cleanly removed later
+            && savedAptMark="$(apt-mark showmanual)" \
+            \
+# build .deb files from upstream's source packages (which are verified by apt-get)
+            && apt-get update \
+            && apt-get build-dep -y $nginxPackages \
+            && ( \
+                cd "$tempDir" \
+                && DEB_BUILD_OPTIONS="nocheck parallel=$(nproc)" \
+                    apt-get source --compile $nginxPackages \
+            ) \
+# we don't remove APT lists here because they get re-downloaded and removed later
+            \
+# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+# (which is done after we install the built packages so we don't have to redownload any overlapping dependencies)
+            && apt-mark showmanual | xargs apt-mark auto > /dev/null \
+            && { [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; } \
+            \
+# create a temporary local APT repo to install from (so that dependency resolution can be handled by APT, as it should be)
+            && ls -lAFh "$tempDir" \
+            && ( cd "$tempDir" && dpkg-scanpackages . > Packages ) \
+            && grep '^Package: ' "$tempDir/Packages" \
+            && echo "deb [ trusted=yes ] file://$tempDir ./" > /etc/apt/sources.list.d/temp.list \
+# work around the following APT issue by using "Acquire::GzipIndexes=false" (overriding "/etc/apt/apt.conf.d/docker-gzip-indexes")
+#   Could not open file /var/lib/apt/lists/partial/_tmp_tmp.ODWljpQfkE_._Packages - open (13: Permission denied)
+#   ...
+#   E: Failed to fetch store:/var/lib/apt/lists/partial/_tmp_tmp.ODWljpQfkE_._Packages  Could not open file /var/lib/apt/lists/partial/_tmp_tmp.ODWljpQfkE_._Packages - open (13: Permission denied)
+            && apt-get -o Acquire::GzipIndexes=false update \
             ;; \
     esac \
-# if we have leftovers from building, let's purge them (including extra, unnecessary build deps)
-    && if [ -n "$tempDir" ]; then rm -rf "$tempDir"; fi \
-    && if [ -n "/etc/apk/keys/abuild-key.rsa.pub" ]; then rm -f /etc/apk/keys/abuild-key.rsa.pub; fi \
-    && if [ -n "/etc/apk/keys/nginx_signing.rsa.pub" ]; then rm -f /etc/apk/keys/nginx_signing.rsa.pub; fi \
-# Bring in gettext so we can get `envsubst`, then throw
-# the rest away. To do this, we need to install `gettext`
-# then move `envsubst` out of the way so `gettext` can
-# be deleted completely, then move `envsubst` back.
-    && apk add --no-cache --virtual .gettext gettext \
-    && mv /usr/bin/envsubst /tmp/ \
     \
-    && runDeps="$( \
-        scanelf --needed --nobanner /tmp/envsubst \
-            | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-            | sort -u \
-            | xargs -r apk info --installed \
-            | sort -u \
-    )" \
-    && apk add --no-cache $runDeps \
-    && apk del .gettext \
-    && mv /tmp/envsubst /usr/local/bin/ \
-# Bring in tzdata so users could set the timezones through the environment
-# variables
-    && apk add --no-cache tzdata \
-# Bring in curl and ca-certificates to make registering on DNS SD easier
-    && apk add --no-cache curl ca-certificates \
+    && apt-get install --no-install-recommends --no-install-suggests -y \
+                        $nginxPackages \
+                        gettext-base \
+                        curl \
+    && apt-get remove --purge --auto-remove -y && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/nginx.list \
+    \
+# if we have leftovers from building, let's purge them (including extra, unnecessary build deps)
+    && if [ -n "$tempDir" ]; then \
+        apt-get purge -y --auto-remove \
+        && rm -rf "$tempDir" /etc/apt/sources.list.d/temp.list; \
+    fi \
 # forward request and error logs to docker log collector
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
 # create a docker-entrypoint.d directory
     && mkdir /docker-entrypoint.d
+
+# Forward request logs to Docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Copy nginx configuration
+ADD deploy/nginx/nginx.conf /etc/nginx/
 
 # Powerauth Server Cloud
 
@@ -120,9 +124,6 @@ RUN set -x \
 ENV JAVA_HOME /usr/local/openjdk-11
 ENV LIQUIBASE_HOME /usr/local/liquibase
 ENV TOMCAT_HOME /usr/local/tomcat
-
-# Copy nginx configuration
-ADD deploy/etc/nginx/nginx.conf /etc/nginx/
 
 # Clear root context
 RUN rm -rf $TOMCAT_HOME/webapps/*
@@ -146,44 +147,55 @@ ADD deploy/conf/powerauth-push-server.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-push-server.war $TOMCAT_HOME/webapps/
 
 ## Powerauth Enrollment Server
-ADD deploy/conf/powerauth-enrollment-server.xml $TOMCAT_HOME/conf/Catalina/localhost/
-ADD deploy/images/powerauth-enrollment-server.war $TOMCAT_HOME/webapps/
-
-## Powerauth Admin
-ADD deploy/data/ldap/ldap-local.ldif $TOMCAT_HOME/conf/ldap/
-ADD deploy/conf/powerauth-admin.xml $TOMCAT_HOME/conf/Catalina/localhost/
-ADD deploy/images/powerauth-admin.war $TOMCAT_HOME/webapps/
+ADD deploy/conf/enrollment-server.xml $TOMCAT_HOME/conf/Catalina/localhost/
+ADD deploy/images/enrollment-server.war $TOMCAT_HOME/webapps/
 
 ## Powerauth Cloud
-ADD deploy/data/ldap/ldap-local.ldif $TOMCAT_HOME/conf/ldap/
 ADD deploy/conf/powerauth-cloud.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-cloud.war $TOMCAT_HOME/webapps/
 
 # Create user tomcat
 RUN groupadd -r tomcat
-RUN useradd -r -g tomcat -d $TOMCAT_HOME -s /sbin/nologin tomcat
+RUN useradd -r -g tomcat -d $TOMCAT_HOME --shell /sbin/nologin tomcat
 RUN chown -R tomcat:tomcat $TOMCAT_HOME
 
-# Liquibase - binaries
-# This setup was inspired by https://hub.docker.com/r/gustajz/liquibase/dockerfile
 
-RUN apk add --update bash tzdata curl openjdk8-jre && rm -rf /var/cache/apk/*
+# Liquibase - binaries
+# This setup was inspired by https://hub.docker.com/r/liquibase/liquibase/dockerfile
+
+USER root
+
+# Install GNUPG for package vefification and WGET for file download
+RUN apt-get update \
+    && apt-get -y install gnupg wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add the liquibase user and step in the directory
+RUN addgroup --gid 1001 liquibase
+RUN adduser --disabled-password --uid 1001 --ingroup liquibase liquibase
+
+# Make /liquibase directory and change owner to liquibase
+RUN mkdir -p $LIQUIBASE_HOME && chown liquibase $LIQUIBASE_HOME
+WORKDIR $LIQUIBASE_HOME
+
+# Change to the liquibase user
+USER liquibase
 
 ENV TZ Eruope/Prague
 ENV PATH $PATH:$LIQUIBASE_HOME
 
+ARG LIQUIBASE_VERSION=3.10.3
 ENV LIQUIBASE_VERSION 3.10.3
 
-RUN mkdir -p $LIQUIBASE_HOME && \
-    curl -L https://github.com/liquibase/liquibase/releases/download/liquibase-parent-${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}-bin.tar.gz | tar xzC $LIQUIBASE_HOME
+# Download, verify, extract
+ARG LB_SHA256=b34b0dbf35fba557d8f3cbf9ae08e0027e288ef2a35c6fa9dbe16536d070f7a8
+RUN set -x \
+  && wget -O liquibase-${LIQUIBASE_VERSION}.tar.gz "https://github.com/liquibase/liquibase/releases/download/v${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}.tar.gz" \
+  && echo "$LB_SHA256  liquibase-${LIQUIBASE_VERSION}.tar.gz" | sha256sum -c - \
+  && tar -xzf liquibase-${LIQUIBASE_VERSION}.tar.gz
 
 ADD deploy/lib/mysql-connector-java.jar $LIQUIBASE_HOME/lib/
 ADD deploy/lib/postgresql.jar $LIQUIBASE_HOME/lib/
-
-# Liquibase - user
-RUN groupadd -r liquibase
-RUN useradd -r -g tomcat -d $LIQUIBASE_HOME -s /sbin/nologin liquibase
-RUN chown -R liquibase:liquibase $LIQUIBASE_HOME
 
 # Liquibase - changesets
 RUN rm -rf $LIQUIBASE_HOME/data
