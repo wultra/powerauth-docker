@@ -240,7 +240,7 @@ You can encode the file using `base64` command on Mac. You can also use `Certuti
 base64 -i <in-file> -o <outfile>
 ```
 
-Additional details about Push Server configuration are available in [Push Server Administration Guide](https://developers.wultra.com/docs/2020.05/powerauth-push-server/Push-Server-Administration).
+Additional details about Push Server configuration are available in [Push Server Administration Guide](https://developers.wultra.com/docs/2020.11/powerauth-push-server/Push-Server-Administration).
 
 
 To test the push notifications later, you can call the following command - don't forget to replace the `appId` and your `userId`:
