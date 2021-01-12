@@ -66,6 +66,10 @@
     <Parameter name="powerauth.push.service.fcm.connect.timeout" value="${PUSH_SERVER_FCM_CONNECT_TIMEOUT}"/>
     <Parameter name="powerauth.push.service.apns.connect.timeout" value="${PUSH_SERVER_APNS_CONNECT_TIMEOUT}"/>
 
+    <!-- Advanced APNs Settings -->
+    <Parameter name="powerauth.push.service.apns.idlePingInterval" value="${PUSH_SERVER_APNS_IDLE_PING_INTERVAL}"/>
+    <Parameter name="powerauth.push.service.apns.concurrentConnections" value="${PUSH_SERVER_APNS_CONCURRENT_CONNECTIONS}"/>
+
     <!-- Application Configuration -->
     <Parameter name="powerauth.push.service.applicationName" value="${PUSH_SERVER_APPLICATION_NAME}"/>
     <Parameter name="powerauth.push.service.applicationDisplayName" value="${PUSH_SERVER_APPLICATION_DISPLAY_NAME}"/>
