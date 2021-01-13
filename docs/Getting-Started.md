@@ -103,9 +103,9 @@ _Note: All databases are already created with the correct structure and contain 
 
 | Application            | Important Paths             | URL                                                                  |
 |------------------------|-----------------------------|----------------------------------------------------------------------|
-| PowerAuth Server       | SOAP endpoint               | http://localhost:20010/powerauth-java-server/soap                    |
-|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/serviceV3.wsdl    |
-|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/serviceV2.wsdl    |
+| PowerAuth Server       | Base URL                    | http://localhost:20010/powerauth-java-server                         |
+|                        | Status URL (POST)           | http://localhost:20010/powerauth-java-server/rest/v3/status          |
+|                        | Swagger Documentation       | http://localhost:20030/powerauth-java-server/swagger-ui.html         |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
@@ -123,8 +123,9 @@ _Note: All databases are already created with the correct structure and contain 
 | PowerAuth Data Adapter | Base URL                    | http://localhost:13050/powerauth-data-adapter                        |
 |                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui.html        |
 |                        | Status URL                  | http://localhost:13050/powerauth-data-adapter/api/service/status     |
-| PowerAuth TPP Engine   | Base URL                    | http://localhost:13060/powerauth-tpp-engine                        |
-|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui.html        |
+| PowerAuth TPP Engine   | Base URL                    | http://localhost:13060/powerauth-tpp-engine                          |
+|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui.html          |
+|                        | Status URL                  | http://localhost:13050/powerauth-tpp-engine/api/service/status       |
 
 You can verify status of PowerAuth server using POST method:
 
@@ -239,7 +240,7 @@ You can encode the file using `base64` command on Mac. You can also use `Certuti
 base64 -i <in-file> -o <outfile>
 ```
 
-Additional details about Push Server configuration are available in [Push Server Administration Guide](https://developers.wultra.com/docs/2020.05/powerauth-push-server/Push-Server-Administration).
+Additional details about Push Server configuration are available in [Push Server Administration Guide](https://developers.wultra.com/docs/2020.11/powerauth-push-server/Push-Server-Administration).
 
 
 To test the push notifications later, you can call the following command - don't forget to replace the `appId` and your `userId`:
