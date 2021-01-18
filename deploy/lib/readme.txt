@@ -3,7 +3,7 @@ Add following libraries here:
 - ojdbc6.jar [1]
 - mysql-connector-java.jar [2]
 - postgresql.jar [3]
-- bcprov-jdk15on-164.jar [4]
+- bcprov-jdk15on-167.jar [4]
 
 [1] http://www.oracle.com/technetwork/database/features/jdbc/jdbc-drivers-12c-download-1958347.html
 [2] https://mvnrepository.com/artifact/mysql/mysql-connector-java

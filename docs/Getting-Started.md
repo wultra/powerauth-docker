@@ -43,6 +43,7 @@ docker pull powerauth/push-mysql
 docker pull powerauth/webflow
 docker pull powerauth/nextstep
 docker pull powerauth/data-adapter
+docker pull powerauth/tpp-engine
 docker pull powerauth/webflow-mysql
 ```
 
@@ -102,9 +103,9 @@ _Note: All databases are already created with the correct structure and contain 
 
 | Application            | Important Paths             | URL                                                                  |
 |------------------------|-----------------------------|----------------------------------------------------------------------|
-| PowerAuth Server       | SOAP endpoint               | http://localhost:20010/powerauth-java-server/soap                    |
-|                        | WSDL path (v3)              | http://localhost:20010/powerauth-java-server/soap/serviceV3.wsdl    |
-|                        | WSDL path (v2)              | http://localhost:20010/powerauth-java-server/soap/serviceV2.wsdl    |
+| PowerAuth Server       | Base URL                    | http://localhost:20010/powerauth-java-server                         |
+|                        | Status URL (POST)           | http://localhost:20010/powerauth-java-server/rest/v3/status          |
+|                        | Swagger Documentation       | http://localhost:20030/powerauth-java-server/swagger-ui.html         |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
@@ -122,6 +123,9 @@ _Note: All databases are already created with the correct structure and contain 
 | PowerAuth Data Adapter | Base URL                    | http://localhost:13050/powerauth-data-adapter                        |
 |                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui.html        |
 |                        | Status URL                  | http://localhost:13050/powerauth-data-adapter/api/service/status     |
+| PowerAuth TPP Engine   | Base URL                    | http://localhost:13060/powerauth-tpp-engine                          |
+|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui.html          |
+|                        | Status URL                  | http://localhost:13050/powerauth-tpp-engine/api/service/status       |
 
 You can verify status of PowerAuth server using POST method:
 
@@ -176,20 +180,68 @@ _Note: The newly created application has also it's numeric ID - this is later re
 
 #### 5.2 Configure Push Server
 
-In order to configure APNs and FCM messages, you need to follow these steps:
+In order to configure APNs and FCM push messages (optional), you need to follow these steps:
 
-1. Open PowerAuth Push Server Web GUI: http://localhost:20030/powerauth-push-server
-2. Click "Add application".
-3. Select the application you created in PowerAuth Server (`wultra-mtoken`) and click "Select".
-4. Click "Configure" in APNs and FCM settings.
+1. Create an application using following command:
+```
+curl --request POST \
+  --url http://localhost:20030/powerauth-push-server/admin/app/create \
+  --header 'content-type: application/json' \
+  --data '{
+  "requestObject": {
+    "appId": 1
+  }
+}'
+```
+
+2. Configure APNs and/or FCM settings based on the platform of device you will use for testing push messages:
     - For iOS, you need to obtain the following information from the [Apple Developer Portal](https://developer.apple.com):
         - Team ID
         - Key ID
         - Bundle ID _(note: used as the "topic")_
         - APNs private key file _(note: a file with `*.p8` extension)_
+        - You can use the following command to configure APNs settings:
+        ```
+        curl --request POST \
+          --url http://localhost:20030/powerauth-push-server/admin/app/ios/update \
+          --header 'content-type: application/json' \
+          --data '{
+          "requestObject": {
+            "id": 1,
+            "bundle": "com.wultra.myApp",
+            "keyId": "keyId",
+            "teamId": "teamId",
+            "privateKeyBase64": "a2V5..."
+          }
+        }' 
+        ```    
     - For Android, you need to obtain the following information from the [Firebase Console](https://console.firebase.google.com):
         - Project ID (visible in *Project Settings*)
-        - Private key for FCM HTTP API v1 (see [FCM documentation](https://firebase.google.com/docs/cloud-messaging/auth-server))     
+        - Private key for FCM HTTP API v1 (see [FCM documentation](https://firebase.google.com/docs/cloud-messaging/auth-server))
+        - You can use the following command to configure FCM settings:
+        ```
+        curl --request POST \
+          --url http://localhost:20030/powerauth-push-server/admin/app/android/update \
+          --header 'content-type: application/json' \
+          --data '{
+          "requestObject": {
+            "id": 1,
+            "projectId": "projectId",
+            "privateKeyBase64": "a2V5..."
+          }
+        }' 
+        ```    
+
+Enter the base64-encoded value of APNs/FCM private key into `privateKeyBase64`.
+
+You can encode the file using `base64` command on Mac. You can also use `Certutil.exe` on Windows or OpenSSL on all platforms.
+
+```
+base64 -i <in-file> -o <outfile>
+```
+
+Additional details about Push Server configuration are available in [Push Server Administration Guide](https://developers.wultra.com/docs/2020.11/powerauth-push-server/Push-Server-Administration).
+
 
 To test the push notifications later, you can call the following command - don't forget to replace the `appId` and your `userId`:
 

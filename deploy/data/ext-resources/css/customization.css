@@ -3,7 +3,7 @@
 */
 
 html {
-    background-image: url(../images/background-wultra.png);
+    background-image: url(../images/background-wultra.jpg);
     background-position: center center;
     background-size: cover;
     height: 100%;
@@ -250,4 +250,8 @@ a:hover, a:active, a:focus {
 
 #login .form-group .form-control {
     border-radius: 6px;
+}
+
+.spinner {
+    color: #FFFFFF;
 }
