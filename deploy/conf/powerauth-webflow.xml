@@ -58,6 +58,9 @@
     <!-- Configuration of Delay for Showing Operation Timeout Warning in Milliseconds -->
     <Parameter name="powerauth.webflow.timeout.warning.delayMs" value="${WEBFLOW_TIMEOUT_WARNING_DELAY_MS}"/>
 
+    <!-- PowerAuth Operations Settings -->
+    <Parameter name="powerauth.webflow.pa.operations.enabled" value="${WEBFLOW_POWERAUTH_OPERATIONS_ENABLED}"/>
+
     <!-- Configuration of Anti-Fraud System Parameters -->
     <Parameter name="powerauth.webflow.afs.enabled" value="${WEBFLOW_AFS_ENABLED}"/>
     <Parameter name="powerauth.webflow.afs.type" value="${WEBFLOW_AFS_TYPE}"/>
