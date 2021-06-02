@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 
+    <!-- PowerAuth Data Adapter Service URL -->
+    <Parameter name="powerauth.dataAdapter.service.url" value="${NEXTSTEP_DATA_ADAPTER_URL}"/>
+
+    <!-- PowerAuth Server Service URL -->
+    <Parameter name="powerauth.service.url" value="${NEXTSTEP_POWERAUTH_SERVICE_URL}"/>
+
+    <!-- PowerAuth Server Service Security Settings -->
+    <Parameter name="powerauth.service.security.clientToken" value="${NEXTSTEP_POWERAUTH_SECURITY_TOKEN}"/>
+    <Parameter name="powerauth.service.security.clientSecret" value="${NEXTSTEP_POWERAUTH_SECURITY_SECRET}"/>
+    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${NEXTSTEP_ACCEPT_INVALID_SSL_CERTIFICATE}"/>
+
     <!-- Database Configuration - JDBC -->
     <Parameter name="spring.datasource.url" value="${NEXTSTEP_DATASOURCE_URL}"/>
     <Parameter name="spring.datasource.username" value="${NEXTSTEP_DATASOURCE_USERNAME}"/>
@@ -18,6 +29,13 @@
 
     <!-- Operation Expiration Time in Seconds -->
     <Parameter name="powerauth.nextstep.operation.expirationTimeInSeconds" value="${NEXTSTEP_OPERATION_EXPIRATION_TIME}"/>
+
+    <!-- PowerAuth Operations Settings -->
+    <Parameter name="powerauth.nextstep.pa.operations.enabled" value="${NEXTSTEP_POWERAUTH_OPERATIONS_ENABLED}"/>
+
+    <!-- Encryption Settings -->
+    <Parameter name="powerauth.nextstep.e2eEncryption.key" value="${NEXTSTEP_E2E_ENCRYPTION_KEY}"/>
+    <Parameter name="powerauth.nextstep.db.master.encryption.key" value="${NEXTSTEP_MASTER_DB_ENCRYPTION_KEY}"/>
 
     <!-- Database Configuration - JNDI -->
     <Parameter name="spring.datasource.jndi-name" value="${NEXTSTEP_DATASOURCE_JNDI_NAME}"/>
