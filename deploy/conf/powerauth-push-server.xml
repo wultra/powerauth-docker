@@ -70,6 +70,9 @@
     <Parameter name="powerauth.push.service.apns.idlePingInterval" value="${PUSH_SERVER_APNS_IDLE_PING_INTERVAL}"/>
     <Parameter name="powerauth.push.service.apns.concurrentConnections" value="${PUSH_SERVER_APNS_CONCURRENT_CONNECTIONS}"/>
 
+    <!-- Java security CA certs file password -->
+    <Parameter name="powerauth.push.java.cacerts.password" value="${PUSH_SERVER_JAVA_CACERTS_PASSWORD}"/>
+
     <!-- Application Configuration -->
     <Parameter name="powerauth.push.service.applicationName" value="${PUSH_SERVER_APPLICATION_NAME}"/>
     <Parameter name="powerauth.push.service.applicationDisplayName" value="${PUSH_SERVER_APPLICATION_DISPLAY_NAME}"/>
