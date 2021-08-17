@@ -27,7 +27,7 @@ For payments and operations that require 2FA, there is an SMS OTP enabled by def
 |---|---|
 | URL | `jdbc:mysql://localhost:23376/powerauth` |
 | username | `powerauth` |
-| password | `` |
+| password | `[empty]` |
 | table name | `da_sms_authorization` |
 
 You need to order records by `timestamp_created` column to see only the latest SMS OTP codes. The SMS OTP code is stored in column `authorization_code`.
