@@ -637,18 +637,6 @@ CREATE INDEX audit_param_timestamp ON audit_param (timestamp_created);
 CREATE INDEX audit_param_key ON audit_param (param_key);
 CREATE FULLTEXT INDEX audit_param_value ON audit_param (param_value);
 
---
--- Create indexes.
---
-CREATE INDEX audit_log_timestamp ON audit_log (timestamp_created);
-CREATE INDEX audit_log_application ON audit_log (application_name);
-CREATE INDEX audit_log_level ON audit_log (audit_level);
-CREATE INDEX audit_log_type ON audit_log (audit_type);
-CREATE INDEX audit_param_log ON audit_param (audit_log_id);
-CREATE INDEX audit_param_timestamp ON audit_param (timestamp_created);
-CREATE INDEX audit_param_key ON audit_param (param_key);
-CREATE FULLTEXT INDEX audit_param_value ON audit_param (param_value);
-
 -- default oauth 2.0 client
 -- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
 INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, web_server_redirect_uri, additional_information, autoapprove)
