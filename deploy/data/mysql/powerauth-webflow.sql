@@ -653,7 +653,7 @@ CREATE TABLE audit_log (
     calling_class      VARCHAR(256) NOT NULL,
     thread_name        VARCHAR(256) NOT NULL,
     version            VARCHAR(256),
-    build_time         TIMESTAMP
+    build_time         TIMESTAMP NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 --
