@@ -93,9 +93,9 @@ After you start the Docker images, the following databases and applications are 
 
 | Name                     | JDBC Path                                | Username | Password |
 |--------------------------|------------------------------------------|----------|----------|
-| PowerAuth Server DB      | `jdbc:mysql://localhost:23316/powerauth` | `root`   | `root`   |
-| PowerAuth Push Server DB | `jdbc:mysql://localhost:23336/powerauth` | `root`   | `root`   |
-| PowerAuth Web Flow DB    | `jdbc:mysql://localhost:23376/powerauth` | `root`   | `root`   |
+| PowerAuth Server DB      | `jdbc:mysql://localhost:23316/powerauth` | `powerauth`   | ``   |
+| PowerAuth Push Server DB | `jdbc:mysql://localhost:23336/powerauth` | `powerauth`   | ``   |
+| PowerAuth Web Flow DB    | `jdbc:mysql://localhost:23376/powerauth` | `powerauth`   | ``   |
 
 _Note: All databases are already created with the correct structure and contain necessary configuration._
 
@@ -278,22 +278,24 @@ To test the complex web federated login via Web Flow, you can use our testing to
 2. Review the `application.properties` file.
     - _Note: If you use the default values for the configuration, everything will just work._
     - _Note: By default, Web Flow uses a demo OAuth 2.0 credentials "democlient" / "changeme"._
-3. Start the testing tool with:
-    - `java -Dserver.port=8888 -XX:+IgnoreUnrecognizedVMOptions --add-modules=java.xml.bind -jar powerauth-webflow-client.war`
+3. Start the testing tool using Java 11 or higher with following command:
+    - `java -Dserver.port=8888 -jar powerauth-webflow-client.war`
 4. Open the testing tool on http://localhost:8888/ address.
 
-#### 5.4 Authorize Demo Payment
+#### 5.4 Authorize an Operation
 
-You can also try to create a new payment. The default instance of Data Adapter component, that is used to customize the authentication behavior, uses the following setup:
+You can try to authorize a login operation. 
+
+The default instance of Data Adapter component, that is used to customize the authentication behavior, uses the following setup:
 
 - it accepts any username
 - it maps the username to user ID (1:1)
 - it uses "test" as a password for all users
 - writes the SMS codes to `powerauth.da_sms_authorization` table (`authorization_code`) column of the "PowerAuth Web Flow DB" database.
 
-Therefore, you can just submit the default form, enter any user ID as username (for example `tester`), use "test" as the password, and lookup the correct SMS code in the database.
+Therefore, you can just submit the default form, enter any user ID as username (for example `tester`), use "test" as the password, and lookup the correct SMS OTP authorization code in the database.
 
-Alternatively, you can create a payment via API - use the following command to create a new operation:
+You can create a payment operation via API - use the following command to create a new operation:
 
 ```sh
 curl --request POST \
@@ -301,7 +303,7 @@ curl --request POST \
   --header 'content-type: application/json' \
   --data '{
   "requestObject": {
-    "operationName": "authorize_payment",
+    "operationName": "authorize_payment_sca",
     "operationId": null,
     "organizationId": null,
     "operationData": "A1*A100CZK*Q238400856/0300**D20190629*NUtility Bill Payment - 05/2019",
@@ -377,7 +379,7 @@ The response of this command will look something like this:
   "status": "OK",
   "responseObject": {
     "operationId": "09c61bc4-0b40-42c9-be03-a602bf889ad4",
-    "operationName": "authorize_payment",
+    "operationName": "authorize_payment_sca",
     "organizationId": null,
     "result": "CONTINUE",
     "resultDescription": null,
@@ -390,7 +392,7 @@ The response of this command will look something like this:
         "params": []
       },
       {
-        "authMethod": "USERNAME_PASSWORD_AUTH",
+        "authMethod": "LOGIN_SCA",
         "params": []
       }
     ],
@@ -453,7 +455,7 @@ The response of this command will look something like this:
 }
 ```
 
-Copy the `operationId` value (`09c61bc4-0b40-42c9-be03-a602bf889ad4`), paste it in the second tab of the testing web application (into "Operation ID" field on the "Authorization" tab) and click "Authorize" button. Proceed with login and SMS code verification as if you created a new payment via the testing web application UI.
+Copy the `operationId` value (`09c61bc4-0b40-42c9-be03-a602bf889ad4`), paste it in the second tab of the testing web application (into "Operation ID" field on the "Authorization" tab) and click "Authorize" button. Use the same credentials and lookup of SMS OTP authorization code as for authorizing the login operation. 
 
 #### 5.5 Compile and Customize Mobile Token App
 
@@ -494,7 +496,7 @@ curl --request POST \
 }'
 ```
 
-If you now try to approve payment with the `tester` user, Mobile token should be offerred as an option.
+If you now try to approve payment with the `tester` user, Mobile token should be offered as an option.
 
 ## License
 

@@ -166,7 +166,7 @@ CREATE TABLE ns_application (
   description            VARCHAR(256),                                 -- Description of the application.
   status                 VARCHAR(32) NOT NULL,                         -- Application status: ACTIVE, REMOVED.
   timestamp_created      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,          -- Timestamp when application was created.
-  timestamp_last_updated TIMESTAMP                                    -- Timestamp when application was last updated.
+  timestamp_last_updated TIMESTAMP NULL                                   -- Timestamp when application was last updated.
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_credential_policy stores credential policies.
@@ -192,7 +192,7 @@ CREATE TABLE ns_credential_policy (
   credential_gen_param       VARCHAR(4000) NOT NULL,                       -- Parameters used when generating the credential.
   credential_val_param       VARCHAR(4000) NOT NULL,                       -- Parameters used when validating the credential.
   timestamp_created          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,          -- Timestamp when policy was created.
-  timestamp_last_updated     TIMESTAMP                                     -- Timestamp when policy was last updated.
+  timestamp_last_updated     TIMESTAMP NULL                                     -- Timestamp when policy was last updated.
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_credential_policy stores one time password policies.
@@ -207,7 +207,7 @@ CREATE TABLE ns_otp_policy (
   gen_algorithm          VARCHAR(256) DEFAULT 'DEFAULT' NOT NULL,     -- Algorithm used for generating the one time password.
   gen_param              VARCHAR(4000) NOT NULL,                      -- Parameters used when generating the OTP.
   timestamp_created      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when policy was created.
-  timestamp_last_updated TIMESTAMP                                    -- Timestamp when policy was last updated.
+  timestamp_last_updated TIMESTAMP NULL                                    -- Timestamp when policy was last updated.
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_user_identity stores user identities.
@@ -216,7 +216,7 @@ CREATE TABLE ns_user_identity (
   status                 VARCHAR(32) NOT NULL,                        -- User identity status: ACTIVE, BLOCKED, REMOVED.
   extras                 TEXT,                                        -- Extra attributes with data related to user identity.
   timestamp_created      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when user identity was created.
-  timestamp_last_updated TIMESTAMP                                    -- Timestamp when user identity was last updated.
+  timestamp_last_updated TIMESTAMP NULL                                   -- Timestamp when user identity was last updated.
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_user_contact stores contact information for user identities.
@@ -228,7 +228,7 @@ CREATE TABLE ns_user_contact (
   value                  VARCHAR(256) NOT NULL,                       -- User contact value.
   is_primary             INTEGER DEFAULT 0 NOT NULL,                  -- Whether contact is primary.
   timestamp_created      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when contact was created.
-  timestamp_last_updated TIMESTAMP,                                   -- Timestamp when contact was last updated.
+  timestamp_last_updated TIMESTAMP NULL,                                   -- Timestamp when contact was last updated.
   CONSTRAINT ns_user_contact_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -249,7 +249,7 @@ CREATE TABLE ns_role (
   name                   VARCHAR(256) NOT NULL,                       -- Role name used for identification.
   description            VARCHAR(256),                                -- Description of role.
   timestamp_created      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when role was created.
-  timestamp_last_updated TIMESTAMP                                    -- Timestamp when role was last updated.
+  timestamp_last_updated TIMESTAMP NULL                                    -- Timestamp when role was last updated.
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_user_role stores assignment of roles to user identities.
@@ -259,7 +259,7 @@ CREATE TABLE ns_user_role (
   role_id                  INTEGER NOT NULL,                            -- Role identifier.
   status                   VARCHAR(32) NOT NULL,                        -- User role status: ACTIVE, REMOVED.
   timestamp_created        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when user role was created.
-  timestamp_last_updated   TIMESTAMP,                                   -- Timestamp when user role was last updated.
+  timestamp_last_updated   TIMESTAMP NULL,                                   -- Timestamp when user role was last updated.
   CONSTRAINT ns_role_identity_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id),
   CONSTRAINT ns_user_role_fk FOREIGN KEY (role_id) REFERENCES ns_role (role_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -273,7 +273,7 @@ CREATE TABLE ns_user_alias (
   status                   VARCHAR(32) NOT NULL,                        -- User alias status: ACTIVE, REMOVED.
   extras                   TEXT,                                        -- Extra attributes with data related to user alias.
   timestamp_created        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when user alias was created.
-  timestamp_last_updated   TIMESTAMP,                                   -- Timestamp when user alias was last updated.
+  timestamp_last_updated   TIMESTAMP NULL,                                   -- Timestamp when user alias was last updated.
   CONSTRAINT ns_user_alias_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -285,7 +285,7 @@ CREATE TABLE ns_hashing_config (
   status                   VARCHAR(32) NOT NULL,                        -- Hashing configuration status: ACTIVE, REMOVED.
   parameters               VARCHAR(256),                                -- Hashing algorithm parameters.
   timestamp_created        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when hashing configuration was created.
-  timestamp_last_updated   TIMESTAMP                                    -- Timestamp when hashing configuration was last updated.
+  timestamp_last_updated   TIMESTAMP NULL                                    -- Timestamp when hashing configuration was last updated.
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table ns_credential_definition stores definitions of credentials with reference to credential policies and applications.
@@ -308,7 +308,7 @@ CREATE TABLE ns_credential_definition (
   data_adapter_proxy_enabled INTEGER DEFAULT 0 NOT NULL,                  -- Whether credential API calls should be proxied through Data Adapter.
   status                     VARCHAR(32) NOT NULL,                        -- Credential definition status: ACTIVE, REMOVED.
   timestamp_created          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when credential definition was created.
-  timestamp_last_updated     TIMESTAMP,                                   -- Timestamp when credential definition was last updated.
+  timestamp_last_updated     TIMESTAMP NULL,                                   -- Timestamp when credential definition was last updated.
   CONSTRAINT ns_credential_application_fk FOREIGN KEY (application_id) REFERENCES ns_application (application_id),
   CONSTRAINT ns_credential_policy_fk FOREIGN KEY (credential_policy_id) REFERENCES ns_credential_policy (credential_policy_id),
   CONSTRAINT ns_credential_hash_fk FOREIGN KEY (hashing_config_id) REFERENCES ns_hashing_config (hashing_config_id),
@@ -327,7 +327,7 @@ CREATE TABLE ns_otp_definition (
   data_adapter_proxy_enabled INTEGER DEFAULT 0 NOT NULL,                  -- Whether one time password API calls should be proxied through Data Adapter.
   status                     VARCHAR(32) NOT NULL,                        -- One time password definition status: ACTIVE, REMOVED.
   timestamp_created          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp when one time password definition was created.
-  timestamp_last_updated     TIMESTAMP,                                   -- Timestamp when one time password definition was last updated.
+  timestamp_last_updated     TIMESTAMP NULL,                                   -- Timestamp when one time password definition was last updated.
   CONSTRAINT ns_otp_application_fk FOREIGN KEY (application_id) REFERENCES ns_application (application_id),
   CONSTRAINT ns_otp_policy_fk FOREIGN KEY (otp_policy_id) REFERENCES ns_otp_policy (otp_policy_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -347,11 +347,11 @@ CREATE TABLE ns_credential_storage (
   encryption_algorithm             VARCHAR(256),                        -- Encryption algorithm used for encrypting credential value.
   hashing_config_id                INTEGER,                             -- Hashing configuration used when credential value was hashed.
   timestamp_created                TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when credential was created.
-  timestamp_expires                TIMESTAMP,                           -- Timestamp when credential expires.
-  timestamp_blocked                TIMESTAMP,                           -- Timestamp when credential was blocked.
-  timestamp_last_updated           TIMESTAMP,                           -- Timestamp when credential was last updated.
-  timestamp_last_credential_change TIMESTAMP,                           -- Timestamp when credential value was last changed.
-  timestamp_last_username_change   TIMESTAMP,                           -- Timestamp when username value was last changed.
+  timestamp_expires                TIMESTAMP NULL,                           -- Timestamp when credential expires.
+  timestamp_blocked                TIMESTAMP NULL,                           -- Timestamp when credential was blocked.
+  timestamp_last_updated           TIMESTAMP NULL,                           -- Timestamp when credential was last updated.
+  timestamp_last_credential_change TIMESTAMP NULL,                           -- Timestamp when credential value was last changed.
+  timestamp_last_username_change   TIMESTAMP NULL,                           -- Timestamp when username value was last changed.
   CONSTRAINT ns_credential_definition_fk FOREIGN KEY (credential_definition_id) REFERENCES ns_credential_definition (credential_definition_id),
   CONSTRAINT ns_credential_user_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -385,9 +385,9 @@ CREATE TABLE ns_otp_storage (
   failed_attempt_counter      INTEGER DEFAULT 0 NOT NULL,          -- One time password failed attempt counter.
   encryption_algorithm        VARCHAR(256),                        -- Encryption algorithm used for encrypting OTP value.
   timestamp_created           TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when one time password was created.
-  timestamp_verified          TIMESTAMP,                           -- Timestamp when one time password was verified.
-  timestamp_blocked           TIMESTAMP,                           -- Timestamp when one time password was blocked.
-  timestamp_expires           TIMESTAMP,                           -- Timestamp when one time password expires.
+  timestamp_verified          TIMESTAMP NULL,                           -- Timestamp when one time password was verified.
+  timestamp_blocked           TIMESTAMP NULL,                           -- Timestamp when one time password was blocked.
+  timestamp_expires           TIMESTAMP NULL,                           -- Timestamp when one time password expires.
   CONSTRAINT ns_otp_definition_fk FOREIGN KEY (otp_definition_id) REFERENCES ns_otp_definition (otp_definition_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -410,7 +410,7 @@ CREATE TABLE ns_operation (
   external_transaction_id       VARCHAR(256),                        -- External transaction ID, for example ID of a payment in a transaction system.
   result                        VARCHAR(32),                         -- Operation result - CONTINUE, FAILED, DONE.
   timestamp_created             TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when this operation was created.
-  timestamp_expires             TIMESTAMP,                           -- Timestamp of the expiration of the operation.
+  timestamp_expires             TIMESTAMP NULL,                           -- Timestamp of the expiration of the operation.
   FOREIGN KEY ns_operation_organization_fk (organization_id) REFERENCES ns_organization (organization_id),
   FOREIGN KEY ns_operation_config_fk (operation_name) REFERENCES ns_operation_config (operation_name)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -444,7 +444,7 @@ CREATE TABLE ns_operation_history (
   response_result_description VARCHAR(256),                        -- Additional information about the authentication step result.
   response_steps              VARCHAR(4000),                       -- Information about which methods are allowed in the next step.
   response_timestamp_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when the record was created.
-  response_timestamp_expires  TIMESTAMP,                           -- Timestamp when the operation step should expire.
+  response_timestamp_expires  TIMESTAMP NULL,                           -- Timestamp when the operation step should expire.
   chosen_auth_method          VARCHAR(32),                         -- Information about which authentication method was chosen, in case user can chose the authentication method.
   mobile_token_active         BOOLEAN NOT NULL DEFAULT FALSE,      -- Information about if mobile token is active during the particular authentication step, in order to show the mobile token operation at the right time.
   authentication_id           VARCHAR(256),                        -- Reference to the authentication record.
@@ -499,8 +499,8 @@ CREATE TABLE da_sms_authorization (
   verify_request_count INTEGER,                             -- Number of verification attempts.
   verified             BOOLEAN DEFAULT FALSE,               -- Flag indicating if this SMS OTP was successfully verified.
   timestamp_created    TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when the SMS OTP was generated.
-  timestamp_verified   TIMESTAMP,                           -- Timestamp when the SMS OTP was successfully validated.
-  timestamp_expires    TIMESTAMP                            -- Timestamp when the SMS OTP expires.
+  timestamp_verified   TIMESTAMP NULL,                           -- Timestamp when the SMS OTP was successfully validated.
+  timestamp_expires    TIMESTAMP NULL                            -- Timestamp when the SMS OTP expires.
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table da_user_credentials stores built-in users for the data adapter
@@ -531,7 +531,7 @@ CREATE TABLE tpp_user_consent (
   external_id           VARCHAR(256),                                -- External ID associated with the consent approval, usually the operation ID.
   consent_parameters    TEXT NOT NULL,                               -- Specific parameters that were filled in into the user consent template.
   timestamp_created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,         -- Timestamp the consent with given ID was first created.
-  timestamp_updated     TIMESTAMP                                    -- Timestamp the consent with given ID was given again before it was revoked (updated, prolonged).
+  timestamp_updated     TIMESTAMP NULL                                 -- Timestamp the consent with given ID was given again before it was revoked (updated, prolonged).
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE tpp_user_consent_history (
@@ -582,7 +582,7 @@ CREATE TABLE audit_log (
     calling_class      VARCHAR(256) NOT NULL,
     thread_name        VARCHAR(256) NOT NULL,
     version            VARCHAR(256),
-    build_time         TIMESTAMP
+    build_time         TIMESTAMP NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Table audit_param stores auditing parameters
@@ -640,7 +640,7 @@ CREATE FULLTEXT INDEX audit_param_value ON audit_param (param_value);
 -- default oauth 2.0 client
 -- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
 INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, web_server_redirect_uri, additional_information, autoapprove)
-VALUES ('democlient', '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.', 'profile,aisp,pisp', 'authorization_code', 'http://localhost:8080/powerauth-webflow-client/connect/demo', '{}', 'true');
+VALUES ('democlient', '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.', 'profile,aisp,pisp', 'authorization_code', 'http://localhost:8888/connect/demo', '{}', 'true');
 
 -- authentication methods
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, has_mobile_token, display_name_key)
