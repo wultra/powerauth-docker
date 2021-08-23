@@ -10,11 +10,10 @@ Follow these steps:
 4. Start the application by `sh start.sh` command.
 5. Open [http://localhost:8888](http://localhost:8888) in browser.
 
-You should see a demo app that has three features:
+You should see a demo app that has following features:
 
-- Payment authorization demo.
-- Operation authorization demo (by operation ID).
-- Login demo (simple OAuth 2.0 dance).
+- Login demo (a simple OAuth 2.0 dance).
+- Operation authorization demo (e.g. a payment operation, identified by operation ID or any other operation).
 
 It looks like this:
 
@@ -27,8 +26,8 @@ For payments and operations that require 2FA, there is an SMS OTP enabled by def
 | parameter | value |
 |---|---|
 | URL | `jdbc:mysql://localhost:23376/powerauth` |
-| username | `root` |
-| password | `root` |
+| username | `powerauth` |
+| password | `[empty]` |
 | table name | `da_sms_authorization` |
 
 You need to order records by `timestamp_created` column to see only the latest SMS OTP codes. The SMS OTP code is stored in column `authorization_code`.
