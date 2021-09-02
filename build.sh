@@ -17,9 +17,9 @@ if [ -z ${TAG+x} ]; then
 fi
 
 ## Build Database Images
-docker build -t powerauth/server-mysql:$TAG -t powerauth/server-mysql:latest -f docker-powerauth-server-mysql/Dockerfile .
-docker build -t powerauth/push-mysql:$TAG -t powerauth/push-mysql:latest -f docker-powerauth-push-mysql/Dockerfile .
-docker build -t powerauth/webflow-mysql:$TAG -t powerauth/webflow-mysql:latest -f docker-powerauth-webflow-mysql/Dockerfile .
+docker build -t powerauth/server-postgresql:$TAG -t powerauth/server-postgresql:latest -f docker-powerauth-server-postgresql/Dockerfile .
+docker build -t powerauth/push-postgresql:$TAG -t powerauth/push-postgresql:latest -f docker-powerauth-push-postgresql/Dockerfile .
+docker build -t powerauth/webflow-postgresql:$TAG -t powerauth/webflow-postgresql:latest -f docker-powerauth-webflow-postgresql/Dockerfile .
 
 ## Build Application Images
 docker build -t powerauth/server:$TAG -t powerauth/server:latest -f docker-powerauth-server/Dockerfile .

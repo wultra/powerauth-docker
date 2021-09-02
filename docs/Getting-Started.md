@@ -38,13 +38,13 @@ Launch the following command to obtain latest versions of PowerAuth Docker image
 ```sh
 docker pull powerauth/server
 docker pull powerauth/push-server
-docker pull powerauth/server-mysql
-docker pull powerauth/push-mysql
+docker pull powerauth/server-postgresql
+docker pull powerauth/push-postgresql
 docker pull powerauth/webflow
 docker pull powerauth/nextstep
 docker pull powerauth/data-adapter
 docker pull powerauth/tpp-engine
-docker pull powerauth/webflow-mysql
+docker pull powerauth/webflow-postgresql
 ```
 
 #### Basic Installation
@@ -52,8 +52,8 @@ docker pull powerauth/webflow-mysql
 ```sh
 docker pull powerauth/server
 docker pull powerauth/push-server
-docker pull powerauth/server-mysql
-docker pull powerauth/push-mysql
+docker pull powerauth/server-postgresql
+docker pull powerauth/push-postgresql
 ```
 
 ### 3. Configure Docker Images
@@ -64,15 +64,15 @@ If you don't do anything with the configuration, everything will just work on yo
 
 Run the Docker Compose in the root folder of your cloned project.
 
-_Note: By default, the MySQL images are mounted to `/var/lib/powerauth/**` path. This path does not have to be accessible on your system. To customize MySQL instance in containers (root password, host folder mapping, etc.), you can change the related environment variables in `.env` file. You can always override these variables while launching `docker-compose up` command as well, for example to use volatile `/tmp/powerauth/**` folders. We use this trick in the following steps..._
+_Note: By default, the PostgreSQL images are mounted to `/var/lib/powerauth/**` path. This path does not have to be accessible on your system. To customize PostgreSQL instance in containers (root password, host folder mapping, etc.), you can change the related environment variables in `.env` file. You can always override these variables while launching `docker-compose up` command as well, for example to use volatile `/tmp/powerauth/**` folders. We use this trick in the following steps..._
 
-For the full installation with volatile MySQL folders, use the following command:
+For the full installation with volatile PostgreSQL folders, use the following command:
 
 ```sh
 cd powerauth-docker
-POWERAUTH_MYSQL_PATH=/tmp/powerauth/mysql \
-POWERAUTH_PUSH_MYSQL_PATH=/tmp/powerauth/mysql-push \
-POWERAUTH_WEBFLOW_MYSQL_PATH=/tmp/powerauth/mysql-webflow \
+POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
+POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
+POWERAUTH_WEBFLOW_POSGRESQL_PATH=/tmp/powerauth/postgresql-webflow \
 docker-compose -f docker-compose-pa-all.yml up -d
 ```
 
@@ -82,20 +82,20 @@ For basic installation, you can use:
 
 ```sh
 cd powerauth-docker
-POWERAUTH_MYSQL_PATH=/tmp/powerauth/mysql \
-POWERAUTH_PUSH_MYSQL_PATH=/tmp/powerauth/mysql-push \
+POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
+POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
 docker-compose up -d
 ```
 
 After you start the Docker images, the following databases and applications are available.
 
-#### MySQL Databases
+#### PostgreSQL Databases
 
 | Name                     | JDBC Path                                | Username | Password |
 |--------------------------|------------------------------------------|----------|----------|
-| PowerAuth Server DB      | `jdbc:mysql://localhost:23316/powerauth` | `powerauth`   | `[empty]`   |
-| PowerAuth Push Server DB | `jdbc:mysql://localhost:23336/powerauth` | `powerauth`   | `[empty]`   |
-| PowerAuth Web Flow DB    | `jdbc:mysql://localhost:23376/powerauth` | `powerauth`   | `[empty]`   |
+| PowerAuth Server DB      | `jdbc:postgresql://localhost:23316/powerauth` | `powerauth`   | `powerauth`   |
+| PowerAuth Push Server DB | `jdbc:postgresql://localhost:23336/powerauth` | `powerauth`   | `powerauth`   |
+| PowerAuth Web Flow DB    | `jdbc:postgresql://localhost:23376/powerauth` | `powerauth`   | `powerauth`   |
 
 _Note: All databases are already created with the correct structure and contain necessary configuration._
 

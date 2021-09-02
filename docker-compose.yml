@@ -1,34 +1,34 @@
 version: '2.1'
 services:
 
-    # PowerAuth Server Database
-    powerauth-mysql:
-        image: powerauth/server-mysql
-        container_name: powerauth-server-mysql
+    # PowerAuth Server PostgreSQL Database
+    powerauth-server-postgresql:
+        image: powerauth/server-postgresql
+        container_name: powerauth-server-postgresql
         ports:
-            - "23316:3306"
+            - "23316:5432"
         environment:
-            - MYSQL_ROOT_PASSWORD=${POWERAUTH_MYSQL_PASSWORD}
+            - POSTGRES_PASSWORD=${POWERAUTH_POSTGRESQL_PASSWORD}
         volumes:
-            - ${POWERAUTH_MYSQL_PATH}:/var/lib/mysql
+            - ${POWERAUTH_POSTGRESQL_PATH}:/var/lib/postgresql
         healthcheck:
-            test: mysqladmin -uroot -p${POWERAUTH_MYSQL_PASSWORD} ping
+            test: ["CMD-SHELL", "pg_isready -U powerauth"]
             interval: 5s
             timeout: 5s
             retries: 30
 
-    # PowerAuth Push Server Database
-    powerauth-push-mysql:
-        image: powerauth/push-mysql
-        container_name: powerauth-push-mysql
+    # PowerAuth Push Server PostgreSQL Database
+    powerauth-push-postgresql:
+        image: powerauth/push-postgresql
+        container_name: powerauth-push-postgresql
         ports:
-            - "23336:3306"
+            - "23336:5432"
         environment:
-            - MYSQL_ROOT_PASSWORD=${POWERAUTH_PUSH_MYSQL_PASSWORD}
+            - POSTGRES_PASSWORD=${POWERAUTH_PUSH_POSTGRESQL_PASSWORD}
         volumes:
-            - ${POWERAUTH_PUSH_MYSQL_PATH}:/var/lib/mysql
+            - ${POWERAUTH_PUSH_POSTGRESQL_PATH}:/var/lib/postgresql
         healthcheck:
-            test: mysqladmin -uroot -p${POWERAUTH_PUSH_MYSQL_PASSWORD} ping
+            test: ["CMD-SHELL", "pg_isready -U powerauth"]
             interval: 5s
             timeout: 5s
             retries: 30
@@ -97,7 +97,7 @@ services:
             - POWERAUTH_ADMIN_LOGGING=${POWERAUTH_ADMIN_LOGGING}
             - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
-            powerauth-mysql:
+            powerauth-server-postgresql:
                 condition: service_healthy
 
     # PowerAuth Push Server
@@ -157,7 +157,7 @@ services:
             - PUSH_SERVER_LOGGING=${PUSH_SERVER_LOGGING}
             - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
-            powerauth-push-mysql:
+            powerauth-push-postgresql:
                 condition: service_healthy
             powerauth-java-server:
                 condition: service_healthy
