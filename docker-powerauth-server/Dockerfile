@@ -12,9 +12,6 @@ RUN rm -rf $TOMCAT_HOME/webapps/*
 ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
-# Configure Bouncy Castle in JRE
-RUN echo 'security.provider.14=org.bouncycastle.jce.provider.BouncyCastleProvider' >> $JAVA_HOME/conf/security/java.security
-
 # Deploy and run applications
 ADD deploy/conf/powerauth-java-server.xml $TOMCAT_HOME/conf/Catalina/localhost/
 ADD deploy/images/powerauth-java-server.war $TOMCAT_HOME/webapps/
