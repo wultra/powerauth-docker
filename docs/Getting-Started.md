@@ -125,7 +125,7 @@ _Note: All databases are already created with the correct structure and contain 
 |                        | Status URL                  | http://localhost:13050/powerauth-data-adapter/api/service/status     |
 | PowerAuth TPP Engine   | Base URL                    | http://localhost:13060/powerauth-tpp-engine                          |
 |                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui.html          |
-|                        | Status URL                  | http://localhost:13050/powerauth-tpp-engine/api/service/status       |
+|                        | Status URL                  | http://localhost:13060/powerauth-tpp-engine/api/service/status       |
 
 You can verify status of PowerAuth server using POST method:
 
