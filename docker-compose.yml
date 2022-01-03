@@ -39,7 +39,7 @@ services:
         container_name: powerauth-server
         ports:
             - "20010:8080"
-        mem_limit: ${POWERAUTH_SERVER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
             interval: 10s
@@ -106,7 +106,7 @@ services:
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
-        mem_limit: ${PUSH_SERVER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
