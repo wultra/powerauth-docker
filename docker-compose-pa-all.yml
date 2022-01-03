@@ -55,7 +55,7 @@ services:
         container_name: powerauth-server
         ports:
             - "20010:8080"
-        mem_limit: ${POWERAUTH_SERVER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
             interval: 10s
@@ -122,7 +122,7 @@ services:
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
-        mem_limit: ${PUSH_SERVER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
@@ -184,7 +184,7 @@ services:
         container_name: powerauth-nextstep
         ports:
             - "13010:8080"
-        mem_limit: ${NEXTSTEP_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-nextstep"]
             interval: 10s
@@ -227,7 +227,7 @@ services:
         container_name: powerauth-tpp-engine
         ports:
             - "13060:8080"
-        mem_limit: ${TPP_ENGINE_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-tpp-engine"]
             interval: 10s
@@ -261,7 +261,7 @@ services:
         container_name: powerauth-data-adapter
         ports:
             - "13050:8080"
-        mem_limit: ${DATA_ADAPTER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
             interval: 10s
@@ -297,7 +297,7 @@ services:
         container_name: powerauth-webflow
         ports:
             - "13030:8080"
-        mem_limit: ${WEBFLOW_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webflow"]
             interval: 10s
