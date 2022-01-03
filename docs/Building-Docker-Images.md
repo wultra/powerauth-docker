@@ -35,22 +35,22 @@ If you don't do anything with the configuration, everything will just work on yo
 
 Each application has a context XML file (see `deploy/conf` folder), where you can configure properties for your particular instance. See the documentation of the respective applications to learn about the meaning of properties.
 
-In case you would like to run PowerAuth stack with provided MySQL images for Docker, you may also need to customize MySQL init scripts stored in `deploy/data/mysql` (only in case you would like to pre-populate database with data).
+In case you would like to run PowerAuth stack with provided PostgreSQL images for Docker, you may also need to customize PostgreSQL init scripts stored in `deploy/data/postgresql` (only in case you would like to pre-populate database with data).
 
-Note that by default, MySQL images are mounted to `/var/lib/powerauth/**` path, that does not have to be accessible. To customize MySQL instance in containers (root password, host folder mapping), you can change the related environment variables in `.env` file. You can always override these variables while launching `docker-compose up` command as well, for example (to use volatile `/tmp/powerauth/**` folders):
+Note that by default, PostgreSQL images are mounted to `/var/lib/powerauth/**` path, that does not have to be accessible. To customize PostgreSQL instance in containers (root password, host folder mapping), you can change the related environment variables in `.env` file. You can always override these variables while launching `docker-compose up` command as well, for example (to use volatile `/tmp/powerauth/**` folders):
 
 ```sh
-POWERAUTH_MYSQL_PATH=/tmp/powerauth/mysql \
-POWERAUTH_PUSH_MYSQL_PATH=/tmp/powerauth/mysql-push \
+POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
+POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
 docker-compose up -d
 ```
 
 In case you want to include Web Flow, use:
 
 ```sh
-POWERAUTH_MYSQL_PATH=/tmp/powerauth/mysql \
-POWERAUTH_PUSH_MYSQL_PATH=/tmp/powerauth/mysql-push \
-POWERAUTH_WEBFLOW_MYSQL_PATH=/tmp/powerauth/mysql-webflow \
+POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
+POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
+POWERAUTH_WEBFLOW_POSGRESQL_PATH=/tmp/powerauth/postgresql-webflow \
 docker-compose -f docker-compose-pa-all.yml up -d 
 ```
 

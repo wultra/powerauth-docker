@@ -10,13 +10,8 @@ ENV WEBFLOW_RESOURCES /opt/ext-resources
 RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
-ADD deploy/lib/mysql-connector-java.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
-ADD deploy/lib/bcprov-jdk15on-167.jar $TOMCAT_HOME/lib/
-
-# Configure Bouncy Castle in JRE
-RUN echo 'security.provider.14=org.bouncycastle.jce.provider.BouncyCastleProvider' >> $JAVA_HOME/conf/security/java.security
 
 # Add valve for proxy with SSL termination
 RUN sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' $TOMCAT_HOME/conf/server.xml

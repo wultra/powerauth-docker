@@ -20,4 +20,4 @@ The free disk space mentioned above does not include storage required for the da
 
 Since the data stored in the database may be needed to provide and authorization prove for given transaction, the data should not be deleted (and should be archived). As a result, practical requirement for the database is an "infinite growth" - the storage allocated for the database has to be large enough.
 
-Note that while we include MySQL Docker images in the distribution, you should always use externally mapped database for production.
+Note that while we include PostgreSQL Docker images in the distribution, you should always use externally mapped database for production.

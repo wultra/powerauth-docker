@@ -1,50 +1,50 @@
-version: '2.1'
+version: '2.2.2'
 services:
 
-    # PowerAuth Server Database
-    powerauth-mysql:
-        image: powerauth/server-mysql
-        container_name: powerauth-server-mysql
+    # PowerAuth Server PostgreSQL Database
+    powerauth-server-postgresql:
+        image: powerauth/server-postgresql
+        container_name: powerauth-server-postgresql
         ports:
-            - "23316:3306"
+            - "23316:5432"
         environment:
-            - MYSQL_ROOT_PASSWORD=${POWERAUTH_MYSQL_PASSWORD}
+            - POSTGRES_PASSWORD=${POWERAUTH_POSTGRESQL_PASSWORD}
         volumes:
-            - ${POWERAUTH_MYSQL_PATH}:/var/lib/mysql
+            - ${POWERAUTH_POSTGRESQL_PATH}:/var/lib/postgresql
         healthcheck:
-            test: mysqladmin -uroot -p${POWERAUTH_MYSQL_PASSWORD} ping
+            test: ["CMD-SHELL", "pg_isready -U powerauth"]
             interval: 5s
             timeout: 5s
             retries: 30
 
-    # PowerAuth Push Server Database
-    powerauth-push-mysql:
-        image: powerauth/push-mysql
-        container_name: powerauth-push-mysql
+    # PowerAuth Push Server PostgreSQL Database
+    powerauth-push-postgresql:
+        image: powerauth/push-postgresql
+        container_name: powerauth-push-postgresql
         ports:
-            - "23336:3306"
+            - "23336:5432"
         environment:
-            - MYSQL_ROOT_PASSWORD=${POWERAUTH_PUSH_MYSQL_PASSWORD}
+            - POSTGRES_PASSWORD=${POWERAUTH_PUSH_POSTGRESQL_PASSWORD}
         volumes:
-            - ${POWERAUTH_PUSH_MYSQL_PATH}:/var/lib/mysql
+            - ${POWERAUTH_PUSH_POSTGRESQL_PATH}:/var/lib/postgresql
         healthcheck:
-            test: mysqladmin -uroot -p${POWERAUTH_PUSH_MYSQL_PASSWORD} ping
+            test: ["CMD-SHELL", "pg_isready -U powerauth"]
             interval: 5s
             timeout: 5s
             retries: 30
 
-    # PowerAuth WebFlow MySQL Database
-    powerauth-webflow-mysql:
-        image: powerauth/webflow-mysql
-        container_name: powerauth-webflow-mysql
+    # PowerAuth WebFlow PostgreSQL Database
+    powerauth-webflow-postgresql:
+        image: powerauth/webflow-postgresql
+        container_name: powerauth-webflow-postgresql
         ports:
-            - "23376:3306"
+            - "23376:5432"
         environment:
-            - MYSQL_ROOT_PASSWORD=${POWERAUTH_WEBFLOW_MYSQL_PASSWORD}
+            - POSTGRES_PASSWORD=${POWERAUTH_WEBFLOW_POSTGRESQL_PASSWORD}
         volumes:
-            - ${POWERAUTH_WEBFLOW_MYSQL_PATH}:/var/lib/mysql
+            - ${POWERAUTH_WEBFLOW_POSTGRESQL_PATH}:/var/lib/postgresql
         healthcheck:
-            test: mysqladmin -uroot -p${POWERAUTH_WEBFLOW_MYSQL_PASSWORD} ping
+            test: ["CMD-SHELL", "pg_isready -U powerauth"]
             interval: 5s
             timeout: 5s
             retries: 30
@@ -55,7 +55,7 @@ services:
         container_name: powerauth-server
         ports:
             - "20010:8080"
-        mem_limit: ${POWERAUTH_SERVER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
             interval: 10s
@@ -113,7 +113,7 @@ services:
             - POWERAUTH_ADMIN_LOGGING=${POWERAUTH_ADMIN_LOGGING}
             - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
-            powerauth-mysql:
+            powerauth-server-postgresql:
                 condition: service_healthy
 
     # PowerAuth Push Server
@@ -122,7 +122,7 @@ services:
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
-        mem_limit: ${PUSH_SERVER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
@@ -166,13 +166,14 @@ services:
             - PUSH_SERVER_APNS_CONNECT_TIMEOUT=${PUSH_SERVER_APNS_CONNECT_TIMEOUT}
             - PUSH_SERVER_APNS_IDLE_PING_INTERVAL=${PUSH_SERVER_APNS_IDLE_PING_INTERVAL}
             - PUSH_SERVER_APNS_CONCURRENT_CONNECTIONS=${PUSH_SERVER_APNS_CONCURRENT_CONNECTIONS}
+            - PUSH_SERVER_JAVA_CACERTS_PASSWORD=${PUSH_SERVER_JAVA_CACERTS_PASSWORD}
             - PUSH_SERVER_APPLICATION_NAME=${PUSH_SERVER_APPLICATION_NAME}
             - PUSH_SERVER_APPLICATION_DISPLAY_NAME=${PUSH_SERVER_APPLICATION_DISPLAY_NAME}
             - PUSH_SERVER_APPLICATION_ENVIRONMENT=${PUSH_SERVER_APPLICATION_ENVIRONMENT}
             - PUSH_SERVER_LOGGING=${PUSH_SERVER_LOGGING}
             - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
-            powerauth-push-mysql:
+            powerauth-push-postgresql:
                 condition: service_healthy
             powerauth-java-server:
                 condition: service_healthy
@@ -183,13 +184,18 @@ services:
         container_name: powerauth-nextstep
         ports:
             - "13010:8080"
-        mem_limit: ${NEXTSTEP_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-nextstep"]
             interval: 10s
             timeout: 10s
             retries: 30
         environment:
+            - NEXTSTEP_DATA_ADAPTER_URL=${NEXTSTEP_DATA_ADAPTER_URL}
+            - NEXTSTEP_POWERAUTH_SERVICE_URL=${NEXTSTEP_POWERAUTH_SERVICE_URL}
+            - NEXTSTEP_POWERAUTH_SECURITY_TOKEN=${NEXTSTEP_POWERAUTH_SECURITY_TOKEN}
+            - NEXTSTEP_POWERAUTH_SECURITY_SECRET=${NEXTSTEP_POWERAUTH_SECURITY_SECRET}
+            - NEXTSTEP_ACCEPT_INVALID_SSL_CERTIFICATE=${NEXTSTEP_ACCEPT_INVALID_SSL_CERTIFICATE}
             - NEXTSTEP_DATASOURCE_URL=${NEXTSTEP_DATASOURCE_URL}
             - NEXTSTEP_DATASOURCE_USERNAME=${NEXTSTEP_DATASOURCE_USERNAME}
             - NEXTSTEP_DATASOURCE_PASSWORD=${NEXTSTEP_DATASOURCE_PASSWORD}
@@ -200,6 +206,9 @@ services:
             - NEXTSTEP_JPA_USE_UNICODE=${NEXTSTEP_JPA_USE_UNICODE}
             - NEXTSTEP_JPA_DATABASE_PLATFORM=${NEXTSTEP_JPA_DATABASE_PLATFORM}
             - NEXTSTEP_OPERATION_EXPIRATION_TIME=${NEXTSTEP_OPERATION_EXPIRATION_TIME}
+            - NEXTSTEP_POWERAUTH_OPERATIONS_ENABLED=${NEXTSTEP_POWERAUTH_OPERATIONS_ENABLED}
+            - NEXTSTEP_E2E_ENCRYPTION_KEY=${NEXTSTEP_E2E_ENCRYPTION_KEY}
+            - NEXTSTEP_MASTER_DB_ENCRYPTION_KEY=${NEXTSTEP_MASTER_DB_ENCRYPTION_KEY}
             - NEXTSTEP_DATASOURCE_JNDI_NAME=${NEXTSTEP_DATASOURCE_JNDI_NAME}
             - NEXTSTEP_SPRING_JMX_ENABLED=${NEXTSTEP_SPRING_JMX_ENABLED}
             - NEXTSTEP_SPRING_JMX_DEFAULT_DOMAIN=${NEXTSTEP_SPRING_JMX_DEFAULT_DOMAIN}
@@ -209,7 +218,7 @@ services:
             - NEXTSTEP_LOGGING=${NEXTSTEP_LOGGING}
             - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
-            powerauth-webflow-mysql:
+            powerauth-webflow-postgresql:
                 condition: service_healthy
 
     # PowerAuth TPP registry and consent engine
@@ -218,7 +227,7 @@ services:
         container_name: powerauth-tpp-engine
         ports:
             - "13060:8080"
-        mem_limit: ${TPP_ENGINE_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-tpp-engine"]
             interval: 10s
@@ -243,7 +252,7 @@ services:
             - POWERAUTH_TPP_ENGINE_LOGGING=${POWERAUTH_TPP_ENGINE_LOGGING}
             - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
-            powerauth-webflow-mysql:
+            powerauth-webflow-postgresql:
                 condition: service_healthy
 
     # PowerAuth Data Adapter
@@ -252,7 +261,7 @@ services:
         container_name: powerauth-data-adapter
         ports:
             - "13050:8080"
-        mem_limit: ${DATA_ADAPTER_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
             interval: 10s
@@ -288,7 +297,7 @@ services:
         container_name: powerauth-webflow
         ports:
             - "13030:8080"
-        mem_limit: ${WEBFLOW_MEMORY_LIMIT}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webflow"]
             interval: 10s
@@ -321,6 +330,7 @@ services:
             - WEBFLOW_PASSWORD_ENCRYPTION_TRANSFORMATION=${WEBFLOW_PASSWORD_ENCRYPTION_TRANSFORMATION}
             - WEBFLOW_PASSWORD_ENCRYPTION_KEY=${WEBFLOW_PASSWORD_ENCRYPTION_KEY}
             - WEBFLOW_SMS_RESEND_DELAY_MS=${WEBFLOW_SMS_RESEND_DELAY_MS}
+            - WEBFLOW_POWERAUTH_OPERATIONS_ENABLED=${WEBFLOW_POWERAUTH_OPERATIONS_ENABLED}
             - WEBFLOW_AFS_ENABLED=${WEBFLOW_AFS_ENABLED}
             - WEBFLOW_AFS_TYPE=${WEBFLOW_AFS_TYPE}
             - WEBFLOW_AFS_DETECT_IP_ADDRESS=${WEBFLOW_AFS_DETECT_IP_ADDRESS}
@@ -338,7 +348,7 @@ services:
             - WEBFLOW_LOGGING=${WEBFLOW_LOGGING}
             - JAVA_OPTS=${POWERAUTH_JAVA_OPTS}
         depends_on:
-            powerauth-webflow-mysql:
+            powerauth-webflow-postgresql:
                 condition: service_healthy
             powerauth-nextstep:
                 condition: service_healthy
