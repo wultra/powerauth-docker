@@ -76,7 +76,7 @@ POWERAUTH_WEBFLOW_POSGRESQL_PATH=/tmp/powerauth/postgresql-webflow \
 docker-compose -f docker-compose-pa-all.yml up -d
 ```
 
-_Note: Running whole PowerAuth stack will require at least 8 GB of RAM memory available for Docker._
+_Note: Running whole PowerAuth stack will require at least 4 GB of RAM memory available for Docker._
 
 For basic installation, you can use:
 
