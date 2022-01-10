@@ -10,4 +10,4 @@ For the Docker deployment, we currently support only base technologies - Docker 
 
 ## License
 
-Sources for Docker images are licensed using Apache 2.0 license, you can use them with no restriction. Please note that some of the PowerAuth components that are part of the installation are licensed under restrictive AGPL license. If you are using PowerAuth, please let us know. We will be happy to share and promote your project.
+Sources for Docker images are licensed using Apache 2.0 license, you can use them with no restriction. Please note that most of the PowerAuth components that are part of the installation are licensed under restrictive AGPL v3.0 license. If you are using PowerAuth, please let us know. We will be happy to share and promote your project.
