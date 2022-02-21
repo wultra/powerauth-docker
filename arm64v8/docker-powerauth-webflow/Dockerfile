@@ -10,18 +10,18 @@ ENV WEBFLOW_RESOURCES /opt/ext-resources
 RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
-ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
-ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
+ADD ../deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
+ADD ../deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Add valve for proxy with SSL termination
 RUN sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' $TOMCAT_HOME/conf/server.xml
 
 # Deploy and run applications
-ADD deploy/conf/powerauth-webflow.xml $TOMCAT_HOME/conf/Catalina/localhost/
-ADD deploy/images/powerauth-webflow.war $TOMCAT_HOME/webapps/
+ADD ../deploy/conf/powerauth-webflow.xml $TOMCAT_HOME/conf/Catalina/localhost/
+ADD ../deploy/images/powerauth-webflow.war $TOMCAT_HOME/webapps/
 
 # Customize web app resources
-ADD deploy/data/ext-resources $WEBFLOW_RESOURCES
+ADD ../deploy/data/ext-resources $WEBFLOW_RESOURCES
 
 # Create user tomcat and run Tomcat under this user
 RUN groupadd -r tomcat
