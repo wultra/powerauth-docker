@@ -31,7 +31,7 @@ git clone https://github.com/wultra/powerauth-docker.git
 
 ### 2. Download Docker Images
 
-Launch the following command to obtain latest versions of PowerAuth Docker images:
+Launch the following command to obtain the latest versions of PowerAuth Docker images:
 
 #### Full Installation
 
@@ -47,6 +47,8 @@ docker pull powerauth/tpp-engine
 docker pull powerauth/webflow-postgresql
 ```
 
+_Note: Use the `/arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
+
 #### Basic Installation
 
 ```sh
@@ -55,6 +57,8 @@ docker pull powerauth/push-server
 docker pull powerauth/server-postgresql
 docker pull powerauth/push-postgresql
 ```
+
+_Note: Use the `/arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
 
 ### 3. Configure Docker Images
 
@@ -84,8 +88,10 @@ For basic installation, you can use:
 cd powerauth-docker
 POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
 POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
-docker-compose up -d
+docker-compose -f docker-compose.yml up -d
 ```
+
+_Note: Use the `-arm64v8.yml` suffix for launching containers on Apple Silicon CPU architecture._
 
 After you start the Docker images, the following databases and applications are available.
 

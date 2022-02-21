@@ -51,11 +51,11 @@ services:
 
     # PowerAuth Server
     powerauth-java-server:
-        image: powerauth/server
+        image: powerauth/server/arm64v8
         container_name: powerauth-server
         ports:
             - "20010:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
             interval: 10s
@@ -111,18 +111,18 @@ services:
             - POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME=${POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME}
             - POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT=${POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT}
             - POWERAUTH_ADMIN_LOGGING=${POWERAUTH_ADMIN_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-server-postgresql:
                 condition: service_healthy
 
     # PowerAuth Push Server
     powerauth-push-server:
-        image: powerauth/push-server
+        image: powerauth/push-server/arm64v8
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
@@ -171,7 +171,7 @@ services:
             - PUSH_SERVER_APPLICATION_DISPLAY_NAME=${PUSH_SERVER_APPLICATION_DISPLAY_NAME}
             - PUSH_SERVER_APPLICATION_ENVIRONMENT=${PUSH_SERVER_APPLICATION_ENVIRONMENT}
             - PUSH_SERVER_LOGGING=${PUSH_SERVER_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-push-postgresql:
                 condition: service_healthy
@@ -180,11 +180,11 @@ services:
 
     # PowerAuth NextStep Server
     powerauth-nextstep:
-        image: powerauth/nextstep
+        image: powerauth/nextstep/arm64v8
         container_name: powerauth-nextstep
         ports:
             - "13010:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-nextstep"]
             interval: 10s
@@ -216,18 +216,18 @@ services:
             - NEXTSTEP_APPLICATION_DISPLAY_NAME=${NEXTSTEP_APPLICATION_DISPLAY_NAME}
             - NEXTSTEP_APPLICATION_ENVIRONMENT=${NEXTSTEP_APPLICATION_ENVIRONMENT}
             - NEXTSTEP_LOGGING=${NEXTSTEP_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-webflow-postgresql:
                 condition: service_healthy
 
     # PowerAuth TPP registry and consent engine
     powerauth-tpp-engine:
-        image: powerauth/tpp-engine
+        image: powerauth/tpp-engine/arm64v8
         container_name: powerauth-tpp-engine
         ports:
             - "13060:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-tpp-engine"]
             interval: 10s
@@ -250,18 +250,18 @@ services:
             - POWERAUTH_TPP_ENGINE_APPLICATION_DISPLAY_NAME=${POWERAUTH_TPP_ENGINE_APPLICATION_DISPLAY_NAME}
             - POWERAUTH_TPP_ENGINE_APPLICATION_ENVIRONMENT=${POWERAUTH_TPP_ENGINE_APPLICATION_ENVIRONMENT}
             - POWERAUTH_TPP_ENGINE_LOGGING=${POWERAUTH_TPP_ENGINE_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-webflow-postgresql:
                 condition: service_healthy
 
     # PowerAuth Data Adapter
     powerauth-data-adapter:
-        image: powerauth/data-adapter
+        image: powerauth/data-adapter/arm64v8
         container_name: powerauth-data-adapter
         ports:
             - "13050:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-data-adapter"]
             interval: 10s
@@ -286,18 +286,18 @@ services:
             - DATA_ADAPTER_APPLICATION_DISPLAY_NAME=${DATA_ADAPTER_APPLICATION_DISPLAY_NAME}
             - DATA_ADAPTER_APPLICATION_ENVIRONMENT=${DATA_ADAPTER_APPLICATION_ENVIRONMENT}
             - DATA_ADAPTER_LOGGING=${DATA_ADAPTER_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-tpp-engine:
                 condition: service_healthy
 
     # PowerAuth Web Flow Server
     powerauth-webflow:
-        image: powerauth/webflow
+        image: powerauth/webflow/arm64v8
         container_name: powerauth-webflow
         ports:
             - "13030:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-webflow"]
             interval: 10s
@@ -346,7 +346,7 @@ services:
             - WEBFLOW_APPLICATION_DISPLAY_NAME=${WEBFLOW_APPLICATION_DISPLAY_NAME}
             - WEBFLOW_APPLICATION_ENVIRONMENT=${WEBFLOW_APPLICATION_ENVIRONMENT}
             - WEBFLOW_LOGGING=${WEBFLOW_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-webflow-postgresql:
                 condition: service_healthy
