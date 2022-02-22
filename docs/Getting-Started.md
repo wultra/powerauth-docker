@@ -504,6 +504,10 @@ curl --request POST \
 
 If you now try to approve payment with the `tester` user, Mobile token should be offered as an option.
 
+## Troubleshooting
+
+In case Docker containers get stopped with exit code `137`, make sure Docker has enough memory configured. See the `Preferences` / `Resources` / `Memory` tab in Docker Desktop. The default setting is only 2 GB RAM which is not enough for the whole PowerAuth stack.
+
 ## License
 
 All sources are licensed using Apache 2.0 license, you can use them with no restriction. If you are using PowerAuth, please let us know. We will be happy to share and promote your project.
