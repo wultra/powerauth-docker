@@ -47,7 +47,7 @@ docker pull powerauth/tpp-engine
 docker pull powerauth/webflow-postgresql
 ```
 
-_Note: Use the `/arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
+_Note: Use the `-arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
 
 #### Basic Installation
 
@@ -58,7 +58,7 @@ docker pull powerauth/server-postgresql
 docker pull powerauth/push-postgresql
 ```
 
-_Note: Use the `/arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
+_Note: Use the `-arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
 
 ### 3. Configure Docker Images
 

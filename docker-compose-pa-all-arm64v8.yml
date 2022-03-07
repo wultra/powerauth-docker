@@ -51,7 +51,7 @@ services:
 
     # PowerAuth Server
     powerauth-java-server:
-        image: powerauth/server/arm64v8
+        image: powerauth/server-arm64v8
         container_name: powerauth-server
         ports:
             - "20010:8080"
@@ -118,7 +118,7 @@ services:
 
     # PowerAuth Push Server
     powerauth-push-server:
-        image: powerauth/push-server/arm64v8
+        image: powerauth/push-server-arm64v8
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
@@ -180,7 +180,7 @@ services:
 
     # PowerAuth NextStep Server
     powerauth-nextstep:
-        image: powerauth/nextstep/arm64v8
+        image: powerauth/nextstep-arm64v8
         container_name: powerauth-nextstep
         ports:
             - "13010:8080"
@@ -223,7 +223,7 @@ services:
 
     # PowerAuth TPP registry and consent engine
     powerauth-tpp-engine:
-        image: powerauth/tpp-engine/arm64v8
+        image: powerauth/tpp-engine-arm64v8
         container_name: powerauth-tpp-engine
         ports:
             - "13060:8080"
@@ -257,7 +257,7 @@ services:
 
     # PowerAuth Data Adapter
     powerauth-data-adapter:
-        image: powerauth/data-adapter/arm64v8
+        image: powerauth/data-adapter-arm64v8
         container_name: powerauth-data-adapter
         ports:
             - "13050:8080"
@@ -293,7 +293,7 @@ services:
 
     # PowerAuth Web Flow Server
     powerauth-webflow:
-        image: powerauth/webflow/arm64v8
+        image: powerauth/webflow-arm64v8
         container_name: powerauth-webflow
         ports:
             - "13030:8080"

@@ -35,7 +35,7 @@ services:
 
     # PowerAuth Server
     powerauth-java-server:
-        image: powerauth/server/arm64v8
+        image: powerauth/server-arm64v8
         container_name: powerauth-server
         ports:
             - "20010:8080"
@@ -102,7 +102,7 @@ services:
 
     # PowerAuth Push Server
     powerauth-push-server:
-        image: powerauth/push-server/arm64v8
+        image: powerauth/push-server-arm64v8
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
