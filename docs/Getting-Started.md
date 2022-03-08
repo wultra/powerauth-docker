@@ -111,26 +111,26 @@ _Note: All databases are already created with the correct structure and contain 
 |------------------------|-----------------------------|----------------------------------------------------------------------|
 | PowerAuth Server       | Base URL                    | http://localhost:20010/powerauth-java-server                         |
 |                        | Status URL (POST)           | http://localhost:20010/powerauth-java-server/rest/v3/status          |
-|                        | Swagger Documentation       | http://localhost:20030/powerauth-java-server/swagger-ui.html         |
+|                        | Swagger Documentation       | http://localhost:20030/powerauth-java-server/swagger-ui/index.html         |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
 |                        | Status URL                  | http://localhost:20030/powerauth-push-server/push/service/status     |
-|                        | Swagger Documentation       | http://localhost:20030/powerauth-push-server/swagger-ui.html         |
+|                        | Swagger Documentation       | http://localhost:20030/powerauth-push-server/swagger-ui/index.html         |
 | PowerAuth Web Flow     | Base URL                    | http://localhost:13030/powerauth-webflow                             |
 |                        | Status URL                  | http://localhost:13030/powerauth-webflow/api/service/status          |
-|                        | Swagger Documentation       | http://localhost:13030/powerauth-webflow/swagger-ui.html             |
+|                        | Swagger Documentation       | http://localhost:13030/powerauth-webflow/swagger-ui/index.html             |
 |                        | OAuth 2.0 Authorization URL | http://localhost:13030/powerauth-webflow/oauth/authorize             |
 |                        | OAuth 2.0 Token URL         | http://localhost:13030/powerauth-webflow/oauth/token                 |
 |                        | User Profile Resource URL   | http://localhost:13030/powerauth-webflow/api/secure/profile/me       |
 | PowerAuth Next Step    | Base URL                    | http://localhost:13010/powerauth-nextstep                            |
-|                        | Swagger Documentation       | http://localhost:13010/powerauth-nextstep/swagger-ui.html            |
+|                        | Swagger Documentation       | http://localhost:13010/powerauth-nextstep/swagger-ui/index.html            |
 |                        | Status URL                  | http://localhost:13010/powerauth-nextstep/api/service/status         |
 | PowerAuth Data Adapter | Base URL                    | http://localhost:13050/powerauth-data-adapter                        |
-|                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui.html        |
+|                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui/index.html        |
 |                        | Status URL                  | http://localhost:13050/powerauth-data-adapter/api/service/status     |
 | PowerAuth TPP Engine   | Base URL                    | http://localhost:13060/powerauth-tpp-engine                          |
-|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui.html          |
+|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui/index.html          |
 |                        | Status URL                  | http://localhost:13060/powerauth-tpp-engine/api/service/status       |
 
 You can verify status of PowerAuth server using POST method:
