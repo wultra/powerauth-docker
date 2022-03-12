@@ -8,7 +8,7 @@ Following hardware platforms are supported by PowerAuth Docker images:
 - amd64 (also known as x86_64)
 - s390x
 - ppc64le
-- arm64v8 (use the `/arm64v8` suffix for Docker images, use `build-arm64v8.sh` script for building, and use the `-arm64v8.yml` suffix for docker-compose)
+- arm64v8 (use the `-arm64v8` suffix for Docker images, use `build-arm64v8.sh` script for building, and use the `-arm64v8.yml` suffix for docker-compose)
 
 ## Hardware Requirements of Basic Docker Images for PowerAuth Server and Push Server
 
