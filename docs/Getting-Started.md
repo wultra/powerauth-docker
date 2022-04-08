@@ -111,7 +111,7 @@ _Note: All databases are already created with the correct structure and contain 
 |------------------------|-----------------------------|----------------------------------------------------------------------|
 | PowerAuth Server       | Base URL                    | http://localhost:20010/powerauth-java-server                         |
 |                        | Status URL (POST)           | http://localhost:20010/powerauth-java-server/rest/v3/status          |
-|                        | Swagger Documentation       | http://localhost:20030/powerauth-java-server/swagger-ui/index.html         |
+|                        | Swagger Documentation       | http://localhost:20010/powerauth-java-server/swagger-ui/index.html         |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
