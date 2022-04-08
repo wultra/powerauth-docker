@@ -1,4 +1,4 @@
-FROM arm64v8/tomcat:9-jre11@sha256:7f97013afbda47a97e37548079143f79e4b4561622fdda7bc08681d08d303761
+FROM arm64v8/tomcat:9-jre11@sha256:cdf6a9ca2a039f9cfbf0c6546f77c0d6b3664dbdc49a4284a2dd6e84bed2defd
 LABEL maintainer="roman.strobl@wultra.com"
 
 # Prepare environment variables
