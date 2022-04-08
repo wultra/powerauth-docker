@@ -1,4 +1,4 @@
-FROM tomcat:jdk11-adoptopenjdk-openj9
+FROM tomcat:jdk11-adoptopenjdk-openj9@sha256:bebb14ffca2a3f01a07492795d73f2c4541c41fa0641bdf1924494a255c0c5af
 LABEL maintainer="petr@wultra.com"
 
 # Prepare environment variables
