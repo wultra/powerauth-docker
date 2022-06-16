@@ -95,6 +95,8 @@ _Note: Use the `-arm64v8.yml` suffix for launching containers on Apple Silicon C
 
 After you start the Docker images, the following databases and applications are available.
 
+You can also set the `PUSH_SERVER_APNS_DEVELOPMENT` varible to configure APNS environment - the boolean value represents if the APNS client should connect to the development environment (`true`) or production environment (`false`).
+
 #### PostgreSQL Databases
 
 | Name                     | JDBC Path                                | Username | Password |
