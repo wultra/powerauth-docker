@@ -160,7 +160,8 @@ CREATE TABLE pa_activation_history
     activation_status  INTEGER,
     event_reason       VARCHAR(255),
     external_user_id   VARCHAR(255),
-    timestamp_created  TIMESTAMP (6) NOT NULL
+    timestamp_created  TIMESTAMP (6) NOT NULL,
+    activation_version INTEGER
 );
 
 --
@@ -217,7 +218,6 @@ CREATE TABLE pa_recovery_config (
 CREATE TABLE pa_operation (
     id                    VARCHAR(37) NOT NULL PRIMARY KEY,
     user_id               VARCHAR(255) NOT NULL,
-    application_id        BIGINT NOT NULL,
     external_id           VARCHAR(255),
     activation_flag       VARCHAR(255),
     operation_type        VARCHAR(255) NOT NULL,
@@ -245,6 +245,15 @@ CREATE TABLE pa_operation_template (
     signature_type        VARCHAR(255) NOT NULL,
     max_failure_count     BIGINT NOT NULL,
     expiration            BIGINT NOT NULL
+);
+
+--
+-- DDL for Table PA_OPERATION_APPLICATION
+--
+CREATE TABLE pa_operation_application (
+    application_id BIGINT     NOT NULL,
+    operation_id   VARCHAR(37) NOT NULL,
+    CONSTRAINT pa_operation_application_pk PRIMARY KEY (application_id, operation_id)
 );
 
 --
