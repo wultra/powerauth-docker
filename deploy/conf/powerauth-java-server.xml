@@ -56,6 +56,11 @@
     <Parameter name="powerauth.service.applicationDisplayName" value="${POWERAUTH_SERVER_APPLICATION_DISPLAY_NAME}"/>
     <Parameter name="powerauth.service.applicationEnvironment" value="${POWERAUTH_SERVER_APPLICATION_ENVIRONMENT}"/>
 
+    <!-- Configure Correlation HTTP Header Configuration -->
+    <Parameter name="powerauth.service.correlation-header.enabled" value="${POWERAUTH_SERVER_CORRELATION_HEADER_ENABLED}"/>
+    <Parameter name="powerauth.service.correlation-header.name" value="${POWERAUTH_SERVER_CORRELATION_HEADER_NAME}"/>
+    <Parameter name="powerauth.service.correlation-header.value.validation-regexp" value="${POWERAUTH_SERVER_CORRELATION_HEADER_VALUE_VALIDATION_REGEXP}"/>
+
     <!-- Custom Logging Configuration -->
     <Parameter name="logging.config" value="${POWERAUTH_SERVER_LOGGING}"/>
 

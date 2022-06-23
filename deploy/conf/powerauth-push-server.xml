@@ -78,6 +78,11 @@
     <Parameter name="powerauth.push.service.applicationDisplayName" value="${PUSH_SERVER_APPLICATION_DISPLAY_NAME}"/>
     <Parameter name="powerauth.push.service.applicationEnvironment" value="${PUSH_SERVER_APPLICATION_ENVIRONMENT}"/>
 
+    <!-- Configure Correlation HTTP Header Configuration -->
+    <Parameter name="powerauth.push.service.correlation-header.enabled" value="${PUSH_SERVER_CORRELATION_HEADER_ENABLED}"/>
+    <Parameter name="powerauth.push.service.correlation-header.name" value="${PUSH_SERVER_CORRELATION_HEADER_NAME}"/>
+    <Parameter name="powerauth.push.service.correlation-header.value.validation-regexp" value="${PUSH_SERVER_CORRELATION_HEADER_VALUE_VALIDATION_REGEXP}"/>
+
     <!-- Custom Logging Configuration -->
     <Parameter name="logging.config" value="${PUSH_SERVER_LOGGING}"/>
 
