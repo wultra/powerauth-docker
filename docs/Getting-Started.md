@@ -31,7 +31,7 @@ git clone https://github.com/wultra/powerauth-docker.git
 
 ### 2. Download Docker Images
 
-Launch the following command to obtain latest versions of PowerAuth Docker images:
+Launch the following command to obtain the latest versions of PowerAuth Docker images:
 
 #### Full Installation
 
@@ -47,6 +47,8 @@ docker pull powerauth/tpp-engine
 docker pull powerauth/webflow-postgresql
 ```
 
+_Note: Use the `-arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
+
 #### Basic Installation
 
 ```sh
@@ -55,6 +57,8 @@ docker pull powerauth/push-server
 docker pull powerauth/server-postgresql
 docker pull powerauth/push-postgresql
 ```
+
+_Note: Use the `-arm64v8` suffix for downloading Docker images for the Apple Silicon CPU architecture._
 
 ### 3. Configure Docker Images
 
@@ -76,7 +80,7 @@ POWERAUTH_WEBFLOW_POSGRESQL_PATH=/tmp/powerauth/postgresql-webflow \
 docker-compose -f docker-compose-pa-all.yml up -d
 ```
 
-_Note: Running whole PowerAuth stack will require at least 8 GB of RAM memory available for Docker._
+_Note: Running whole PowerAuth stack will require at least 4 GB of RAM memory available for Docker._
 
 For basic installation, you can use:
 
@@ -84,10 +88,14 @@ For basic installation, you can use:
 cd powerauth-docker
 POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
 POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
-docker-compose up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
+_Note: Use the `-arm64v8.yml` suffix for launching containers on Apple Silicon CPU architecture._
+
 After you start the Docker images, the following databases and applications are available.
+
+You can also set the `PUSH_SERVER_APNS_DEVELOPMENT` varible to configure APNS environment - the boolean value represents if the APNS client should connect to the development environment (`true`) or production environment (`false`).
 
 #### PostgreSQL Databases
 
@@ -105,26 +113,26 @@ _Note: All databases are already created with the correct structure and contain 
 |------------------------|-----------------------------|----------------------------------------------------------------------|
 | PowerAuth Server       | Base URL                    | http://localhost:20010/powerauth-java-server                         |
 |                        | Status URL (POST)           | http://localhost:20010/powerauth-java-server/rest/v3/status          |
-|                        | Swagger Documentation       | http://localhost:20030/powerauth-java-server/swagger-ui.html         |
+|                        | Swagger Documentation       | http://localhost:20010/powerauth-java-server/swagger-ui/index.html         |
 | PowerAuth Admin        | Web GUI                     | http://localhost:20010/powerauth-admin                               |
 |                        | Status URL                  | http://localhost:20010/powerauth-admin/api/service/status            |
 | PowerAuth Push Server  | Web GUI                     | http://localhost:20030/powerauth-push-server                         |
 |                        | Status URL                  | http://localhost:20030/powerauth-push-server/push/service/status     |
-|                        | Swagger Documentation       | http://localhost:20030/powerauth-push-server/swagger-ui.html         |
+|                        | Swagger Documentation       | http://localhost:20030/powerauth-push-server/swagger-ui/index.html         |
 | PowerAuth Web Flow     | Base URL                    | http://localhost:13030/powerauth-webflow                             |
 |                        | Status URL                  | http://localhost:13030/powerauth-webflow/api/service/status          |
-|                        | Swagger Documentation       | http://localhost:13030/powerauth-webflow/swagger-ui.html             |
+|                        | Swagger Documentation       | http://localhost:13030/powerauth-webflow/swagger-ui/index.html             |
 |                        | OAuth 2.0 Authorization URL | http://localhost:13030/powerauth-webflow/oauth/authorize             |
 |                        | OAuth 2.0 Token URL         | http://localhost:13030/powerauth-webflow/oauth/token                 |
 |                        | User Profile Resource URL   | http://localhost:13030/powerauth-webflow/api/secure/profile/me       |
 | PowerAuth Next Step    | Base URL                    | http://localhost:13010/powerauth-nextstep                            |
-|                        | Swagger Documentation       | http://localhost:13010/powerauth-nextstep/swagger-ui.html            |
+|                        | Swagger Documentation       | http://localhost:13010/powerauth-nextstep/swagger-ui/index.html            |
 |                        | Status URL                  | http://localhost:13010/powerauth-nextstep/api/service/status         |
 | PowerAuth Data Adapter | Base URL                    | http://localhost:13050/powerauth-data-adapter                        |
-|                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui.html        |
+|                        | Swagger Documentation       | http://localhost:13050/powerauth-data-adapter/swagger-ui/index.html        |
 |                        | Status URL                  | http://localhost:13050/powerauth-data-adapter/api/service/status     |
 | PowerAuth TPP Engine   | Base URL                    | http://localhost:13060/powerauth-tpp-engine                          |
-|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui.html          |
+|                        | Swagger Documentation       | http://localhost:13060/powerauth-tpp-engine/swagger-ui/index.html          |
 |                        | Status URL                  | http://localhost:13060/powerauth-tpp-engine/api/service/status       |
 
 You can verify status of PowerAuth server using POST method:
@@ -497,6 +505,10 @@ curl --request POST \
 ```
 
 If you now try to approve payment with the `tester` user, Mobile token should be offered as an option.
+
+## Troubleshooting
+
+In case Docker containers get stopped with exit code `137`, make sure Docker has enough memory configured. See the `Preferences` / `Resources` / `Memory` tab in Docker Desktop. The default setting is only 2 GB RAM which is not enough for the whole PowerAuth stack.
 
 ## License
 

@@ -35,11 +35,11 @@ services:
 
     # PowerAuth Server
     powerauth-java-server:
-        image: powerauth/server
+        image: powerauth/server-arm64v8
         container_name: powerauth-server
         ports:
             - "20010:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-java-server"]
             interval: 10s
@@ -98,18 +98,18 @@ services:
             - POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME=${POWERAUTH_ADMIN_APPLICATION_DISPLAY_NAME}
             - POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT=${POWERAUTH_ADMIN_APPLICATION_ENVIRONMENT}
             - POWERAUTH_ADMIN_LOGGING=${POWERAUTH_ADMIN_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-server-postgresql:
                 condition: service_healthy
 
     # PowerAuth Push Server
     powerauth-push-server:
-        image: powerauth/push-server
+        image: powerauth/push-server-arm64v8
         container_name: powerauth-push-server
         ports:
             - "20030:8080"
-        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJ9}
+        mem_limit: ${JAVA_PROCESS_MEMORY_LIMIT_OPENJDK_ARM64V8}
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8080/powerauth-push-server"]
             interval: 10s
@@ -161,7 +161,7 @@ services:
             - PUSH_SERVER_CORRELATION_HEADER_NAME=${POWERAUTH_SERVER_CORRELATION_HEADER_NAME}
             - PUSH_SERVER_CORRELATION_HEADER_VALUE_VALIDATION_REGEXP=${POWERAUTH_SERVER_CORRELATION_HEADER_VALUE_VALIDATION_REGEXP}
             - PUSH_SERVER_LOGGING=${PUSH_SERVER_LOGGING}
-            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJ9}
+            - JAVA_OPTS=${POWERAUTH_JAVA_OPTS_OPENJDK_ARM64V8}
         depends_on:
             powerauth-push-postgresql:
                 condition: service_healthy

@@ -42,7 +42,7 @@ Note that by default, PostgreSQL images are mounted to `/var/lib/powerauth/**` p
 ```sh
 POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
 POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
-docker-compose up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
 In case you want to include Web Flow, use:
@@ -56,6 +56,8 @@ docker-compose -f docker-compose-pa-all.yml up -d
 
 Finally, you can edit PowerAuth Admin users by modifying `deploy/data/ldap/ldap-local.ldiff` file.
 
+_Note: Use the `-arm64v8.yml` suffix for launching containers on Apple Silicon CPU architecture._
+
 ### 4. Build
 
 Run `build.sh` command from the root of the repository, wait for the images to be built.
@@ -63,6 +65,8 @@ Run `build.sh` command from the root of the repository, wait for the images to b
 ```sh
 $ sh build.sh
 ```
+
+_Note: Use `sh build-arm64v8.sh` for building containers for Apple Silicon CPU architecture._
 
 This will build all images, tagged as `latest` (latest tag is always produced) and also `${PRODUCT_VERSION}.${BUILD_NUMBER}`. By default, following values are used:
 
@@ -81,7 +85,7 @@ You may override the tag name by overriding either:
 Run Docker Compose in the root folder:
 
 ```sh
-$ docker-compose up -d
+$ docker-compose -f docker-compose.yml up -d
 ```
 
 See `docker-compose.yml` for the default configuration.
@@ -91,6 +95,12 @@ In case you want to run the whole PowerAuth stack including Web Flow, you can us
 ```sh
 $ docker-compose -f docker-compose-pa-all.yml up -d 
 ```
+
+_Note: Use the `-arm64v8.yml` suffix for running containers on Apple Silicon CPU architecture._
+
+## Troubleshooting
+
+In case Docker containers get stopped with exit code `137`, make sure Docker has enough memory configured. See the `Preferences` / `Resources` / `Memory` tab in Docker Desktop. The default setting is only 2 GB RAM which is not enough for the whole PowerAuth stack.
 
 ## License
 
