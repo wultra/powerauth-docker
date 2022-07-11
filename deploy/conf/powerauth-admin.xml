@@ -9,8 +9,10 @@
     <Parameter name="powerauth.service.security.clientSecret" value="${POWERAUTH_ADMIN_SECURITY_CLIENT_SECRET}"/>
     <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${POWERAUTH_ADMIN_ACCEPT_INVALID_SSL_CERTIFICATE}"/>
 
-    <!-- LDAP Settings -->
+    <!-- Admin Authentication Settings -->
     <Parameter name="powerauth.admin.security.method" value="${POWERAUTH_ADMIN_SECURITY_METHOD}"/>
+
+    <!-- LDAP Settings -->
     <Parameter name="powerauth.admin.security.ldap.userDNPatterns" value="${POWERAUTH_ADMIN_LDAP_USER_DN_PATTERNS}"/>
     <Parameter name="powerauth.admin.security.ldap.userSearchBase" value="${POWERAUTH_ADMIN_LDAP_USER_SEARCH_BASE}"/>
     <Parameter name="powerauth.admin.security.ldap.userSearchFilter" value="${POWERAUTH_ADMIN_LDAP_USER_SEARCH_FILTER}"/>
@@ -23,6 +25,12 @@
     <Parameter name="powerauth.admin.security.ldap.ldif" value="${POWERAUTH_ADMIN_LDAP_LDIF}"/>
     <Parameter name="powerauth.admin.security.ldap.managerDN" value="${POWERAUTH_ADMIN_LDAP_MANAGER_DN}"/>
     <Parameter name="powerauth.admin.security.ldap.managerPassword" value="${POWERAUTH_ADMIN_LDAP_MANAGER_PASSWORD}"/>
+
+    <!-- Active Directory Settings -->
+    <Parameter name="powerauth.admin.security.activeDirectory.domain" value="${POWERAUTH_ADMIN_AD_DOMAIN:}"/>
+    <Parameter name="powerauth.admin.security.activeDirectory.url" value="${POWERAUTH_ADMIN_AD_URL:}"/>
+    <Parameter name="powerauth.admin.security.activeDirectory.root" value="${POWERAUTH_ADMIN_AD_ROOT:}"/>
+    <Parameter name="powerauth.admin.security.activeDirectory.userSearchFilter" value="${POWERAUTH_ADMIN_AD_USER_SEARCH_FILTER:}"/>
 
     <!-- Application Service Configuration -->
     <Parameter name="powerauth.admin.service.applicationName" value="${POWERAUTH_ADMIN_APPLICATION_NAME}"/>
