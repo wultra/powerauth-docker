@@ -35,26 +35,28 @@ If you don't do anything with the configuration, everything will just work on yo
 
 Each application has a context XML file (see `deploy/conf` folder), where you can configure properties for your particular instance. See the documentation of the respective applications to learn about the meaning of properties.
 
-In case you would like to run PowerAuth stack with provided MySQL images for Docker, you may also need to customize MySQL init scripts stored in `deploy/data/mysql` (only in case you would like to pre-populate database with data).
+In case you would like to run PowerAuth stack with provided PostgreSQL images for Docker, you may also need to customize PostgreSQL init scripts stored in `deploy/data/postgresql` (only in case you would like to pre-populate database with data).
 
-Note that by default, MySQL images are mounted to `/var/lib/powerauth/**` path, that does not have to be accessible. To customize MySQL instance in containers (root password, host folder mapping), you can change the related environment variables in `.env` file. You can always override these variables while launching `docker-compose up` command as well, for example (to use volatile `/tmp/powerauth/**` folders):
+Note that by default, PostgreSQL images are mounted to `/var/lib/powerauth/**` path, that does not have to be accessible. To customize PostgreSQL instance in containers (root password, host folder mapping), you can change the related environment variables in `.env` file. You can always override these variables while launching `docker-compose up` command as well, for example (to use volatile `/tmp/powerauth/**` folders):
 
 ```sh
-POWERAUTH_MYSQL_PATH=/tmp/powerauth/mysql \
-POWERAUTH_PUSH_MYSQL_PATH=/tmp/powerauth/mysql-push \
-docker-compose up -d
+POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
+POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
+docker-compose -f docker-compose.yml up -d
 ```
 
 In case you want to include Web Flow, use:
 
 ```sh
-POWERAUTH_MYSQL_PATH=/tmp/powerauth/mysql \
-POWERAUTH_PUSH_MYSQL_PATH=/tmp/powerauth/mysql-push \
-POWERAUTH_WEBFLOW_MYSQL_PATH=/tmp/powerauth/mysql-webflow \
+POWERAUTH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-pas \
+POWERAUTH_PUSH_POSTGRESQL_PATH=/tmp/powerauth/postgresql-push \
+POWERAUTH_WEBFLOW_POSGRESQL_PATH=/tmp/powerauth/postgresql-webflow \
 docker-compose -f docker-compose-pa-all.yml up -d 
 ```
 
 Finally, you can edit PowerAuth Admin users by modifying `deploy/data/ldap/ldap-local.ldiff` file.
+
+_Note: Use the `-arm64v8.yml` suffix for launching containers on Apple Silicon CPU architecture._
 
 ### 4. Build
 
@@ -63,6 +65,8 @@ Run `build.sh` command from the root of the repository, wait for the images to b
 ```sh
 $ sh build.sh
 ```
+
+_Note: Use `sh build-arm64v8.sh` for building containers for Apple Silicon CPU architecture._
 
 This will build all images, tagged as `latest` (latest tag is always produced) and also `${PRODUCT_VERSION}.${BUILD_NUMBER}`. By default, following values are used:
 
@@ -81,7 +85,7 @@ You may override the tag name by overriding either:
 Run Docker Compose in the root folder:
 
 ```sh
-$ docker-compose up -d
+$ docker-compose -f docker-compose.yml up -d
 ```
 
 See `docker-compose.yml` for the default configuration.
@@ -91,6 +95,12 @@ In case you want to run the whole PowerAuth stack including Web Flow, you can us
 ```sh
 $ docker-compose -f docker-compose-pa-all.yml up -d 
 ```
+
+_Note: Use the `-arm64v8.yml` suffix for running containers on Apple Silicon CPU architecture._
+
+## Troubleshooting
+
+In case Docker containers get stopped with exit code `137`, make sure Docker has enough memory configured. See the `Preferences` / `Resources` / `Memory` tab in Docker Desktop. The default setting is only 2 GB RAM which is not enough for the whole PowerAuth stack.
 
 ## License
 

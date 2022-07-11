@@ -2,15 +2,23 @@
 
 The HW requirements for the default Docker images are low and current commodity hardware will be able to run the software nicely. If in doubt, use following HW configuration.
 
-## Hardware requirements of basic Docker Images for PowerAuth Server and Push Server
+## Hardware Platforms
 
-- 4GB free RAM for Docker
+Following hardware platforms are supported by PowerAuth Docker images:
+- amd64 (also known as x86_64)
+- s390x
+- ppc64le
+- arm64v8 (use the `-arm64v8` suffix for Docker images, use `build-arm64v8.sh` script for building, and use the `-arm64v8.yml` suffix for docker-compose)
+
+## Hardware Requirements of Basic Docker Images for PowerAuth Server and Push Server
+
+- 2GB free RAM for Docker
 - 16GB free disk space
 - CPU 4×core, 2.0GHz
 
-## Hardware requirements for whole PowerAuth stack including Web Flow
+## Hardware Requirements for Whole PowerAuth Stack Including Web Flow
 
-- 8GB free RAM for Docker
+- 4GB free RAM for Docker
 - 16GB free disk space
 - CPU 4×core, 2.0GHz
 
@@ -20,4 +28,4 @@ The free disk space mentioned above does not include storage required for the da
 
 Since the data stored in the database may be needed to provide and authorization prove for given transaction, the data should not be deleted (and should be archived). As a result, practical requirement for the database is an "infinite growth" - the storage allocated for the database has to be large enough.
 
-Note that while we include MySQL Docker images in the distribution, you should always use externally mapped database for production.
+Note that while we include PostgreSQL Docker images in the distribution, you should always use externally mapped database for production.

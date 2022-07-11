@@ -1,8 +1,8 @@
-FROM tomcat:jdk11-adoptopenjdk-openj9@sha256:bebb14ffca2a3f01a07492795d73f2c4541c41fa0641bdf1924494a255c0c5af
-LABEL maintainer="petr@wultra.com"
+FROM arm64v8/tomcat:9-jre11@sha256:cdf6a9ca2a039f9cfbf0c6546f77c0d6b3664dbdc49a4284a2dd6e84bed2defd
+LABEL maintainer="roman.strobl@wultra.com"
 
 # Prepare environment variables
-ENV JAVA_HOME /opt/java/openjdk
+ENV JAVA_HOME /usr/local/openjdk-11
 ENV TOMCAT_HOME /usr/local/tomcat
 ENV WEBFLOW_RESOURCES /opt/ext-resources
 
@@ -10,18 +10,18 @@ ENV WEBFLOW_RESOURCES /opt/ext-resources
 RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
-ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
-ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
+ADD ../deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
+ADD ../deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Add valve for proxy with SSL termination
 RUN sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' $TOMCAT_HOME/conf/server.xml
 
 # Deploy and run applications
-ADD deploy/conf/powerauth-webflow.xml $TOMCAT_HOME/conf/Catalina/localhost/
-ADD deploy/images/powerauth-webflow.war $TOMCAT_HOME/webapps/
+ADD ../deploy/conf/powerauth-webflow.xml $TOMCAT_HOME/conf/Catalina/localhost/
+ADD ../deploy/images/powerauth-webflow.war $TOMCAT_HOME/webapps/
 
 # Customize web app resources
-ADD deploy/data/ext-resources $WEBFLOW_RESOURCES
+ADD ../deploy/data/ext-resources $WEBFLOW_RESOURCES
 
 # Create user tomcat and run Tomcat under this user
 RUN groupadd -r tomcat

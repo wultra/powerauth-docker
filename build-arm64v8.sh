@@ -22,11 +22,11 @@ docker build -t powerauth/push-postgresql:$TAG -t powerauth/push-postgresql:late
 docker build -t powerauth/webflow-postgresql:$TAG -t powerauth/webflow-postgresql:latest -f docker-powerauth-webflow-postgresql/Dockerfile .
 
 ## Build Application Images
-docker build -t powerauth/server:$TAG -t powerauth/server:latest -f docker-powerauth-server/Dockerfile .
-docker build -t powerauth/push-server:$TAG -t powerauth/push-server:latest -f docker-powerauth-push-server/Dockerfile .
-docker build -t powerauth/nextstep:$TAG -t powerauth/nextstep:latest -f docker-powerauth-nextstep/Dockerfile .
-docker build -t powerauth/data-adapter:$TAG -t powerauth/data-adapter:latest -f docker-powerauth-data-adapter/Dockerfile .
-docker build -t powerauth/webflow:$TAG -t powerauth/webflow:latest -f docker-powerauth-webflow/Dockerfile .
-docker build -t powerauth/tpp-engine:$TAG -t powerauth/tpp-engine:latest -f docker-powerauth-tpp-engine/Dockerfile .
+docker build -t powerauth/server-arm64v8:$TAG -t powerauth/server-arm64v8:latest -f arm64v8/docker-powerauth-server/Dockerfile .
+docker build -t powerauth/push-server-arm64v8:$TAG -t powerauth/push-server-arm64v8:latest -f arm64v8/docker-powerauth-push-server/Dockerfile .
+docker build -t powerauth/nextstep-arm64v8:$TAG -t powerauth/nextstep-arm64v8:latest -f arm64v8/docker-powerauth-nextstep/Dockerfile .
+docker build -t powerauth/data-adapter-arm64v8:$TAG -t powerauth/data-adapter-arm64v8:latest -f arm64v8/docker-powerauth-data-adapter/Dockerfile .
+docker build -t powerauth/webflow-arm64v8:$TAG -t powerauth/webflow-arm64v8:latest -f arm64v8/docker-powerauth-webflow/Dockerfile .
+docker build -t powerauth/tpp-engine-arm64v8:$TAG -t powerauth/tpp-engine-arm64v8:latest -f arm64v8/docker-powerauth-tpp-engine/Dockerfile .
 
 echo "TAG: $TAG"
