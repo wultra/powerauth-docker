@@ -231,7 +231,8 @@ CREATE TABLE pa_operation (
     max_failure_count     BIGINT NOT NULL,
     timestamp_created     TIMESTAMP NOT NULL,
     timestamp_expires     TIMESTAMP NOT NULL,
-    timestamp_finalized   TIMESTAMP
+    timestamp_finalized   TIMESTAMP,
+    risk_flags            VARCHAR(255)
 );
 
 --
@@ -244,7 +245,8 @@ CREATE TABLE pa_operation_template (
     data_template         VARCHAR(255) NOT NULL,
     signature_type        VARCHAR(255) NOT NULL,
     max_failure_count     BIGINT NOT NULL,
-    expiration            BIGINT NOT NULL
+    expiration            BIGINT NOT NULL,
+    risk_flags            VARCHAR(255)
 );
 
 --
@@ -259,7 +261,7 @@ CREATE TABLE pa_operation_application (
 --
 -- DDL for Table SHEDLOCK
 --
-CREATE TABLE shedlock (
+CREATE TABLE IF NOT EXISTS shedlock (
     name VARCHAR(64) NOT NULL PRIMARY KEY,
     lock_until TIMESTAMP NOT NULL,
     locked_at TIMESTAMP NOT NULL,
@@ -269,7 +271,7 @@ CREATE TABLE shedlock (
 --
 -- Create audit log table.
 --
-CREATE TABLE audit_log (
+CREATE TABLE IF NOT EXISTS audit_log (
     audit_log_id       VARCHAR(36) PRIMARY KEY,
     application_name   VARCHAR(256) NOT NULL,
     audit_level        VARCHAR(32) NOT NULL,
@@ -288,7 +290,7 @@ CREATE TABLE audit_log (
 --
 -- Create audit parameters table.
 --
-CREATE TABLE audit_param (
+CREATE TABLE IF NOT EXISTS audit_param (
     audit_log_id       VARCHAR(36),
     timestamp_created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     param_key          VARCHAR(256),
@@ -347,8 +349,9 @@ ALTER TABLE pa_recovery_puk ADD CONSTRAINT recovery_puk_code_fk FOREIGN KEY (rec
 --
 ALTER TABLE pa_recovery_config ADD CONSTRAINT recovery_config_app_fk FOREIGN KEY (application_id) REFERENCES pa_application (id);
 
+
 ---
---- Indexes for better performance. PostgreSQL does not create indexes on foreign key automatically.
+--- Indexes for better performance. PostgreSQL does not CREATE INDEXes ON foreign key automatically.
 ---
 
 CREATE INDEX pa_activation_application ON pa_activation(application_id);
@@ -358,6 +361,8 @@ CREATE INDEX pa_activation_keypair ON pa_activation(master_keypair_id);
 CREATE INDEX pa_activation_code ON pa_activation(activation_code);
 
 CREATE INDEX pa_activation_user_id ON pa_activation(user_id);
+
+CREATE INDEX pa_activation_expiration on pa_activation (activation_status, timestamp_activation_expire);
 
 CREATE INDEX pa_activation_history_act ON pa_activation_history(activation_id);
 
@@ -401,19 +406,20 @@ CREATE INDEX pa_operation_ts_created_idx ON pa_operation(timestamp_created);
 
 CREATE INDEX pa_operation_ts_expires_idx ON pa_operation(timestamp_expires);
 
+CREATE INDEX pa_operation_status_exp ON pa_operation(timestamp_expires, status);
+
 CREATE INDEX pa_operation_template_name_idx ON pa_operation_template(template_name);
 
 --
--- Audit log indexes.
+-- Auditing indexes.
 --
-CREATE INDEX audit_log_timestamp ON audit_log (timestamp_created);
-CREATE INDEX audit_log_application ON audit_log (application_name);
-CREATE INDEX audit_log_level ON audit_log (audit_level);
-CREATE INDEX audit_log_type ON audit_log (audit_type);
-CREATE INDEX audit_param_log ON audit_param (audit_log_id);
-CREATE INDEX audit_param_timestamp ON audit_param (timestamp_created);
-CREATE INDEX audit_param_key ON audit_param (param_key);
-CREATE INDEX audit_param_value ON audit_param (param_value);
+CREATE INDEX IF NOT EXISTS audit_log_timestamp ON audit_log (timestamp_created);
+CREATE INDEX IF NOT EXISTS audit_log_application ON audit_log (application_name);
+CREATE INDEX IF NOT EXISTS audit_log_level ON audit_log (audit_level);
+CREATE INDEX IF NOT EXISTS audit_log_type ON audit_log (audit_type);
+CREATE INDEX IF NOT EXISTS audit_param_log ON audit_param (audit_log_id);
+CREATE INDEX IF NOT EXISTS audit_param_timestamp ON audit_param (timestamp_created);
+CREATE INDEX IF NOT EXISTS audit_param_key ON audit_param (param_key);
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO powerauth;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO powerauth;
