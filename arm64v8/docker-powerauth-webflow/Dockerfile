@@ -1,8 +1,8 @@
-FROM arm64v8/tomcat:9-jre11@sha256:cdf6a9ca2a039f9cfbf0c6546f77c0d6b3664dbdc49a4284a2dd6e84bed2defd
+FROM arm64v8/tomcat:9-jre11@sha256:0464902846f45cf1bbcfc52adc2be69cd53d3954569e3c709c346614f19ecad0
 LABEL maintainer="roman.strobl@wultra.com"
 
 # Prepare environment variables
-ENV JAVA_HOME /usr/local/openjdk-11
+ENV JAVA_HOME /opt/java/openjdk
 ENV TOMCAT_HOME /usr/local/tomcat
 ENV WEBFLOW_RESOURCES /opt/ext-resources
 
@@ -10,7 +10,7 @@ ENV WEBFLOW_RESOURCES /opt/ext-resources
 RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
-ADD ../deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
+ADD ../deploy/lib/ojdbc8.jar $TOMCAT_HOME/lib/
 ADD ../deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Add valve for proxy with SSL termination
