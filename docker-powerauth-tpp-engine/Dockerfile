@@ -9,7 +9,7 @@ ENV TOMCAT_HOME /usr/local/tomcat
 RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
-ADD deploy/lib/ojdbc6.jar $TOMCAT_HOME/lib/
+ADD deploy/lib/ojdbc8.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Deploy and run applications
