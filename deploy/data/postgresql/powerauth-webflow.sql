@@ -26,58 +26,71 @@ CREATE SEQUENCE ns_credential_definition_seq MINVALUE 1 INCREMENT BY 1 START WIT
 CREATE SEQUENCE ns_otp_definition_seq MINVALUE 1 INCREMENT BY 1 START WITH 1 CACHE 20;
 CREATE SEQUENCE ns_credential_history_seq MINVALUE 1 INCREMENT BY 1 START WITH 1 CACHE 20;
 
--- Table oauth_client_details stores details about OAuth2 client applications.
--- Every Web Flow client application should have a record in this table.
--- See: https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/main/java/org/springframework/security/oauth2/provider/client/JdbcClientDetailsService.java
-CREATE TABLE oauth_client_details (
-  client_id               VARCHAR(256) PRIMARY KEY, -- OAuth 2.0 protocol client ID.
-  resource_ids            VARCHAR(256),             -- Identifiers of the OAuth 2.0 resource servers.
-  client_secret           VARCHAR(256),             -- OAuth 2.0 protocol client secret.
-  scope                   VARCHAR(256),             -- OAuth 2.0 scopes, comma-separated values.
-  authorized_grant_types  VARCHAR(256),             -- OAuth 2.0 authorization grant types, comma-separated values.
-  web_server_redirect_uri VARCHAR(256),             -- OAuth 2.0 redirect URIs, comma-separated values.
-  authorities             VARCHAR(256),             -- OAuth 2.0 resource grant authorities.
-  access_token_validity   INTEGER,                  -- Validity of the OAuth 2.0 access tokens, in seconds.
-  refresh_token_validity  INTEGER,                  -- Validity of the OAuth 2.0 refresh tokens, in seconds.
-  additional_information  VARCHAR(4000),            -- Field reserved for additional information about the client.
-  autoapprove             VARCHAR(256)              -- Flag indicating if scopes should be automatically approved.
+-- Table oauth2_authorization stores information about OAuth 2.1 authorizations
+-- Source: https://github.com/spring-projects/spring-authorization-server/blob/main/oauth2-authorization-server/src/main/resources/org/springframework/security/oauth2/server/authorization/oauth2-authorization-schema.sql
+CREATE TABLE oauth2_authorization (
+    id VARCHAR(100) NOT NULL,
+    registered_client_id VARCHAR(100) NOT NULL,
+    principal_name VARCHAR(200) NOT NULL,
+    authorization_grant_type VARCHAR(100) NOT NULL,
+    authorized_scopes VARCHAR(1000) DEFAULT NULL,
+    attributes TEXT DEFAULT NULL,
+    state VARCHAR(500) DEFAULT NULL,
+    authorization_code_value TEXT DEFAULT NULL,
+    authorization_code_issued_at TIMESTAMP DEFAULT NULL,
+    authorization_code_expires_at TIMESTAMP DEFAULT NULL,
+    authorization_code_metadata TEXT DEFAULT NULL,
+    access_token_value TEXT DEFAULT NULL,
+    access_token_issued_at TIMESTAMP DEFAULT NULL,
+    access_token_expires_at TIMESTAMP DEFAULT NULL,
+    access_token_metadata TEXT DEFAULT NULL,
+    access_token_type VARCHAR(100) DEFAULT NULL,
+    access_token_scopes VARCHAR(1000) DEFAULT NULL,
+    oidc_id_token_value TEXT DEFAULT NULL,
+    oidc_id_token_issued_at TIMESTAMP DEFAULT NULL,
+    oidc_id_token_expires_at TIMESTAMP DEFAULT NULL,
+    oidc_id_token_metadata TEXT DEFAULT NULL,
+    refresh_token_value TEXT DEFAULT NULL,
+    refresh_token_issued_at TIMESTAMP DEFAULT NULL,
+    refresh_token_expires_at TIMESTAMP DEFAULT NULL,
+    refresh_token_metadata TEXT DEFAULT NULL,
+    user_code_value TEXT DEFAULT NULL,
+    user_code_issued_at TIMESTAMP DEFAULT NULL,
+    user_code_expires_at TIMESTAMP DEFAULT NULL,
+    user_code_metadata TEXT DEFAULT NULL,
+    device_code_value TEXT DEFAULT NULL,
+    device_code_issued_at TIMESTAMP DEFAULT NULL,
+    device_code_expires_at TIMESTAMP DEFAULT NULL,
+    device_code_metadata TEXT DEFAULT NULL,
+    PRIMARY KEY (id)
 );
 
--- Table oauth_client_token stores OAuth2 tokens for retrieval by client applications.
--- See: https://docs.spring.io/spring-security/oauth/apidocs/org/springframework/security/oauth2/client/token/JdbcClientTokenServices.html
-CREATE TABLE oauth_client_token (
-  authentication_id VARCHAR(256) PRIMARY KEY,       -- Authentication ID related to client token.
-  token_id          VARCHAR(256),                   -- Token ID.
-  token             BYTEA,                          -- Token value.
-  user_name         VARCHAR(256),                   -- Username, identification of the user.
-  client_id         VARCHAR(256)                    -- OAuth 2.0 Client ID.
+-- Table oauth2_registered_client stores information about OAuth 2.1 clients
+-- Source: https://github.com/spring-projects/spring-authorization-server/blob/main/oauth2-authorization-server/src/main/resources/org/springframework/security/oauth2/server/authorization/client/oauth2-registered-client-schema.sql
+CREATE TABLE oauth2_registered_client (
+    id VARCHAR(100) NOT NULL,
+    client_id VARCHAR(100) NOT NULL,
+    client_id_issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    client_secret VARCHAR(200) DEFAULT NULL,
+    client_secret_expires_at TIMESTAMP DEFAULT NULL,
+    client_name VARCHAR(200) NOT NULL,
+    client_authentication_methods VARCHAR(1000) NOT NULL,
+    authorization_grant_types VARCHAR(1000) NOT NULL,
+    redirect_uris VARCHAR(1000) DEFAULT NULL,
+    post_logout_redirect_uris VARCHAR(1000) DEFAULT NULL,
+    scopes VARCHAR(1000) NOT NULL,
+    client_settings VARCHAR(2000) NOT NULL,
+    token_settings VARCHAR(2000) NOT NULL,
+    PRIMARY KEY (id)
 );
 
--- Table oauth_access_token stores OAuth2 access tokens.
--- See: https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/main/java/org/springframework/security/oauth2/provider/token/store/JdbcTokenStore.java
-CREATE TABLE oauth_access_token (
-    authentication_id VARCHAR(256) PRIMARY KEY, -- Authentication ID related to access token.
-    token_id          VARCHAR(256),             -- Token ID.
-    token             BYTEA,                    -- Token value.
-    user_name         VARCHAR(256),             -- Username, identification of the user.
-    client_id         VARCHAR(256),             -- OAuth 2.0 Client ID.
-    authentication    BYTEA,                    -- Encoded authentication details.
-    refresh_token     VARCHAR(256)              -- Refresh token ID.
-);
-
--- Table oauth_access_token stores OAuth2 refresh tokens.
--- See: https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/main/java/org/springframework/security/oauth2/provider/token/store/JdbcTokenStore.java
-CREATE TABLE oauth_refresh_token (
-  token_id       VARCHAR(256),                      -- Refresh token ID.
-  token          BYTEA,                             -- Token value.
-  authentication BYTEA                              -- Encoded authentication details.
-);
-
--- Table oauth_code stores data for the OAuth2 authorization code grant.
--- See: https://github.com/spring-projects/spring-security-oauth/blob/master/spring-security-oauth2/src/main/java/org/springframework/security/oauth2/provider/code/JdbcAuthorizationCodeServices.java
-CREATE TABLE oauth_code (
-  code           VARCHAR(256),                      -- OAuth 2.0 protocol "codes".
-  authentication BYTEA                              -- Encoded authentication details.
+-- Table oauth2_registered_client stores information about OAuth 2.1 consents
+-- Source: https://github.com/spring-projects/spring-authorization-server/blob/main/oauth2-authorization-server/src/main/resources/org/springframework/security/oauth2/server/authorization/oauth2-authorization-consent-schema.sql
+CREATE TABLE oauth2_authorization_consent (
+    registered_client_id VARCHAR(100) NOT NULL,
+    principal_name VARCHAR(200) NOT NULL,
+    authorities VARCHAR(1000) NOT NULL,
+    PRIMARY KEY (registered_client_id, principal_name)
 );
 
 -- Table wf_operation_session maps operations to HTTP sessions.
@@ -416,10 +429,10 @@ CREATE TABLE ns_operation (
   operation_name                VARCHAR(32) NOT NULL,                -- Name of the operation, represents a type of the operation, for example, "login" or "authorize_payment".
   operation_data                TEXT NOT NULL,                       -- Signing data of the operation.
   operation_form_data           TEXT,                                -- Structured data of the operation that are displayed to the end user.
-  application_id                VARCHAR(256),                        -- ID of the application that initiated the operation, usually OAuth 2.0 client ID.
+  application_id                VARCHAR(256),                        -- ID of the application that initiated the operation, usually OAuth 2.1 client ID.
   application_name              VARCHAR(256),                        -- Displayable name of the application that initiated the operation.
   application_description       VARCHAR(256),                        -- Displayable description of the application that initiated the operation.
-  application_original_scopes   VARCHAR(256),                        -- Original OAuth 2.0 scopes used by the application that initiated the operation.
+  application_original_scopes   VARCHAR(256),                        -- Original OAuth 2.1 scopes used by the application that initiated the operation.
   application_extras            TEXT,                                -- Any additional information related to the application that initiated the operation.
   user_id                       VARCHAR(256),                        -- Associated user ID.
   organization_id               VARCHAR(256),                        -- Associated organization ID.
@@ -545,7 +558,7 @@ CREATE TABLE tpp_consent (
 CREATE TABLE tpp_user_consent (
   id                    INTEGER PRIMARY KEY NOT NULL,                -- User given consent ID.
   user_id               VARCHAR(256) NOT NULL,                       -- User ID.
-  client_id             VARCHAR(256) NOT NULL,                       -- OAuth 2.0 client ID.
+  client_id             VARCHAR(256) NOT NULL,                       -- OAuth 2.1 client ID.
   consent_id            VARCHAR(64) NOT NULL,                        -- Consent ID.
   external_id           VARCHAR(256),                                -- External ID associated with the consent approval, usually the operation ID.
   consent_parameters    TEXT NOT NULL,                               -- Specific parameters that were filled in into the user consent template.
@@ -579,13 +592,13 @@ CREATE TABLE tpp_detail (
 
 CREATE TABLE tpp_app_detail (
   tpp_id                INTEGER NOT NULL,                            -- TPP ID.
-  app_client_id         VARCHAR(256) NOT NULL,                       -- TPP app ID, represented as OAuth 2.0 client ID and connecting the application to OAuth 2.0 credentials.
+  app_client_id         VARCHAR(256) NOT NULL,                       -- TPP app ID, represented as OAuth 2.1 client ID and connecting the application to OAuth 2.1 credentials.
   app_name              VARCHAR(256) NOT NULL,                       -- TPP app name.
   app_info              TEXT NULL,                                   -- An arbitrary additional info about TPP app, if available.
   app_type              VARCHAR(32) NULL,                            -- Application type, "web" or "native".
   CONSTRAINT tpp_detail_pk PRIMARY KEY (tpp_id, app_client_id),
   CONSTRAINT tpp_detail_fk FOREIGN KEY (tpp_id) REFERENCES tpp_detail (tpp_id),
-  CONSTRAINT tpp_client_secret_fk FOREIGN KEY (app_client_id) REFERENCES oauth_client_details (client_id)
+  CONSTRAINT tpp_client_secret_fk FOREIGN KEY (app_client_id) REFERENCES oauth2_registered_client (client_id)
 );
 
 -- Table audit_log stores auditing information
@@ -616,8 +629,9 @@ CREATE TABLE IF NOT EXISTS audit_param (
 CREATE INDEX wf_operation_hash ON wf_operation_session (operation_hash);
 CREATE INDEX wf_websocket_session ON wf_operation_session (websocket_session_id);
 CREATE INDEX ns_operation_pending ON ns_operation (user_id, result);
-CREATE UNIQUE INDEX ns_operation_afs_unique on ns_operation_afs (operation_id, request_afs_action, request_step_index);
+CREATE UNIQUE INDEX ns_operation_afs_unique ON ns_operation_afs (operation_id, request_afs_action, request_step_index);
 CREATE INDEX wf_certificate_operation ON wf_certificate_verification (operation_id);
+CREATE UNIQUE INDEX oauth2_client_unique ON oauth2_registered_client (client_id);
 CREATE UNIQUE INDEX ns_application_name ON ns_application (name);
 CREATE UNIQUE INDEX ns_credential_policy_name ON ns_credential_policy (name);
 CREATE UNIQUE INDEX ns_otp_policy_name ON ns_otp_policy (name);
@@ -660,10 +674,10 @@ CREATE INDEX IF NOT EXISTS audit_param_value ON audit_param (param_value);
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO powerauth;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO powerauth;
 
--- default oauth 2.0 client
+-- default OAuth 2.1 client
 -- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
-INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types, web_server_redirect_uri, additional_information, autoapprove)
-VALUES ('democlient', '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.', 'profile,aisp,pisp', 'authorization_code', 'http://localhost:8888/connect/demo', '{}', 'true');
+INSERT INTO oauth2_registered_client (id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, post_logout_redirect_uris, scopes, client_settings, token_settings)
+VALUES ('8cb2cedf-0152-47c4-b25e-0ee81b1acd44', 'democlient', '2023-04-28 11:44:29.000000', '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.', null, 'democlient', 'client_secret_basic', 'authorization_code,refresh_token', 'http://localhost:8080/powerauth-webflow-client/connect/demo', null, 'profile,aisp,pisp', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":false}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":true,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",300.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat","value":"reference"},"settings.token.refresh-token-time-to-live":["java.time.Duration",1296000.000000000],"settings.token.authorization-code-time-to-live":["java.time.Duration",300.000000000]}}');
 
 -- authentication methods
 INSERT INTO ns_auth_method (auth_method, order_number, check_user_prefs, user_prefs_column, user_prefs_default, check_auth_fails, max_auth_fails, has_user_interface, has_mobile_token, display_name_key)
@@ -705,8 +719,8 @@ INSERT INTO ns_credential_policy (credential_policy_id, name, description, statu
 INSERT INTO ns_otp_policy (otp_policy_id, name, description, status, length, attempt_limit, expiration_time, gen_algorithm, gen_param, timestamp_created) values (1, 'OTP_POLICY', 'Sample OTP policy', 'ACTIVE', 8, 3, 300, 'OTP_DATA_DIGEST', '{}', CURRENT_TIMESTAMP);
 
 -- credential and OTP definition configuration
-INSERT INTO ns_credential_definition (credential_definition_id, name, description, application_id, organization_id, credential_policy_id, category, data_adapter_proxy_enabled, status, timestamp_created) values (1, 'RETAIL_CREDENTIAL', 'Sample credential definition for retail', 1, 'RETAIL', 1, 'PASSWORD', TRUE, 'ACTIVE', CURRENT_TIMESTAMP);
-INSERT INTO ns_credential_definition (credential_definition_id, name, description, application_id, organization_id, credential_policy_id, category, data_adapter_proxy_enabled, status, timestamp_created) values (2, 'SME_CREDENTIAL', 'Sample credential definition for SME', 1, 'SME', 1, 'PASSWORD', TRUE, 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO ns_credential_definition (credential_definition_id, name, description, application_id, organization_id, credential_policy_id, category, encryption_algorithm, data_adapter_proxy_enabled, status, timestamp_created) values (1, 'RETAIL_CREDENTIAL', 'Sample credential definition for retail', 1, 'RETAIL', 1, 'PASSWORD', 'NO_ENCRYPTION', TRUE, 'ACTIVE', CURRENT_TIMESTAMP);
+INSERT INTO ns_credential_definition (credential_definition_id, name, description, application_id, organization_id, credential_policy_id, category, encryption_algorithm, data_adapter_proxy_enabled, status, timestamp_created) values (2, 'SME_CREDENTIAL', 'Sample credential definition for SME', 1, 'SME', 1, 'PASSWORD', 'NO_ENCRYPTION', TRUE, 'ACTIVE', CURRENT_TIMESTAMP);
 INSERT INTO ns_otp_definition (otp_definition_id, name, description, application_id, otp_policy_id, data_adapter_proxy_enabled, status, timestamp_created) values (1, 'RETAIL_OTP', 'Sample OTP definition for retail', 1, 1, TRUE, 'ACTIVE', CURRENT_TIMESTAMP);
 INSERT INTO ns_otp_definition (otp_definition_id, name, description, application_id, otp_policy_id, data_adapter_proxy_enabled, status, timestamp_created) values (2, 'SME_OTP', 'Sample OTP definition for SME', 1, 1, TRUE, 'ACTIVE', CURRENT_TIMESTAMP);
 
