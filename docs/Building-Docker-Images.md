@@ -27,7 +27,7 @@ Then, add following files in the cloned repository:
 - WAR files with required PowerAuth applications, see `deploy/images/readme.txt` for details.
 - JAR files with JDBC drivers required for JPA connectivity, see `deploy/lib/readme.txt` for details.
 
-_Note: While you need to provide Oracle JDBC driver, we do not provide Docker images with Oracle database. Driver file (`ojdbc8.jar`) is mainly required in a real production database, in case applications are configured so that they point to a production Oracle DB._
+_Note: While you need to provide Oracle JDBC driver, we do not provide Docker images with Oracle database. Driver file (`ojdbc11.jar`) is mainly required in a real production database, in case applications are configured so that they point to a production Oracle DB._
 
 ### 3. Configure
 

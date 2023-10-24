@@ -1,4 +1,4 @@
-FROM tomcat:jdk11-adoptopenjdk-openj9@sha256:bebb14ffca2a3f01a07492795d73f2c4541c41fa0641bdf1924494a255c0c5af
+FROM tomcat:10.1.15-jdk17-temurin-jammy@sha256:b59a28630efc10589c45994471264f9c0e29ee381d4f0d50a8eac1d68a076746
 LABEL maintainer="petr@wultra.com"
 
 # Prepare environment variables
@@ -9,7 +9,7 @@ ENV TOMCAT_HOME /usr/local/tomcat
 RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
-ADD deploy/lib/ojdbc8.jar $TOMCAT_HOME/lib/
+ADD deploy/lib/ojdbc11.jar $TOMCAT_HOME/lib/
 ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Deploy and run applications
