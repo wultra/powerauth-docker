@@ -24,11 +24,11 @@
     <Parameter name="spring.jmx.default-domain" value="${POWERAUTH_TPP_ENGINE_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Application Configuration -->
-    <Parameter name="powerauth.tppEngine.service.applicationName" value="${POWERAUTH_TPP_ENGINE_APPLICATION_NAME}"/>
-    <Parameter name="powerauth.tppEngine.service.applicationDisplayName" value="${POWERAUTH_TPP_ENGINE_APPLICATION_DISPLAY_NAME}"/>
-    <Parameter name="powerauth.tppEngine.service.applicationEnvironment" value="${POWERAUTH_TPP_ENGINE_APPLICATION_ENVIRONMENT}"/>
+    <Parameter name="powerauth.tppEngine.service.applicationName" value="${POWERAUTH_TPP_ENGINE_APPLICATION_NAME:powerauth-tpp-engine}"/>
+    <Parameter name="powerauth.tppEngine.service.applicationDisplayName" value="${POWERAUTH_TPP_ENGINE_APPLICATION_DISPLAY_NAME:PowerAuth Web Flow 3rd Party and Consent Engine}"/>
+    <Parameter name="powerauth.tppEngine.service.applicationEnvironment" value="${POWERAUTH_TPP_ENGINE_APPLICATION_ENVIRONMENT:}"/>
 
     <!-- Custom Logging Configuration -->
-    <Parameter name="logging.config" value="${POWERAUTH_TPP_ENGINE_LOGGING}"/>
+    <Parameter name="logging.config" value="${POWERAUTH_TPP_ENGINE_LOGGING:}"/>
 
 </Context>

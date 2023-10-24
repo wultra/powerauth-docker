@@ -10,7 +10,7 @@
     <!-- PowerAuth Server Service Security Settings -->
     <Parameter name="powerauth.service.security.clientToken" value="${NEXTSTEP_POWERAUTH_SECURITY_TOKEN}"/>
     <Parameter name="powerauth.service.security.clientSecret" value="${NEXTSTEP_POWERAUTH_SECURITY_SECRET}"/>
-    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${NEXTSTEP_ACCEPT_INVALID_SSL_CERTIFICATE}"/>
+    <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${NEXTSTEP_ACCEPT_INVALID_SSL_CERTIFICATE:false}"/>
 
     <!-- Database Configuration - JDBC -->
     <Parameter name="spring.datasource.url" value="${NEXTSTEP_DATASOURCE_URL}"/>
@@ -45,11 +45,11 @@
     <Parameter name="spring.jmx.default-domain" value="${NEXTSTEP_SPRING_JMX_DEFAULT_DOMAIN}"/>
 
     <!-- Application Configuration -->
-    <Parameter name="powerauth.nextstep.service.applicationName" value="${NEXTSTEP_APPLICATION_NAME}"/>
-    <Parameter name="powerauth.nextstep.service.applicationDisplayName" value="${NEXTSTEP_APPLICATION_DISPLAY_NAME}"/>
-    <Parameter name="powerauth.nextstep.service.applicationEnvironment" value="${NEXTSTEP_APPLICATION_ENVIRONMENT}"/>
+    <Parameter name="powerauth.nextstep.service.applicationName" value="${NEXTSTEP_APPLICATION_NAME:powerauth-nextstep}"/>
+    <Parameter name="powerauth.nextstep.service.applicationDisplayName" value="${NEXTSTEP_APPLICATION_DISPLAY_NAME:PowerAuth Next Step Server}"/>
+    <Parameter name="powerauth.nextstep.service.applicationEnvironment" value="${NEXTSTEP_APPLICATION_ENVIRONMENT:}"/>
 
     <!-- Custom Logging Configuration -->
-    <Parameter name="logging.config" value="${NEXTSTEP_LOGGING}"/>
+    <Parameter name="logging.config" value="${NEXTSTEP_LOGGING:}"/>
 
 </Context>
