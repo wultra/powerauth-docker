@@ -2,66 +2,67 @@
 <Context>
 
     <!-- Database Configuration - JDBC -->
-    <Parameter name="spring.datasource.url" value="${POWERAUTH_SERVER_DATASOURCE_URL}"/>
-    <Parameter name="spring.datasource.username" value="${POWERAUTH_SERVER_DATASOURCE_USERNAME}"/>
-    <Parameter name="spring.datasource.password" value="${POWERAUTH_SERVER_DATASOURCE_PASSWORD}"/>
-    <Parameter name="spring.datasource.driver-class-name" value="${POWERAUTH_SERVER_DATASOURCE_DRIVER}"/>
-    <Parameter name="spring.jpa.hibernate.ddl-auto" value="${POWERAUTH_SERVER_JPA_DDL_AUTO}"/>
+    <Parameter name="spring.datasource.url" value="${POWERAUTH_SERVER_DATASOURCE_URL:jdbc:postgresql://host.docker.internal:5432/powerauth}"/>
+    <Parameter name="spring.datasource.username" value="${POWERAUTH_SERVER_DATASOURCE_USERNAME:powerauth}"/>
+    <Parameter name="spring.datasource.password" value="${POWERAUTH_SERVER_DATASOURCE_PASSWORD:}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${POWERAUTH_SERVER_DATASOURCE_DRIVER:org.postgresql.Driver}"/>
+    <Parameter name="spring.jpa.database-platform" value="${POWERAUTH_SERVER_DATASOURCE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}"/>
 
     <!-- Configuration of Database Charset -->
-    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${POWERAUTH_SERVER_JPA_CHARSET}"/>
-    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${POWERAUTH_SERVER_JPA_CHARACTER_ENCODING}"/>
-    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${POWERAUTH_SERVER_JPA_USE_UNICODE}"/>
-
-    <!-- Additional JPA Configuration -->
-    <Parameter name="spring.jpa.database-platform" value="${POWERAUTH_SERVER_JPA_DATABASE_PLATFORM}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${POWERAUTH_SERVER_JPA_CHARSET:utf8}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${POWERAUTH_SERVER_JPA_CHARACTER_ENCODING:utf8}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${POWERAUTH_SERVER_JPA_USE_UNICODE:true}"/>
 
     <!-- Database Lock Timeout Configuration -->
-    <Parameter name="spring.jpa.properties.lock.timeout" value="${POWERAUTH_SERVER_JPA_LOCK_TIMEOUT}"/>
+    <Parameter name="spring.jpa.properties.jakarta.persistence.lock.timeout" value="${POWERAUTH_SERVER_JPA_LOCK_TIMEOUT:10000}"/>
 
     <!-- Database Configuration - JNDI -->
-    <Parameter name="spring.datasource.jndi-name" value="${POWERAUTH_SERVER_DATASOURCE_JNDI_NAME}"/>
+    <Parameter name="spring.datasource.jndi-name" value="${POWERAUTH_SERVER_DATASOURCE_JNDI_NAME:false}"/>
 
     <!-- JMX Configuration -->
-    <Parameter name="spring.jmx.enabled" value="${POWERAUTH_SERVER_SPRING_JMX_ENABLED}"/>
-    <Parameter name="spring.jmx.default-domain" value="${POWERAUTH_SERVER_SPRING_JMX_DEFAULT_DOMAIN}"/>
+    <Parameter name="spring.jmx.enabled" value="${POWERAUTH_SERVER_SPRING_JMX_ENABLED:false}"/>
+    <Parameter name="spring.jmx.default-domain" value="${POWERAUTH_SERVER_SPRING_JMX_DEFAULT_DOMAIN:powerauth-server}"/>
 
     <!-- HTTP Proxy Settings -->
-    <Parameter name="powerauth.service.http.proxy.enabled" value="${POWERAUTH_SERVER_HTTP_PROXY_ENABLED}"/>
-    <Parameter name="powerauth.service.http.proxy.host" value="${POWERAUTH_SERVER_HTTP_PROXY_HOST}"/>
-    <Parameter name="powerauth.service.http.proxy.port" value="${POWERAUTH_SERVER_HTTP_PROXY_PORT}"/>
-    <Parameter name="powerauth.service.http.proxy.username" value="${POWERAUTH_SERVER_HTTP_PROXY_USERNAME}"/>
-    <Parameter name="powerauth.service.http.proxy.password" value="${POWERAUTH_SERVER_HTTP_PROXY_PASSWORD}"/>
+    <Parameter name="powerauth.service.http.proxy.enabled" value="${POWERAUTH_SERVER_HTTP_PROXY_ENABLED:false}"/>
+    <Parameter name="powerauth.service.http.proxy.host" value="${POWERAUTH_SERVER_HTTP_PROXY_HOST:127.0.0.1}"/>
+    <Parameter name="powerauth.service.http.proxy.port" value="${POWERAUTH_SERVER_HTTP_PROXY_PORT:8080}"/>
+    <Parameter name="powerauth.service.http.proxy.username" value="${POWERAUTH_SERVER_HTTP_PROXY_USERNAME:}"/>
+    <Parameter name="powerauth.service.http.proxy.password" value="${POWERAUTH_SERVER_HTTP_PROXY_PASSWORD:}"/>
 
     <!-- Service Connect Timeout in Milliseconds -->
-    <Parameter name="powerauth.service.http.connection.timeout" value="${POWERAUTH_SERVER_HTTP_CONNECTION_TIMEOUT}"/>
+    <Parameter name="powerauth.service.http.connection.timeout" value="${POWERAUTH_SERVER_HTTP_CONNECTION_TIMEOUT:5000}"/>
 
     <!-- Token Timestamp Validity in Milliseconds -->
-    <Parameter name="powerauth.service.token.timestamp.validity" value="${POWERAUTH_SERVER_TOKEN_TIMESTAMP_VALIDITY}"/>
+    <Parameter name="powerauth.service.token.timestamp.validity" value="${POWERAUTH_SERVER_TOKEN_TIMESTAMP_VALIDITY:7200000}"/>
 
     <!-- Security Configuration -->
-    <Parameter name="powerauth.service.restrictAccess" value="${POWERAUTH_SERVER_RESTRICT_ACCESS}"/>
+    <Parameter name="powerauth.service.restrictAccess" value="${POWERAUTH_SERVER_RESTRICT_ACCESS:false}"/>
+
+    <!-- Default expiration period for activations -->
+    <Parameter name="powerauth.service.crypto.activationValidityInMilliseconds" value="${POWERAUTH_SERVER_ACTIVATION_VALIDITY_MILLIS:300000}"/>
 
     <!-- Recovery Code Configuration -->
-    <Parameter name="powerauth.service.recovery.maxFailedAttempts" value="${POWERAUTH_SERVER_RECOVERY_MAX_FAILED_ATTEMPTS}"/>
+    <Parameter name="powerauth.service.recovery.maxFailedAttempts" value="${POWERAUTH_SERVER_RECOVERY_MAX_FAILED_ATTEMPTS:5}"/>
 
     <!-- Master DB encryption key -->
-    <Parameter name="powerauth.server.db.master.encryption.key" value="${POWERAUTH_SERVER_MASTER_DB_ENCRYPTION_KEY}"/>
+    <Parameter name="powerauth.server.db.master.encryption.key" value="${POWERAUTH_SERVER_DB_MASTER_ENCRYPTION_KEY:}"/>
 
     <!-- Whether Biometry Is Enabled in Secure Vault -->
-    <Parameter name="powerauth.service.secureVault.enableBiometricAuthentication" value="${POWERAUTH_SERVER_SECURE_VAULT_ENABLE_BIOMETRY}"/>
+    <Parameter name="powerauth.service.secureVault.enableBiometricAuthentication" value="${POWERAUTH_SERVER_SECURE_VAULT_ENABLE_BIOMETRY:false}"/>
 
     <!-- Application Configuration -->
-    <Parameter name="powerauth.service.applicationName" value="${POWERAUTH_SERVER_APPLICATION_NAME}"/>
-    <Parameter name="powerauth.service.applicationDisplayName" value="${POWERAUTH_SERVER_APPLICATION_DISPLAY_NAME}"/>
-    <Parameter name="powerauth.service.applicationEnvironment" value="${POWERAUTH_SERVER_APPLICATION_ENVIRONMENT}"/>
-
-    <!-- Configure Correlation HTTP Header Configuration -->
-    <Parameter name="powerauth.service.correlation-header.enabled" value="${POWERAUTH_SERVER_CORRELATION_HEADER_ENABLED}"/>
-    <Parameter name="powerauth.service.correlation-header.name" value="${POWERAUTH_SERVER_CORRELATION_HEADER_NAME}"/>
-    <Parameter name="powerauth.service.correlation-header.value.validation-regexp" value="${POWERAUTH_SERVER_CORRELATION_HEADER_VALUE_VALIDATION_REGEXP}"/>
+    <Parameter name="powerauth.service.applicationName" value="${POWERAUTH_SERVER_APPLICATION_NAME:powerauth-server}"/>
+    <Parameter name="powerauth.service.applicationDisplayName" value="${POWERAUTH_SERVER_APPLICATION_DISPLAY_NAME:PowerAuth Server}"/>
+    <Parameter name="powerauth.service.applicationEnvironment" value="${POWERAUTH_SERVER_APPLICATION_ENVIRONMENT:}"/>
 
     <!-- Custom Logging Configuration -->
-    <Parameter name="logging.config" value="${POWERAUTH_SERVER_LOGGING}"/>
+    <Parameter name="logging.config" value="${POWERAUTH_SERVER_LOGGING:}"/>
+
+    <!-- Database Configuration - Connection pool -->
+    <Parameter name="spring.datasource.hikari.maximumPoolSize" value="${POWERAUTH_SERVER_DATASOURCE_HIKARI_MAX_CONNECTIONS:10}"/>
+
+    <!-- Database Configuration - Minimum idle connections -->
+    <Parameter name="spring.datasource.hikari.minimumIdle" value="${POWERAUTH_SERVER_DATASOURCE_HIKARI_MIN_IDLE:10}"/>
 
 </Context>
