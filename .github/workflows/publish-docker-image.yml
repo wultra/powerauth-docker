@@ -18,7 +18,7 @@ on:
 
 jobs:
   build-app:
-    name: Build docker image for APP
+    name: app image
     strategy:
       matrix:
         app: ["server","data-adapter","nextstep","push-server","webflow","tpp-engine"]
@@ -55,7 +55,7 @@ jobs:
           registry: https://powerauth.azurecr.io/
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - name: "powerauth-server: Build and push docker image to Azure registry (if enabled)"
+      - name: "powerauth-${{ matrix.app }} ${{ inputs.version }}: Build and push docker image to Azure registry (if enabled)"
         uses: docker/build-push-action@v5
         with:
           push: ${{ inputs.push_to_acr }}
@@ -63,92 +63,31 @@ jobs:
           tags: powerauth.azurecr.io/${{matrix.app}}:${{ inputs.version }}
           file: ./docker-powerauth-${{matrix.app}}/Dockerfile
           context: .
-#      - name: prepare ref to fetch liquibase files
-#        # SNAPSHOT is treated as develop branch i.e. latest
-#        run: |
-#          cd docker-powerauth-cloud
-#          PAS=`mvn help:evaluate -Dexpression=powerauth-java-server.version -q -DforceStdout`
-#          if [[ "$PAS" == *"SNAPSHOT"* ]]; then
-#            echo "to_fetch_pas=develop" >> $GITHUB_ENV
-#          else
-#            echo "to_fetch_pas=$PAS" >> $GITHUB_ENV
-#          fi
-#          ENR=`mvn help:evaluate -Dexpression=enrollment-server.version -q -DforceStdout`
-#          if [[ "$ENR" == *"SNAPSHOT"* ]]; then
-#            echo "to_fetch_enr=develop" >> $GITHUB_ENV
-#          else
-#            echo "to_fetch_enr=$ENR" >> $GITHUB_ENV
-#          fi
-#          PUSH=`mvn help:evaluate -Dexpression=powerauth-push-server.version -q -DforceStdout`
-#          if [[ "$PUSH" == *"SNAPSHOT"* ]]; then
-#            echo "to_fetch_push=develop" >> $GITHUB_ENV
-#          else
-#            echo "to_fetch_push=$PUSH" >> $GITHUB_ENV
-#          fi
-#        # run: echo "to_fetch=github.ref_name" >> $GITHUB_ENV
-#      - name: Get liquibase files from PAS
-#        uses: actions/checkout@v3
-#        with:
-#          repository: wultra/powerauth-server
-#          path: powerauth-server
-#          token: ${{ secrets.GH_PAC_PAT }}
-#          ref: ${{ env.to_fetch_pas }}
-#      - name: Get liquibase files from Enrollment Server
-#        uses: actions/checkout@v3
-#        with:
-#          repository: wultra/enrollment-server
-#          path: enrollment-server
-#          token: ${{ secrets.GH_PAC_PAT }}
-#          ref: ${{ env.to_fetch_enr }}
-#      - name: Get liquibase files from Push Server
-#        uses: actions/checkout@v3
-#        with:
-#          repository: wultra/powerauth-push-server
-#          path: powerauth-push-server
-#          token: ${{ secrets.GH_PAC_PAT }}
-#          ref: ${{ env.to_fetch_push }}
-#      - name: Copy liquibase files
-#        run: docker-powerauth-cloud/copy_liquibase.sh
-#      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v2
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v2
-#        with:
-#          install: true
-#      - name: Log in to JFrog registry
-#        if: ${{ github.event_name == 'workflow_dispatch' && inputs.jfrog_deploy == true }}
-#        uses: docker/login-action@v2
-#        with:
-#          registry: https://wultra.jfrog.io/
-#          username: ${{ secrets.JFROG_CONTAINER_REGISTRY_USERNAME }}
-#          password: ${{ secrets.JFROG_CONTAINER_REGISTRY_PASSWORD }}
-#      - name: Build and push container image to registry
-#        if: ${{ github.event_name == 'workflow_dispatch' && inputs.jfrog_deploy == true }}
-#        uses: docker/build-push-action@v3
-#        with:
-#          push: ${{ github.event_name == 'workflow_dispatch' && inputs.jfrog_deploy == true }}
-#          platforms: linux/amd64,linux/arm64
-#          tags: wultra.jfrog.io/wultra-docker/powerauth-cloud:${{ env.REVISION }}${{ env.TIMESTAMP }}
-#          file: ./docker-powerauth-cloud/Dockerfile
-#          context: .
-#      - name: Log in to Azure registry
-#        if: ${{ github.event_name == 'workflow_dispatch' }}
-#        uses: docker/login-action@v2
-#        with:
-#          registry: https://powerauth.azurecr.io/
-#          username: ${{ secrets.ACR_USERNAME }}
-#          password: ${{ secrets.ACR_PASSWORD }}
-#      - name: Build and push container image to Azure registry
-#        uses: docker/build-push-action@v3
-#        with:
-#          push: ${{ github.event_name == 'workflow_dispatch' }}
-#          platforms: linux/amd64,linux/arm64
-#          tags: powerauth.azurecr.io/powerauth-cloud:${{ env.REVISION }}${{ env.TIMESTAMP }}-${{ github.sha }}
-#          file: ./docker-powerauth-cloud/Dockerfile
-#          context: .
-#      - if: ${{ github.event_name == 'workflow_dispatch' }}
-#        run: |
-#          echo '### 🚀 Published images' >> $GITHUB_STEP_SUMMARY
-#          echo 'powerauth.azurecr.io/powerauth-cloud:${{ env.REVISION }}${{ env.TIMESTAMP }}-${{ github.sha }}' >> $GITHUB_STEP_SUMMARY
-#      - if: ${{ github.event_name == 'workflow_dispatch' && inputs.jfrog_deploy == true }}
-#        run: echo 'wultra.jfrog.io/wultra-docker/powerauth-cloud:${{ env.REVISION }}${{ env.TIMESTAMP }}' >> $GITHUB_STEP_SUMMARY
+  build-psql:
+    name: postgresql image
+    strategy:
+      matrix:
+        app: ["server","push","webflow",]
+    runs-on: 'ubuntu-latest'
+    environment: docker-publish
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to Azure registry
+        if: ${{ inputs.push_to_acr }}
+        uses: docker/login-action@v3
+        with:
+          registry: https://powerauth.azurecr.io/
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: "powerauth-${{ matrix.app }}-postgresql: Build and push docker image to Azure registry (if enabled)"
+        uses: docker/build-push-action@v5
+        with:
+          push: ${{ inputs.push_to_acr }}
+          platforms: linux/amd64,linux/arm64
+          tags: powerauth.azurecr.io/${{matrix.app}}-postgresql:${{ inputs.version }}
+          file: ./docker-powerauth-${{matrix.app}}-postgresql/Dockerfile
+          context: .
