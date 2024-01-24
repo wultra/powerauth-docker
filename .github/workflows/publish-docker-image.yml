@@ -33,7 +33,6 @@ jobs:
       - name: Prepare Libs
         run: |
           wget --no-verbose https://download.oracle.com/otn-pub/otn_software/jdbc/233/ojdbc11.jar -O ${GITHUB_WORKSPACE}/deploy/lib/ojdbc11.jar
-          wget --no-verbose https://jdbc.postgresql.org/download/postgresql-42.7.1.jar -O ${GITHUB_WORKSPACE}/deploy/lib/postgresql.jar
       - name: Get Powerauth Server WAR files
         if: matrix.app == 'server'
         run: |

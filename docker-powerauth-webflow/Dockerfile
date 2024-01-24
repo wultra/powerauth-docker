@@ -11,7 +11,6 @@ RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
 ADD deploy/lib/ojdbc11.jar $TOMCAT_HOME/lib/
-ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Add valve for proxy with SSL termination
 RUN sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' $TOMCAT_HOME/conf/server.xml
