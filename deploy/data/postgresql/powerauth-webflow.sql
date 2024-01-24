@@ -671,6 +671,10 @@ CREATE INDEX IF NOT EXISTS audit_param_timestamp ON audit_param (timestamp_creat
 CREATE INDEX IF NOT EXISTS audit_param_key ON audit_param (param_key);
 CREATE INDEX IF NOT EXISTS audit_param_value ON audit_param (param_value);
 
+-- Changeset powerauth-nextstep/1.6.x/20240116-correct-userid-nullable.xml::1::Zdenek Cerny
+-- Make user_id column in table ns_otp_storage nullable
+ALTER TABLE ns_otp_storage ALTER COLUMN  user_id DROP NOT NULL;
+
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO powerauth;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO powerauth;
 
