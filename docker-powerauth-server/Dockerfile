@@ -10,7 +10,6 @@ RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
 ADD deploy/lib/ojdbc11.jar $TOMCAT_HOME/lib/
-ADD deploy/lib/postgresql*.jar $TOMCAT_HOME/lib/
 
 # Deploy and run applications
 ADD deploy/conf/powerauth-java-server.xml $TOMCAT_HOME/conf/Catalina/localhost/

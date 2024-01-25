@@ -1,4 +1,4 @@
-FROM tomcat:10.1.15-jdk17-temurin-jammy@sha256:b59a28630efc10589c45994471264f9c0e29ee381d4f0d50a8eac1d68a076746
+FROM tomcat:10.1.18-jre17-temurin-jammy@sha256:72c0b86b3f9b9d2a2d763be9ac8f13f03aec99be5a2122c63e4edf0dd93f8904
 LABEL maintainer="petr@wultra.com"
 
 # Prepare environment variables
@@ -11,7 +11,6 @@ RUN rm -rf $TOMCAT_HOME/webapps/*
 
 # Copy libraries
 ADD deploy/lib/ojdbc11.jar $TOMCAT_HOME/lib/
-ADD deploy/lib/postgresql.jar $TOMCAT_HOME/lib/
 
 # Add valve for proxy with SSL termination
 RUN sed -i 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' $TOMCAT_HOME/conf/server.xml

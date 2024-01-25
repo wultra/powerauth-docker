@@ -17,7 +17,6 @@
     <Parameter name="spring.datasource.username" value="${PUSH_SERVER_DATASOURCE_USERNAME:powerauth}"/>
     <Parameter name="spring.datasource.password" value="${PUSH_SERVER_DATASOURCE_PASSWORD:}"/>
     <Parameter name="spring.datasource.driver-class-name" value="${PUSH_SERVER_DATASOURCE_DRIVER:org.postgresql.Driver}"/>
-    <Parameter name="spring.jpa.database-platform" value="${PUSH_SERVER_DATASOURCE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}"/>
 
     <!-- Configuration of Database Charset -->
     <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${PUSH_SERVER_JPA_CHARSET:utf8}"/>
