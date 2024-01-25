@@ -1,10 +1,8 @@
-CREATE DATABASE powerauth;
-
 CREATE USER powerauth WITH PASSWORD 'powerauth';
 
-GRANT ALL PRIVILEGES ON DATABASE powerauth TO powerauth;
+CREATE DATABASE powerauth OWNER powerauth;
 
-\c powerauth
+\c powerauth powerauth
 
 ---
 --- DB Sequences
