@@ -1,10 +1,8 @@
-CREATE DATABASE powerauth;
-
 CREATE USER powerauth WITH PASSWORD 'powerauth';
 
-GRANT ALL PRIVILEGES ON DATABASE powerauth TO powerauth;
+CREATE DATABASE powerauth OWNER powerauth;
 
-\c powerauth
+\c powerauth powerauth
 
 --
 --  Create sequences.
@@ -83,6 +81,8 @@ CREATE TABLE oauth2_registered_client (
     token_settings VARCHAR(2000) NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX oauth2_client_unique ON oauth2_registered_client (client_id);
 
 -- Table oauth2_registered_client stores information about OAuth 2.1 consents
 -- Source: https://github.com/spring-projects/spring-authorization-server/blob/main/oauth2-authorization-server/src/main/resources/org/springframework/security/oauth2/server/authorization/oauth2-authorization-consent-schema.sql
@@ -631,7 +631,6 @@ CREATE INDEX wf_websocket_session ON wf_operation_session (websocket_session_id)
 CREATE INDEX ns_operation_pending ON ns_operation (user_id, result);
 CREATE UNIQUE INDEX ns_operation_afs_unique ON ns_operation_afs (operation_id, request_afs_action, request_step_index);
 CREATE INDEX wf_certificate_operation ON wf_certificate_verification (operation_id);
-CREATE UNIQUE INDEX oauth2_client_unique ON oauth2_registered_client (client_id);
 CREATE UNIQUE INDEX ns_application_name ON ns_application (name);
 CREATE UNIQUE INDEX ns_credential_policy_name ON ns_credential_policy (name);
 CREATE UNIQUE INDEX ns_otp_policy_name ON ns_otp_policy (name);
@@ -671,13 +670,11 @@ CREATE INDEX IF NOT EXISTS audit_param_timestamp ON audit_param (timestamp_creat
 CREATE INDEX IF NOT EXISTS audit_param_key ON audit_param (param_key);
 CREATE INDEX IF NOT EXISTS audit_param_value ON audit_param (param_value);
 
--- Changeset powerauth-nextstep/1.6.x/20240116-correct-userid-nullable.xml::1::Zdenek Cerny
--- Make user_id column in table ns_otp_storage nullable
-ALTER TABLE ns_otp_storage ALTER COLUMN  user_id DROP NOT NULL;
-
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO powerauth;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO powerauth;
-
+-- Foreign keys for user identity, to be used only when all user identities are stored in Next Step
+-- ALTER TABLE ns_operation ADD CONSTRAINT ns_operation_user_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id);
+-- ALTER TABLE ns_user_prefs ADD CONSTRAINT ns_user_prefs_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id);
+-- ALTER TABLE ns_otp_storage ADD CONSTRAINT ns_otp_user_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id);
+-- ALTER TABLE ns_authentication ADD CONSTRAINT ns_auth_user_fk FOREIGN KEY (user_id) REFERENCES ns_user_identity (user_id);
 -- default OAuth 2.1 client
 -- Note: bcrypt('changeme', 12) => '$2a$12$MkYsT5igDXSDgRwyDVz1B.93h8F81E4GZJd/spy/1vhjM4CJgeed.'
 INSERT INTO oauth2_registered_client (id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, post_logout_redirect_uris, scopes, client_settings, token_settings)
@@ -987,12 +984,3 @@ VALUES (69, 'authorize_payment_sca', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_METHOD_FA
 -- authorize_payment_sca - update operation (user ID assignment) - AUTH_FAILED -> FAILED
 INSERT INTO ns_step_definition (step_definition_id, operation_name, operation_type, request_auth_method, request_auth_step_result, response_priority, response_auth_method, response_result)
 VALUES (70, 'authorize_payment_sca', 'UPDATE', 'USER_ID_ASSIGN', 'AUTH_FAILED', 1, null, 'FAILED');
-
--- default consents for PSD2
--- "aisp" consent
-INSERT INTO tpp_consent (consent_id, consent_name, consent_text, version)
-VALUES ('aisp', 'Access Information Service Provider', '<p>I give a consent to <strong>{{TPP_NAME}}</strong> that allows access to my payment accounts via <strong>{{APP_NAME}}</strong></p>', 1);
-
--- "pisp" consent
-INSERT INTO tpp_consent (consent_id, consent_name, consent_text, version)
-VALUES ('pisp', 'Payment Initiation Service Provider', '<p>I give a consent to <strong>{{TPP_NAME}}</strong> that allows payment initiation from my payment accounts via <strong>{{APP_NAME}}</strong></p>', 1);
