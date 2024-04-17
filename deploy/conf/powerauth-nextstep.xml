@@ -11,6 +11,9 @@
     <Parameter name="powerauth.service.security.clientToken" value="${NEXTSTEP_POWERAUTH_SECURITY_TOKEN}"/>
     <Parameter name="powerauth.service.security.clientSecret" value="${NEXTSTEP_POWERAUTH_SECURITY_SECRET}"/>
     <Parameter name="powerauth.service.ssl.acceptInvalidSslCertificate" value="${NEXTSTEP_ACCEPT_INVALID_SSL_CERTIFICATE:false}"/>
+    <Parameter name="powerauth.nextstep.security.auth.type" value="${NEXTSTEP_AUTH_TYPE:NONE}"/>
+    <Parameter name="spring.security.oauth2.resource-server.jwt.issuer-uri" value="${NEXTSTEP_SECURITY_AUTH_OIDC_ISSUER_URI:}" />
+    <Parameter name="spring.security.oauth2.resource-server.jwt.audiences" value="${NEXTSTEP_SECURITY_AUTH_OIDC_AUDIENCES:}" />
 
     <!-- Database Configuration - JDBC -->
     <Parameter name="spring.datasource.url" value="${NEXTSTEP_DATASOURCE_URL}"/>
