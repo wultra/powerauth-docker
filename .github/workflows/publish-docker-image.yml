@@ -15,6 +15,10 @@ on:
         description: Push to Azure registry?
         type: boolean
         default: false
+      push_to_docker_hub:
+        description: Push to Docker HUB registry?
+        type: boolean
+        default: false
 
 jobs:
   build-app:
@@ -50,6 +54,14 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: "powerauth-${{ matrix.app }} ${{ inputs.version }}: Build and push docker image to Azure registry (if enabled)"
+        uses: docker/build-push-action@v5
+        with:
+          push: false
+          platforms: linux/amd64,linux/arm64
+          tags: powerauth.azurecr.io/${{matrix.app}}:${{ inputs.version }}
+          file: ./docker-powerauth-${{matrix.app}}/Dockerfile
+          context: .
       - name: Log in to Azure registry
         if: inputs.push_to_acr == true
         uses: docker/login-action@v3
@@ -57,14 +69,25 @@ jobs:
           registry: https://powerauth.azurecr.io/
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - name: "powerauth-${{ matrix.app }} ${{ inputs.version }}: Build and push docker image to Azure registry (if enabled)"
-        uses: docker/build-push-action@v5
+      - name: Push image to ACR registry
+        if: inputs.push_to_acr == true
+        run: |
+          docker buildx imagetools create \
+            --tag powerauth.azurecr.io/${{matrix.app}}:${{ inputs.version }} \
+            powerauth.azurecr.io/${{matrix.app}}:${{ inputs.version }}
+      - name: Log in to Docker hub registry
+        if: inputs.push_to_docker_hub == true
+        uses: docker/login-action@v3
         with:
-          push: ${{ inputs.push_to_acr == true }}
-          platforms: linux/amd64,linux/arm64
-          tags: powerauth.azurecr.io/${{matrix.app}}:${{ inputs.version }}
-          file: ./docker-powerauth-${{matrix.app}}/Dockerfile
-          context: .
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: Push image to Docker HUB registry
+        if: inputs.push_to_docker_hub == true
+        run: |
+          docker buildx imagetools create \
+            --tag powerauth/${{matrix.app}}:${{ inputs.version }} \
+            --tag powerauth/${{matrix.app}}:latest \
+            powerauth.azurecr.io/${{matrix.app}}:${{ inputs.version }}
   build-psql:
     name: postgresql image
     strategy:
@@ -78,6 +101,14 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: "powerauth-${{ matrix.app }}-postgresql: Build docker image"
+        uses: docker/build-push-action@v5
+        with:
+          push: false
+          platforms: linux/amd64,linux/arm64
+          tags: powerauth.azurecr.io/${{matrix.app}}-postgresql:${{ inputs.version }}
+          file: ./docker-powerauth-${{matrix.app}}-postgresql/Dockerfile
+          context: .
       - name: Log in to Azure registry
         if: inputs.push_to_acr == true
         uses: docker/login-action@v3
@@ -85,11 +116,22 @@ jobs:
           registry: https://powerauth.azurecr.io/
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - name: "powerauth-${{ matrix.app }}-postgresql: Build and push docker image to Azure registry (if enabled)"
-        uses: docker/build-push-action@v5
+      - name: Push image to ACR
+        if: inputs.push_to_acr == true
+        run: |
+          docker buildx imagetools create \
+            --tag powerauth.azurecr.io/${{matrix.app}}-postgresql:${{ inputs.version }} \
+            powerauth.azurecr.io/${{matrix.app}}-postgresql:${{ inputs.version }}
+      - name: Log in to Docker hub registry
+        if: inputs.push_to_docker_hub == true
+        uses: docker/login-action@v3
         with:
-          push: ${{ inputs.push_to_acr == true }}
-          platforms: linux/amd64,linux/arm64
-          tags: powerauth.azurecr.io/${{matrix.app}}-postgresql:${{ inputs.version }}
-          file: ./docker-powerauth-${{matrix.app}}-postgresql/Dockerfile
-          context: .
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      - name: Push image to Docker HUB registry
+        if: inputs.push_to_docker_hub == true
+        run: |
+          docker buildx imagetools create \
+            --tag powerauth/${{matrix.app}}-postgresql:${{ inputs.version }} \
+            --tag powerauth/${{matrix.app}}-postgresql:latest \
+            powerauth.azurecr.io/${{matrix.app}}-postgresql:${{ inputs.version }}
