@@ -5,8 +5,6 @@
     <Parameter name="spring.datasource.url" value="${POWERAUTH_SERVER_DATASOURCE_URL:jdbc:postgresql://host.docker.internal:5432/powerauth}"/>
     <Parameter name="spring.datasource.username" value="${POWERAUTH_SERVER_DATASOURCE_USERNAME:powerauth}"/>
     <Parameter name="spring.datasource.password" value="${POWERAUTH_SERVER_DATASOURCE_PASSWORD:}"/>
-    <Parameter name="spring.datasource.driver-class-name" value="${POWERAUTH_SERVER_DATASOURCE_DRIVER:org.postgresql.Driver}"/>
-    <Parameter name="spring.jpa.database-platform" value="${POWERAUTH_SERVER_DATASOURCE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}"/>
 
     <!-- Configuration of Database Charset -->
     <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${POWERAUTH_SERVER_JPA_CHARSET:utf8}"/>

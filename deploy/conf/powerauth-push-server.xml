@@ -16,7 +16,6 @@
     <Parameter name="spring.datasource.url" value="${PUSH_SERVER_DATASOURCE_URL:jdbc:postgresql://host.docker.internal:5432/powerauth}"/>
     <Parameter name="spring.datasource.username" value="${PUSH_SERVER_DATASOURCE_USERNAME:powerauth}"/>
     <Parameter name="spring.datasource.password" value="${PUSH_SERVER_DATASOURCE_PASSWORD:}"/>
-    <Parameter name="spring.datasource.driver-class-name" value="${PUSH_SERVER_DATASOURCE_DRIVER:org.postgresql.Driver}"/>
 
     <!-- Configuration of Database Charset -->
     <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${PUSH_SERVER_JPA_CHARSET:utf8}"/>
@@ -42,6 +41,14 @@
     <Parameter name="powerauth.push.service.fcm.proxy.password" value="${PUSH_SERVER_FCM_PROXY_PASSWORD:}"/>
     <Parameter name="powerauth.push.service.fcm.dataNotificationOnly" value="${PUSH_SERVER_FCM_DATA_NOTIFICATION_ONLY:false}"/>
 
+    <!-- HMS Configuration -->
+    <Parameter name="powerauth.push.service.hms.proxy.enabled" value="${PUSH_SERVER_HMS_PROXY_ENABLED:false}"/>
+    <Parameter name="powerauth.push.service.hms.proxy.host" value="${PUSH_SERVER_HMS_PROXY_HOST:127.0.0.1}"/>
+    <Parameter name="powerauth.push.service.hms.proxy.port" value="${PUSH_SERVER_HMS_PROXY_PORT:8080}"/>
+    <Parameter name="powerauth.push.service.hms.proxy.username" value="${PUSH_SERVER_HMS_PROXY_USERNAME:}"/>
+    <Parameter name="powerauth.push.service.hms.proxy.password" value="${PUSH_SERVER_HMS_PROXY_PASSWORD:}"/>
+    <Parameter name="powerauth.push.service.hms.dataNotificationOnly" value="${PUSH_SERVER_HMS_DATA_NOTIFICATION_ONLY:false}"/>
+
     <!-- Push Campaign Batch Size -->
     <Parameter name="powerauth.push.service.campaign.batchSize" value="${PUSH_SERVER_CAMPAIGN_BATCH_SIZE:100000}"/>
 
@@ -61,6 +68,7 @@
     <!-- Push Message Gateway Connect Timeout in Milliseconds -->
     <Parameter name="powerauth.push.service.fcm.connect.timeout" value="${PUSH_SERVER_FCM_CONNECT_TIMEOUT:5000}"/>
     <Parameter name="powerauth.push.service.apns.connect.timeout" value="${PUSH_SERVER_APNS_CONNECT_TIMEOUT:5000}"/>
+    <Parameter name="powerauth.push.service.hms.connect.timeout" value="${PUSH_SERVER_HMS_CONNECT_TIMEOUT:5000}"/>
 
     <!-- Application Configuration -->
     <Parameter name="powerauth.push.service.applicationName" value="${PUSH_SERVER_APPLICATION_NAME:powerauth-push-server}"/>
