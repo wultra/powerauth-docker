@@ -11,6 +11,11 @@ on:
         description: Application release version e.g. 1.0.0
         type: string
         required: true
+      products_to_push:
+        description: Array of product names for which build will be done.
+        type: string
+        default: '["server","data-adapter","nextstep","push-server","webflow","tpp-engine"]'
+        required: true
       push_to_acr:
         description: Push to Azure registry?
         type: boolean
@@ -20,12 +25,13 @@ on:
         type: boolean
         default: false
 
+
 jobs:
   build-app:
     name: app image
     strategy:
       matrix:
-        app: ["server","data-adapter","nextstep","push-server","webflow","tpp-engine"]
+        app: ${{ fromJSON(github.event.inputs.products_to_push)}}
     runs-on: 'ubuntu-latest'
     environment: docker-publish
     steps:
