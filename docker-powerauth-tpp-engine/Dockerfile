@@ -1,4 +1,4 @@
-FROM tomcat:10.1.18-jre17-temurin-jammy@sha256:72c0b86b3f9b9d2a2d763be9ac8f13f03aec99be5a2122c63e4edf0dd93f8904
+FROM tomcat:10.1.25-jre21-temurin-jammy@sha256:e13c51d8cc4c4d24027a093997a23d58ae50cb8e8d72631ae1f583cc12c75243
 LABEL maintainer="petr@wultra.com"
 
 # Prepare environment variables
