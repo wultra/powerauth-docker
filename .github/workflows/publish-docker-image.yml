@@ -14,7 +14,7 @@ on:
       products_to_push:
         description: Array of product names for which build will be done.
         type: string
-        default: '["server","data-adapter","nextstep","push-server","webflow","tpp-engine"]'
+        default: '["server","enrollment-server","data-adapter","nextstep","push-server","webflow","tpp-engine"]'
         required: true
       push_to_acr:
         description: Push to Azure registry?
@@ -44,6 +44,10 @@ jobs:
         run: |
           wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ inputs.version }}/powerauth-admin.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-admin.war
           wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ inputs.version }}/powerauth-java-server.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-java-server.war
+      - name: Get Enrollment Server WAR files
+        if: matrix.app == 'enrollment-server'
+        run: |
+          wget --no-verbose https://github.com/wultra/enrollment-server/releases/download/${{ inputs.version }}/enrollment-server.war  -O ${GITHUB_WORKSPACE}/deploy/images/enrollment-server.war
       - name: Get Powerauth Push Server WAR files
         if: matrix.app == 'push-server'
         run: |
@@ -89,7 +93,7 @@ jobs:
     name: postgresql image
     strategy:
       matrix:
-        app: ["server","push","webflow",]
+        app: ["server","enrollment","push","webflow",]
     runs-on: 'ubuntu-latest'
     environment: docker-publish
     steps:
