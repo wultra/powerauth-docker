@@ -23,7 +23,7 @@
     <Parameter name="enrollment-server.inbox.enabled" value="${ENROLLMENT_SERVER_INBOX_ENABLED:true}"/>
     <Parameter name="enrollment-server.activation-spawn.enabled" value="${ENROLLMENT_SERVER_ACTIVATION_SPAWN_ENABLED:false}"/>
 
-    <Parameter name="enrollment-server.admin.enabled" value="${ENROLLMENT_SERVER_ADMIN_ENABLED:true}"/>
+    <Parameter name="enrollment-server.admin.enabled" value="${ENROLLMENT_SERVER_ADMIN_ENABLED:false}"/>
 
     <!--  User-info configuration  -->
     <Parameter name="enrollment-server.user-info.provider" value="${ENROLLMENT_SERVER_USER_INFO_PROVIDER:}"/>
