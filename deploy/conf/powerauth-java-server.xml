@@ -63,4 +63,27 @@
     <!-- Database Configuration - Minimum idle connections -->
     <Parameter name="spring.datasource.hikari.minimumIdle" value="${POWERAUTH_SERVER_DATASOURCE_HIKARI_MIN_IDLE:10}"/>
 
+    <!-- Maximum failed attempts for signature verification -->
+    <Parameter name="powerauth.service.crypto.signatureMaxFailedAttempts" value="${POWERAUTH_SERVER_SIGNATURE_MAX_FAILED_ATTEMPTS:5}" />
+
+    <!-- Proximity Check Configuration -->
+    <Parameter name="powerauth.service.proximity-check.otp.length" value="${POWERAUTH_SERVER_PROXIMITY_CHECK_OTP_LENGTH:8}"/>
+    <Parameter name="powerauth.service.proximity-check.otp.step-duration" value="${POWERAUTH_SERVER_PROXIMITY_CHECK_OTP_STEP_DURATION:30s}"/>
+    <Parameter name="powerauth.service.proximity-check.otp.step-count" value="${POWERAUTH_SERVER_PROXIMITY_CHECK_OTP_STEP_COUNT:1}"/>
+
+    <!-- Callbacks Processing Configuration -->
+    <Parameter name="powerauth.service.callbacks.defaultMaxAttempts" value="${POWERAUTH_SERVER_CALLBACKS_DEFAULT_MAX_ATTEMPTS:1}"/>
+    <Parameter name="powerauth.service.callbacks.defaultRetentionPeriod" value="${POWERAUTH_SERVER_CALLBACKS_DEFAULT_RETENTION_PERIOD:30d}"/>
+    <Parameter name="powerauth.service.callbacks.defaultInitialBackoff" value="${POWERAUTH_SERVER_CALLBACKS_DEFAULT_INITIAL_BACKOFF:2s}"/>
+    <Parameter name="powerauth.service.callbacks.maxBackoff" value="${POWERAUTH_SERVER_CALLBACKS_MAX_BACKOFF:32s}"/>
+    <Parameter name="powerauth.service.callbacks.backoffMultiplier" value="${POWERAUTH_SERVER_CALLBACKS_BACKOFF_MULTIPLIER:1.5}"/>
+    <Parameter name="powerauth.service.callbacks.pendingCallbackUrlEventsDispatchLimit" value="${POWERAUTH_SERVER_CALLBACKS_PENDING_CALLBACK_URL_EVENTS_DISPATCH_LIMIT:100}"/>
+    <Parameter name="powerauth.service.callbacks.threadPoolCoreSize" value="${POWERAUTH_SERVER_CALLBACKS_THREAD_POOL_CORE_SIZE:1}"/>
+    <Parameter name="powerauth.service.callbacks.threadPoolMaxSize" value="${POWERAUTH_SERVER_CALLBACKS_THREAD_POOL_MAX_SIZE:2}"/>
+    <Parameter name="powerauth.service.callbacks.threadPoolQueueCapacity" value="${POWERAUTH_SERVER_CALLBACKS_THREAD_POOL_QUEUE_CAPACITY:1000}"/>
+    <Parameter name="powerauth.service.callbacks.forceRerunPeriod" value="${POWERAUTH_SERVER_CALLBACKS_FORCE_RERUN_PERIOD:}"/>
+    <Parameter name="powerauth.service.callbacks.failureThreshold" value="${POWERAUTH_SERVER_CALLBACKS_FAILURE_THRESHOLD:200}"/>
+    <Parameter name="powerauth.service.callbacks.failureResetTimeout" value="${POWERAUTH_SERVER_CALLBACKS_FAILURE_RESET_TIMEOUT:60s}"/>
+    <Parameter name="powerauth.service.callbacks.clients.cache.refreshAfterWrite" value="${POWERAUTH_SERVER_CALLBACKS_CLIENTS_CACHE_REFRESH_AFTER_WRITE:5m}"/>
+
 </Context>

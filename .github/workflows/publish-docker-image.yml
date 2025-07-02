@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare Libs
         run: |
-          wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.5.0.24.07/ojdbc11-23.5.0.24.07.jar -O ${GITHUB_WORKSPACE}/deploy/lib/ojdbc11.jar
+          wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar -O ${GITHUB_WORKSPACE}/deploy/lib/ojdbc11.jar
       - name: Get Powerauth Server WAR files
         if: matrix.app == 'server'
         run: |
