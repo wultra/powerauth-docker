@@ -14,7 +14,7 @@ on:
       products_to_push:
         description: Array of product names for which build will be done.
         type: string
-        default: '["server","enrollment-server","data-adapter","nextstep","push-server","webflow","tpp-engine"]'
+        default: '["enrollment-server","data-adapter","nextstep","push-server","webflow","tpp-engine"]'
         required: true
       push_to_acr:
         description: Push to Azure registry?
