@@ -89,11 +89,37 @@ jobs:
             ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}', matrix.app, inputs.version) || '' }}
             ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:latest', matrix.app) || '' }}
 
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.filter.outputs.matrix }}
+    steps:
+      - id: filter
+        shell: bash
+        run: |
+          ALL_APPS='["server","enrollment","push","webflow"]'
+          SELECTED='${{ inputs.products_to_push }}'
+
+          MATRIX=$(jq -nc \
+            --argjson all "$ALL_APPS" \
+            --argjson selected "$SELECTED" \
+            '
+              {
+                app: [
+                  $all[]
+                  | select(. as $app | $selected | index($app))
+                ]
+              }
+            ')
+
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "$MATRIX"
+
   build-psql:
+    needs: prepare-matrix
     name: postgresql image
     strategy:
-      matrix:
-        app: ["server","enrollment","push","webflow",]
+      matrix: ${{ fromJSON(needs.prepare-matrix.outputs.matrix) }}
     runs-on: 'ubuntu-latest'
     environment: docker-publish
     steps:
