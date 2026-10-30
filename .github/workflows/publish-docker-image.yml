@@ -24,6 +24,10 @@ on:
         description: Push to Docker HUB registry?
         type: boolean
         default: false
+      push_latest:
+        description: Also push 'latest' tag to Docker HUB? (keep unchecked for hotfixes of older versions)
+        type: boolean
+        default: false
 
 
 jobs:
@@ -87,7 +91,7 @@ jobs:
           tags: |
             ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}:{1}', matrix.app, inputs.version) || '' }}
             ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}', matrix.app, inputs.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:latest', matrix.app) || '' }}
+            ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}:latest', matrix.app) || '' }}
 
   prepare-matrix:
     runs-on: ubuntu-latest
@@ -151,4 +155,4 @@ jobs:
           tags: |
             ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}-postgresql:{1}', matrix.app, inputs.version) || '' }}
             ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}-postgresql:{1}', matrix.app, inputs.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}-postgresql:latest', matrix.app) || '' }}
+            ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}-postgresql:latest', matrix.app) || '' }}
