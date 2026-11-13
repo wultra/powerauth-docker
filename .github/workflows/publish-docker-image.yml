@@ -64,7 +64,13 @@ jobs:
           TAG_INCREMENT: ${{ inputs.tag_increment }}
         run: |
           set -euo pipefail
-          INCREMENT="$(echo "$TAG_INCREMENT" | xargs)"
+          trim() {
+            local value="$1"
+            value="${value#"${value%%[![:space:]]*}"}"
+            value="${value%"${value##*[![:space:]]}"}"
+            printf '%s' "$value"
+          }
+          INCREMENT="$(trim "$TAG_INCREMENT")"
           if [[ -n "$INCREMENT" && ! "$INCREMENT" =~ ^[0-9]+$ ]]; then
             echo "::error::tag_increment must be a number, got '$INCREMENT'"
             exit 1
@@ -85,9 +91,9 @@ jobs:
           PSQL='[]'
           for row in "${ROWS[@]}"; do
             IFS='|' read -r app psql version <<< "$row"
-            version="$(echo "$version" | xargs)"
+            version="$(trim "$version")"
             [[ -z "$version" ]] && continue
-            if [[ ! "$version" =~ ^[0-9A-Za-z._-]+$ ]]; then
+            if [[ ! "$version" =~ ^[0-9A-Za-z][0-9A-Za-z._-]*$ ]]; then
               echo "::error::Invalid $app version '$version'"
               exit 1
             fi
