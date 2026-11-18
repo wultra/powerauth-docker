@@ -2,10 +2,6 @@ name: Build and deploy docker image
 
 on:
   workflow_dispatch:
-    branches:
-      - 'develop'
-      - 'master'
-      - 'releases/*'
     inputs:
       server_version:
         description: PowerAuth Server version (empty = skip), e.g. 1.10.3
@@ -93,7 +89,7 @@ jobs:
             IFS='|' read -r app psql version <<< "$row"
             version="$(trim "$version")"
             [[ -z "$version" ]] && continue
-            if [[ ! "$version" =~ ^[0-9A-Za-z][0-9A-Za-z._-]*$ ]]; then
+            if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$ ]]; then
               echo "::error::Invalid $app version '$version'"
               exit 1
             fi
@@ -117,6 +113,7 @@ jobs:
     needs: prepare-matrix
     name: app image
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.prepare-matrix.outputs.apps) }}
     runs-on: 'ubuntu-latest'
@@ -125,28 +122,28 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare Libs
         run: |
-          wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar -O ${GITHUB_WORKSPACE}/deploy/lib/ojdbc11.jar
+          wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar -O "${GITHUB_WORKSPACE}/deploy/lib/ojdbc11.jar"
       - name: Get Powerauth Server WAR files
         if: matrix.app == 'server'
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ matrix.version }}/powerauth-admin.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-admin.war
-          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ matrix.version }}/powerauth-java-server.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-java-server.war
+          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ matrix.version }}/powerauth-admin.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-admin.war"
+          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ matrix.version }}/powerauth-java-server.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-java-server.war"
       - name: Get Enrollment Server WAR files
         if: matrix.app == 'enrollment-server'
         run: |
-          wget --no-verbose https://github.com/wultra/enrollment-server/releases/download/${{ matrix.version }}/enrollment-server.war  -O ${GITHUB_WORKSPACE}/deploy/images/enrollment-server.war
+          wget --no-verbose https://github.com/wultra/enrollment-server/releases/download/${{ matrix.version }}/enrollment-server.war  -O "${GITHUB_WORKSPACE}/deploy/images/enrollment-server.war"
       - name: Get Powerauth Push Server WAR files
         if: matrix.app == 'push-server'
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-push-server/releases/download/${{ matrix.version }}/powerauth-push-server.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-push-server.war
+          wget --no-verbose https://github.com/wultra/powerauth-push-server/releases/download/${{ matrix.version }}/powerauth-push-server.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-push-server.war"
       - name: Get Powerauth Data Adapter WAR files
         if: matrix.app == 'data-adapter'
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-webflow-customization/releases/download/${{ matrix.version }}/powerauth-data-adapter.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-data-adapter.war
+          wget --no-verbose https://github.com/wultra/powerauth-webflow-customization/releases/download/${{ matrix.version }}/powerauth-data-adapter.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-data-adapter.war"
       - name: Get Powerauth ${{ matrix.app }} WAR file
         if: contains(fromJson('["nextstep","webflow","tpp-engine"]'), matrix.app)
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-webflow/releases/download/${{ matrix.version }}/powerauth-${{ matrix.app }}.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-${{ matrix.app }}.war
+          wget --no-verbose https://github.com/wultra/powerauth-webflow/releases/download/${{ matrix.version }}/powerauth-${{ matrix.app }}.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-${{ matrix.app }}.war"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -176,12 +173,12 @@ jobs:
             ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}', matrix.app, matrix.tag) || '' }}
             ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}:latest', matrix.app) || '' }}
 
-
   build-psql:
     needs: prepare-matrix
     if: needs.prepare-matrix.outputs.psql != '[]'
     name: postgresql image
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.prepare-matrix.outputs.psql) }}
     runs-on: 'ubuntu-latest'
