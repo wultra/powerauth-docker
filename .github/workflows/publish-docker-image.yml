@@ -37,6 +37,11 @@ on:
         type: boolean
         default: false
 
+# Queue dispatches, so two runs never pick the same <version>_<N> suffix
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   prepare-matrix:
     runs-on: ubuntu-latest
@@ -142,37 +147,65 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: "powerauth-${{ matrix.app }} ${{ matrix.version }}: Build docker image"
-        uses: docker/build-push-action@v5
-        with:
-          push: false
-          context: .
-          platforms: linux/amd64,linux/arm64
-          file: ./docker-powerauth-${{ matrix.app }}/Dockerfile
-      - name: "powerauth-${{ matrix.psql }}-postgresql ${{ matrix.version }}: Build docker image"
-        if: matrix.psql != ''
-        uses: docker/build-push-action@v5
-        with:
-          push: false
-          context: .
-          platforms: linux/amd64,linux/arm64
-          file: ./docker-powerauth-${{ matrix.psql }}-postgresql/Dockerfile
-      # One <version>_<N> suffix for the application and its PostgreSQL image, resolved right before pushing
+      # One <version>_<N> suffix for the application and its PostgreSQL image, across all target registries
       - name: Resolve next tag suffix
         if: inputs.push_to_acr == true || inputs.push_to_docker_hub == true
         id: next-suffix
-        uses: wultra/wultra-infrastructure/.github/actions/next-tag-suffix@develop
-        with:
-          tags: |
-            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}:{1}_{{N}}', matrix.app, matrix.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}_{{N}}', matrix.app, matrix.version) || '' }}
-            ${{ inputs.push_to_acr == true && matrix.psql != '' && format('powerauth.azurecr.io/{0}-postgresql:{1}_{{N}}', matrix.psql, matrix.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && matrix.psql != '' && format('powerauth/{0}-postgresql:{1}_{{N}}', matrix.psql, matrix.version) || '' }}
-      - name: "powerauth-${{ matrix.app }} ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Push docker image"
-        if: inputs.push_to_acr == true || inputs.push_to_docker_hub == true
+        shell: bash
+        env:
+          PUSH_ACR: ${{ inputs.push_to_acr }}
+          PUSH_HUB: ${{ inputs.push_to_docker_hub }}
+          APP: ${{ matrix.app }}
+          PSQL: ${{ matrix.psql }}
+          VERSION: ${{ matrix.version }}
+        run: |
+          set -euo pipefail
+          shopt -s inherit_errexit
+          if ! command -v skopeo >/dev/null 2>&1; then
+            echo "::error::skopeo is required but not installed on this runner" >&2
+            exit 1
+          fi
+          err=$(mktemp)
+          trap 'rm -f "$err"' EXIT
+
+          registries=() repos=()
+          [[ "$PUSH_ACR" == true ]] && registries+=(powerauth.azurecr.io)
+          [[ "$PUSH_HUB" == true ]] && registries+=(docker.io/powerauth)
+          for registry in "${registries[@]}"; do
+            repos+=("${registry}/${APP}")
+            [[ -n "$PSQL" ]] && repos+=("${registry}/${PSQL}-postgresql")
+          done
+
+          version_re=$(printf '%s' "$VERSION" | sed 's/[][\.*^$+?(){}|/]/\\&/g')
+          max_suffix=0
+          for repo in "${repos[@]}"; do
+            # skopeo uses the credentials of the docker login steps above
+            if ! out=$(skopeo list-tags "docker://${repo}" 2>"$err"); then
+              # Docker Hub answers 'denied' for missing repositories when logged in
+              if grep -qiE 'name_unknown|name unknown|repository name not known|requested access to the resource is denied' "$err"; then
+                echo "::notice::Repository ${repo} does not exist yet"
+                continue
+              fi
+              echo "::error::Failed to list tags of ${repo}: $(<"$err")" >&2
+              exit 1
+            fi
+            if ! repo_tags=$(jq -r '.Tags // [] | .[]' <<<"$out" 2>&1); then
+              echo "::error::Failed to parse tag list of ${repo}: ${repo_tags}" >&2
+              exit 1
+            fi
+            s=$(sed -nE "s/^${version_re}_([0-9]+)$/\1/p" <<<"$repo_tags" | sort -n | tail -1)
+            s=$((10#${s:-0}))
+            echo "Highest suffix of ${repo}:${VERSION}_* is ${s}"
+            if (( s > max_suffix )); then max_suffix=$s; fi
+          done
+
+          next=$((max_suffix + 1))
+          echo "::notice::Publishing ${APP}${PSQL:+ and ${PSQL}-postgresql} as ${VERSION}_${next}"
+          echo "suffix=${next}" >> "$GITHUB_OUTPUT"
+      - name: "powerauth-${{ matrix.app }} ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Build and push docker image"
         uses: docker/build-push-action@v5
         with:
-          push: true
+          push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
           context: .
           platforms: linux/amd64,linux/arm64
           file: ./docker-powerauth-${{ matrix.app }}/Dockerfile
@@ -180,11 +213,11 @@ jobs:
             ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}:{1}_{2}', matrix.app, matrix.version, steps.next-suffix.outputs.suffix) || '' }}
             ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}_{2}', matrix.app, matrix.version, steps.next-suffix.outputs.suffix) || '' }}
             ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}:latest', matrix.app) || '' }}
-      - name: "powerauth-${{ matrix.psql }}-postgresql ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Push docker image"
-        if: matrix.psql != '' && (inputs.push_to_acr == true || inputs.push_to_docker_hub == true)
+      - name: "powerauth-${{ matrix.psql }}-postgresql ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Build and push docker image"
+        if: matrix.psql != ''
         uses: docker/build-push-action@v5
         with:
-          push: true
+          push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
           context: .
           platforms: linux/amd64,linux/arm64
           file: ./docker-powerauth-${{ matrix.psql }}-postgresql/Dockerfile
