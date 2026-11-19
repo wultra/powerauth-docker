@@ -100,7 +100,7 @@ _Note: Use the `-arm64v8.yml` suffix for running containers on Apple Silicon CPU
 
 ## Publishing Prebuilt Images
 
-The `Build and deploy docker image` GitHub Actions workflow publishes selected products to Azure Container Registry and/or Docker Hub. Supply a release version for each product to build; leave a product's version empty to skip it. The optional `tag_increment` adds a rebuild suffix to the image tag without changing the release used to download its WAR files (for example, release `1.10.3` with increment `1` downloads release `1.10.3` and publishes tag `1.10.3_1`).
+The `Build and deploy docker image` GitHub Actions workflow publishes selected products to Azure Container Registry and/or Docker Hub. Supply a release version for each product to build; leave a product's version empty to skip it. Images are tagged `<version>_<N>`, where `N` is one more than the highest suffix already published for that version in the target registries (for example, release `1.10.3` is published as `1.10.3_1`, a rebuild of it as `1.10.3_2`).
 
 | Workflow input | Docker Hub image(s) |
 | --- | --- |
@@ -112,7 +112,7 @@ The `Build and deploy docker image` GitHub Actions workflow publishes selected p
 | `webflow_version` | `powerauth/webflow`, `powerauth/webflow-postgresql` |
 | `tpp_engine_version` | `powerauth/tpp-engine` |
 
-The corresponding Azure image names use the `powerauth.azurecr.io/` prefix. Image tags match each product's supplied version, with the optional increment suffix; `latest` is published to Docker Hub only when `push_latest` is enabled. PostgreSQL images use the version and tag of their corresponding product. Available tags can be inspected in the respective container registries.
+The corresponding Azure image names use the `powerauth.azurecr.io/` prefix. `latest` is published to Docker Hub only when `push_latest` is enabled. PostgreSQL images use the version of their corresponding product, with their own suffix. Available tags can be inspected in the respective container registries.
 
 ## Troubleshooting
 

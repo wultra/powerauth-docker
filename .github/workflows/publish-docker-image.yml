@@ -24,9 +24,6 @@ on:
       tpp_engine_version:
         description: TPP Engine version (empty = skip)
         type: string
-      tag_increment:
-        description: Image rebuild increment, e.g. 1 produces tag <version>_1 (empty = plain <version>)
-        type: string
       push_to_acr:
         description: Push to Azure registry?
         type: boolean
@@ -57,7 +54,6 @@ jobs:
           NEXTSTEP: ${{ inputs.nextstep_version }}
           WEBFLOW: ${{ inputs.webflow_version }}
           TPP_ENGINE: ${{ inputs.tpp_engine_version }}
-          TAG_INCREMENT: ${{ inputs.tag_increment }}
         run: |
           set -euo pipefail
           trim() {
@@ -66,13 +62,6 @@ jobs:
             value="${value%"${value##*[![:space:]]}"}"
             printf '%s' "$value"
           }
-          INCREMENT="$(trim "$TAG_INCREMENT")"
-          if [[ -n "$INCREMENT" && ! "$INCREMENT" =~ ^[0-9]+$ ]]; then
-            echo "::error::tag_increment must be a number, got '$INCREMENT'"
-            exit 1
-          fi
-          SUFFIX="${INCREMENT:+_$INCREMENT}"
-
           # app name | psql name | version
           ROWS=(
             "server|server|$SERVER"
@@ -93,7 +82,7 @@ jobs:
               echo "::error::Invalid $app version '$version'"
               exit 1
             fi
-            item=$(jq -nc --arg app "$app" --arg version "$version" --arg tag "$version$SUFFIX" '{app: $app, version: $version, tag: $tag}')
+            item=$(jq -nc --arg app "$app" --arg version "$version" '{app: $app, version: $version}')
             APPS=$(jq -c --argjson i "$item" '. + [$i]' <<< "$APPS")
             if [[ -n "$psql" ]]; then
               item=$(jq -c --arg app "$psql" '.app = $app' <<< "$item")
@@ -161,17 +150,32 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: "powerauth-${{ matrix.app }} ${{ matrix.tag }}: Build and push docker image (if enabled)"
+      - name: "powerauth-${{ matrix.app }} ${{ matrix.version }}: Build docker image"
         uses: docker/build-push-action@v5
         with:
-          push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
+          push: false
           context: .
           platforms: linux/amd64,linux/arm64
           file: ./docker-powerauth-${{matrix.app}}/Dockerfile
+      # Next free <version>_<N> tag, resolved right before pushing
+      - name: Resolve next tag suffix
+        if: inputs.push_to_acr == true || inputs.push_to_docker_hub == true
+        id: next-suffix
+        uses: wultra/wultra-infrastructure/.github/actions/next-tag-suffix@develop
+        with:
           tags: |
-            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}:{1}', matrix.app, matrix.tag) || '' }}
-            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}', matrix.app, matrix.tag) || '' }}
+            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}:{1}_{{N}}', matrix.app, matrix.version) || '' }}
+            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}_{{N}}', matrix.app, matrix.version) || '' }}
             ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}:latest', matrix.app) || '' }}
+      - name: "powerauth-${{ matrix.app }} ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Push docker image"
+        if: inputs.push_to_acr == true || inputs.push_to_docker_hub == true
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: .
+          platforms: linux/amd64,linux/arm64
+          file: ./docker-powerauth-${{matrix.app}}/Dockerfile
+          tags: ${{ steps.next-suffix.outputs.tags }}
 
   build-psql:
     needs: prepare-matrix
@@ -202,14 +206,29 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: "powerauth-${{ matrix.app }}-postgresql ${{ matrix.tag }}: Build and push docker image (if enabled)"
+      - name: "powerauth-${{ matrix.app }}-postgresql ${{ matrix.version }}: Build docker image"
         uses: docker/build-push-action@v5
         with:
-          push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
+          push: false
           context: .
           platforms: linux/amd64,linux/arm64
           file: ./docker-powerauth-${{matrix.app}}-postgresql/Dockerfile
+      # Next free <version>_<N> tag, resolved right before pushing
+      - name: Resolve next tag suffix
+        if: inputs.push_to_acr == true || inputs.push_to_docker_hub == true
+        id: next-suffix
+        uses: wultra/wultra-infrastructure/.github/actions/next-tag-suffix@develop
+        with:
           tags: |
-            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}-postgresql:{1}', matrix.app, matrix.tag) || '' }}
-            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}-postgresql:{1}', matrix.app, matrix.tag) || '' }}
+            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}-postgresql:{1}_{{N}}', matrix.app, matrix.version) || '' }}
+            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}-postgresql:{1}_{{N}}', matrix.app, matrix.version) || '' }}
             ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}-postgresql:latest', matrix.app) || '' }}
+      - name: "powerauth-${{ matrix.app }}-postgresql ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Push docker image"
+        if: inputs.push_to_acr == true || inputs.push_to_docker_hub == true
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: .
+          platforms: linux/amd64,linux/arm64
+          file: ./docker-powerauth-${{matrix.app}}-postgresql/Dockerfile
+          tags: ${{ steps.next-suffix.outputs.tags }}
