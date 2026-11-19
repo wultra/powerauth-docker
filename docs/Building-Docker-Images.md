@@ -112,7 +112,7 @@ The `Build and deploy docker image` GitHub Actions workflow publishes selected p
 | `webflow_version` | `powerauth/webflow`, `powerauth/webflow-postgresql` |
 | `tpp_engine_version` | `powerauth/tpp-engine` |
 
-The corresponding Azure image names use the `powerauth.azurecr.io/` prefix. `latest` is published to Docker Hub only when `push_latest` is enabled. PostgreSQL images use the version of their corresponding product, with their own suffix. Available tags can be inspected in the respective container registries.
+The corresponding Azure image names use the `powerauth.azurecr.io/` prefix. `latest` is published to Docker Hub only when `push_latest` is enabled. PostgreSQL images are published with the same tag as their corresponding product. Available tags can be inspected in the respective container registries.
 
 ## Troubleshooting
 
