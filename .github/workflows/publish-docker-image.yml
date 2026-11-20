@@ -2,20 +2,28 @@ name: Build and deploy docker image
 
 on:
   workflow_dispatch:
-    branches:
-      - 'develop'
-      - 'master'
-      - 'releases/*'
     inputs:
-      version:
-        description: Application release version e.g. 1.0.0
+      server_version:
+        description: PowerAuth Server version (empty = skip), e.g. 1.10.3
         type: string
-        required: true
-      products_to_push:
-        description: Array of product names for which build will be done.
+      push_server_version:
+        description: Push Server version (empty = skip)
         type: string
-        default: '["server","enrollment-server","data-adapter","nextstep","push-server","webflow","tpp-engine"]'
-        required: true
+      enrollment_server_version:
+        description: Enrollment Server version (empty = skip)
+        type: string
+      data_adapter_version:
+        description: Data Adapter version (empty = skip)
+        type: string
+      nextstep_version:
+        description: Next Step version (empty = skip)
+        type: string
+      webflow_version:
+        description: Web Flow version (empty = skip)
+        type: string
+      tpp_engine_version:
+        description: TPP Engine version (empty = skip)
+        type: string
       push_to_acr:
         description: Push to Azure registry?
         type: boolean
@@ -29,41 +37,100 @@ on:
         type: boolean
         default: false
 
+# Queue all dispatches, so two runs never pick the same <version>_<N> suffix
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+  queue: max
 
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.matrix.outputs.apps }}
+    steps:
+      - id: matrix
+        shell: bash
+        env:
+          SERVER: ${{ inputs.server_version }}
+          PUSH_SERVER: ${{ inputs.push_server_version }}
+          ENROLLMENT_SERVER: ${{ inputs.enrollment_server_version }}
+          DATA_ADAPTER: ${{ inputs.data_adapter_version }}
+          NEXTSTEP: ${{ inputs.nextstep_version }}
+          WEBFLOW: ${{ inputs.webflow_version }}
+          TPP_ENGINE: ${{ inputs.tpp_engine_version }}
+        run: |
+          set -euo pipefail
+          trim() {
+            local value="$1"
+            value="${value#"${value%%[![:space:]]*}"}"
+            value="${value%"${value##*[![:space:]]}"}"
+            printf '%s' "$value"
+          }
+          # app name | psql name | version
+          ROWS=(
+            "server|server|$SERVER"
+            "push-server|push|$PUSH_SERVER"
+            "enrollment-server|enrollment|$ENROLLMENT_SERVER"
+            "data-adapter||$DATA_ADAPTER"
+            "nextstep||$NEXTSTEP"
+            "webflow|webflow|$WEBFLOW"
+            "tpp-engine||$TPP_ENGINE"
+          )
+          APPS='[]'
+          for row in "${ROWS[@]}"; do
+            IFS='|' read -r app psql version <<< "$row"
+            version="$(trim "$version")"
+            [[ -z "$version" ]] && continue
+            if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.]+)?$ ]]; then
+              echo "::error::Invalid $app version '$version'"
+              exit 1
+            fi
+            item=$(jq -nc --arg app "$app" --arg psql "$psql" --arg version "$version" '{app: $app, psql: $psql, version: $version}')
+            APPS=$(jq -c --argjson i "$item" '. + [$i]' <<< "$APPS")
+          done
+          if [[ "$APPS" == '[]' ]]; then
+            echo "::error::No product version provided"
+            exit 1
+          fi
+          echo "apps=$APPS" >> "$GITHUB_OUTPUT"
+          echo "Products: $APPS"
+
   build-app:
-    name: app image
+    needs: prepare-matrix
+    name: ${{ matrix.app }} images
     strategy:
+      fail-fast: false
       matrix:
-        app: ${{ fromJSON(github.event.inputs.products_to_push)}}
+        include: ${{ fromJSON(needs.prepare-matrix.outputs.apps) }}
     runs-on: 'ubuntu-latest'
     environment: docker-publish
     steps:
       - uses: actions/checkout@v4
       - name: Prepare Libs
         run: |
-          wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar -O ${GITHUB_WORKSPACE}/deploy/lib/ojdbc11.jar
+          wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/23.8.0.25.04/ojdbc11-23.8.0.25.04.jar -O "${GITHUB_WORKSPACE}/deploy/lib/ojdbc11.jar"
       - name: Get Powerauth Server WAR files
         if: matrix.app == 'server'
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ inputs.version }}/powerauth-admin.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-admin.war
-          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ inputs.version }}/powerauth-java-server.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-java-server.war
+          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ matrix.version }}/powerauth-admin.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-admin.war"
+          wget --no-verbose https://github.com/wultra/powerauth-server/releases/download/${{ matrix.version }}/powerauth-java-server.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-java-server.war"
       - name: Get Enrollment Server WAR files
         if: matrix.app == 'enrollment-server'
         run: |
-          wget --no-verbose https://github.com/wultra/enrollment-server/releases/download/${{ inputs.version }}/enrollment-server.war  -O ${GITHUB_WORKSPACE}/deploy/images/enrollment-server.war
+          wget --no-verbose https://github.com/wultra/enrollment-server/releases/download/${{ matrix.version }}/enrollment-server.war  -O "${GITHUB_WORKSPACE}/deploy/images/enrollment-server.war"
       - name: Get Powerauth Push Server WAR files
         if: matrix.app == 'push-server'
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-push-server/releases/download/${{ inputs.version }}/powerauth-push-server.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-push-server.war
+          wget --no-verbose https://github.com/wultra/powerauth-push-server/releases/download/${{ matrix.version }}/powerauth-push-server.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-push-server.war"
       - name: Get Powerauth Data Adapter WAR files
         if: matrix.app == 'data-adapter'
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-webflow-customization/releases/download/${{ inputs.version }}/powerauth-data-adapter.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-data-adapter.war
+          wget --no-verbose https://github.com/wultra/powerauth-webflow-customization/releases/download/${{ matrix.version }}/powerauth-data-adapter.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-data-adapter.war"
       - name: Get Powerauth ${{ matrix.app }} WAR file
         if: contains(fromJson('["nextstep","webflow","tpp-engine"]'), matrix.app)
         run: |
-          wget --no-verbose https://github.com/wultra/powerauth-webflow/releases/download/${{ inputs.version }}/powerauth-${{ matrix.app }}.war -O ${GITHUB_WORKSPACE}/deploy/images/powerauth-${{ matrix.app }}.war
+          wget --no-verbose https://github.com/wultra/powerauth-webflow/releases/download/${{ matrix.version }}/powerauth-${{ matrix.app }}.war -O "${GITHUB_WORKSPACE}/deploy/images/powerauth-${{ matrix.app }}.war"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -81,78 +148,84 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: "powerauth-${{ matrix.app }} ${{ inputs.version }}: Build and push docker image (if enabled)"
-        uses: docker/build-push-action@v5
-        with:
-          push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
-          context: .
-          platforms: linux/amd64,linux/arm64
-          file: ./docker-powerauth-${{matrix.app}}/Dockerfile
-          tags: |
-            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}:{1}', matrix.app, inputs.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}', matrix.app, inputs.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}:latest', matrix.app) || '' }}
-
-  prepare-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.filter.outputs.matrix }}
-    steps:
-      - id: filter
+      # One <version>_<N> suffix for the application and its PostgreSQL image, across all target registries
+      - name: Resolve next tag suffix
+        if: inputs.push_to_acr == true || inputs.push_to_docker_hub == true
+        id: next-suffix
         shell: bash
+        env:
+          PUSH_ACR: ${{ inputs.push_to_acr }}
+          PUSH_HUB: ${{ inputs.push_to_docker_hub }}
+          APP: ${{ matrix.app }}
+          PSQL: ${{ matrix.psql }}
+          VERSION: ${{ matrix.version }}
         run: |
-          ALL_APPS='["server","enrollment","push","webflow"]'
-          SELECTED='${{ inputs.products_to_push }}'
+          set -euo pipefail
+          shopt -s inherit_errexit
+          if ! command -v skopeo >/dev/null 2>&1; then
+            echo "::error::skopeo is required but not installed on this runner" >&2
+            exit 1
+          fi
+          err=$(mktemp)
+          trap 'rm -f "$err"' EXIT
 
-          MATRIX=$(jq -nc \
-            --argjson all "$ALL_APPS" \
-            --argjson selected "$SELECTED" \
-            '
-              {
-                app: [
-                  $all[]
-                  | select(. as $app | $selected | index($app))
-                ]
-              }
-            ')
+          registries=() repos=()
+          [[ "$PUSH_ACR" == true ]] && registries+=(powerauth.azurecr.io)
+          [[ "$PUSH_HUB" == true ]] && registries+=(docker.io/powerauth)
+          for registry in "${registries[@]}"; do
+            repos+=("${registry}/${APP}")
+            [[ -n "$PSQL" ]] && repos+=("${registry}/${PSQL}-postgresql")
+          done
 
-          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
-          echo "$MATRIX"
+          version_re=$(printf '%s' "$VERSION" | sed 's/[][\.*^$+?(){}|/]/\\&/g')
+          max_suffix=0
+          for repo in "${repos[@]}"; do
+            # skopeo uses the credentials of the docker login steps above
+            if ! out=$(skopeo list-tags "docker://${repo}" 2>"$err"); then
+              # Docker Hub answers 'denied' instead of 'not found' for a missing repository, so its absence is confirmed by the Docker Hub API
+              path="${repo#docker.io/}"
+              if grep -qiE 'name_unknown|name unknown' "$err" \
+                || { [[ "$repo" == docker.io/*/* ]] && grep -qi 'requested access to the resource is denied' "$err" \
+                  && [[ $(curl -s -o /dev/null -w '%{http_code}' "https://hub.docker.com/v2/namespaces/${path%%/*}/repositories/${path#*/}") == 404 ]]; }; then
+                echo "::notice::Repository ${repo} does not exist yet"
+                continue
+              fi
+              echo "::error::Failed to list tags of ${repo}: $(<"$err")" >&2
+              exit 1
+            fi
+            if ! repo_tags=$(jq -r '.Tags // [] | .[]' <<<"$out" 2>&1); then
+              echo "::error::Failed to parse tag list of ${repo}: ${repo_tags}" >&2
+              exit 1
+            fi
+            s=$(sed -nE "s/^${version_re}_([0-9]+)$/\1/p" <<<"$repo_tags" | sort -n | tail -1)
+            s=$((10#${s:-0}))
+            echo "Highest suffix of ${repo}:${VERSION}_* is ${s}"
+            if (( s > max_suffix )); then max_suffix=$s; fi
+          done
 
-  build-psql:
-    needs: prepare-matrix
-    name: postgresql image
-    strategy:
-      matrix: ${{ fromJSON(needs.prepare-matrix.outputs.matrix) }}
-    runs-on: 'ubuntu-latest'
-    environment: docker-publish
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Log in to Azure registry
-        if: inputs.push_to_acr == true
-        uses: docker/login-action@v3
-        with:
-          registry: https://powerauth.azurecr.io/
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-      - name: Log in to Docker hub registry
-        if: inputs.push_to_docker_hub == true
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      - name: "powerauth-${{ matrix.app }}-postgresql ${{ inputs.version }}: Build and push docker image (if enabled)"
+          next=$((max_suffix + 1))
+          echo "::notice::Publishing ${APP}${PSQL:+ and ${PSQL}-postgresql} as ${VERSION}_${next}"
+          echo "suffix=${next}" >> "$GITHUB_OUTPUT"
+      - name: "powerauth-${{ matrix.app }} ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Build and push docker image"
         uses: docker/build-push-action@v5
         with:
           push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
           context: .
           platforms: linux/amd64,linux/arm64
-          file: ./docker-powerauth-${{matrix.app}}-postgresql/Dockerfile
+          file: ./docker-powerauth-${{ matrix.app }}/Dockerfile
           tags: |
-            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}-postgresql:{1}', matrix.app, inputs.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}-postgresql:{1}', matrix.app, inputs.version) || '' }}
-            ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}-postgresql:latest', matrix.app) || '' }}
+            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}:{1}_{2}', matrix.app, matrix.version, steps.next-suffix.outputs.suffix) || '' }}
+            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}:{1}_{2}', matrix.app, matrix.version, steps.next-suffix.outputs.suffix) || '' }}
+            ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}:latest', matrix.app) || '' }}
+      - name: "powerauth-${{ matrix.psql }}-postgresql ${{ matrix.version }}_${{ steps.next-suffix.outputs.suffix }}: Build and push docker image"
+        if: matrix.psql != ''
+        uses: docker/build-push-action@v5
+        with:
+          push: ${{ inputs.push_to_acr == true || inputs.push_to_docker_hub == true }}
+          context: .
+          platforms: linux/amd64,linux/arm64
+          file: ./docker-powerauth-${{ matrix.psql }}-postgresql/Dockerfile
+          tags: |
+            ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/{0}-postgresql:{1}_{2}', matrix.psql, matrix.version, steps.next-suffix.outputs.suffix) || '' }}
+            ${{ inputs.push_to_docker_hub == true && format('powerauth/{0}-postgresql:{1}_{2}', matrix.psql, matrix.version, steps.next-suffix.outputs.suffix) || '' }}
+            ${{ inputs.push_to_docker_hub == true && inputs.push_latest == true && format('powerauth/{0}-postgresql:latest', matrix.psql) || '' }}

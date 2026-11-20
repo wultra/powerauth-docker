@@ -98,6 +98,22 @@ $ docker-compose -f docker-compose-pa-all.yml up -d
 
 _Note: Use the `-arm64v8.yml` suffix for running containers on Apple Silicon CPU architecture._
 
+## Publishing Prebuilt Images
+
+The `Build and deploy docker image` GitHub Actions workflow publishes selected products to Azure Container Registry and/or Docker Hub. Supply a release version for each product to build; leave a product's version empty to skip it. Images are tagged `<version>_<N>`, where `N` is one more than the highest suffix already published for that version in the target registries (for example, release `1.10.3` is published as `1.10.3_1`, a rebuild of it as `1.10.3_2`).
+
+| Workflow input | Docker Hub image(s) |
+| --- | --- |
+| `server_version` | `powerauth/server`, `powerauth/server-postgresql` |
+| `push_server_version` | `powerauth/push-server`, `powerauth/push-postgresql` |
+| `enrollment_server_version` | `powerauth/enrollment-server`, `powerauth/enrollment-postgresql` |
+| `data_adapter_version` | `powerauth/data-adapter` |
+| `nextstep_version` | `powerauth/nextstep` |
+| `webflow_version` | `powerauth/webflow`, `powerauth/webflow-postgresql` |
+| `tpp_engine_version` | `powerauth/tpp-engine` |
+
+The corresponding Azure image names use the `powerauth.azurecr.io/` prefix. `latest` is published to Docker Hub only when `push_latest` is enabled. PostgreSQL images are published with the same tag as their corresponding product. Available tags can be inspected in the respective container registries.
+
 ## Troubleshooting
 
 In case Docker containers get stopped with exit code `137`, make sure Docker has enough memory configured. See the `Preferences` / `Resources` / `Memory` tab in Docker Desktop. The default setting is only 2 GB RAM which is not enough for the whole PowerAuth stack.
