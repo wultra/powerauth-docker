@@ -37,10 +37,11 @@ on:
         type: boolean
         default: false
 
-# Queue dispatches, so two runs never pick the same <version>_<N> suffix
+# Queue all dispatches, so two runs never pick the same <version>_<N> suffix
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   prepare-matrix:
@@ -181,8 +182,11 @@ jobs:
           for repo in "${repos[@]}"; do
             # skopeo uses the credentials of the docker login steps above
             if ! out=$(skopeo list-tags "docker://${repo}" 2>"$err"); then
-              # Docker Hub answers 'denied' for missing repositories when logged in
-              if grep -qiE 'name_unknown|name unknown|repository name not known|requested access to the resource is denied' "$err"; then
+              # Docker Hub answers 'denied' instead of 'not found' for a missing repository, so its absence is confirmed by the Docker Hub API
+              path="${repo#docker.io/}"
+              if grep -qiE 'name_unknown|name unknown' "$err" \
+                || { [[ "$repo" == docker.io/*/* ]] && grep -qi 'requested access to the resource is denied' "$err" \
+                  && [[ $(curl -s -o /dev/null -w '%{http_code}' "https://hub.docker.com/v2/namespaces/${path%%/*}/repositories/${path#*/}") == 404 ]]; }; then
                 echo "::notice::Repository ${repo} does not exist yet"
                 continue
               fi
